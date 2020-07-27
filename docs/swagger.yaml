@@ -1,0 +1,37 @@
+definitions:
+  serializer.Response:
+    properties:
+      code:
+        type: integer
+      data:
+        type: object
+      error:
+        type: string
+      msg:
+        type: string
+    type: object
+info:
+  contact: {}
+  license: {}
+paths:
+  /api/es/get_hot_project:
+    get:
+      description: 热门搜索
+      parameters:
+      - description: start
+        in: query
+        name: start
+        type: integer
+      - description: size
+        in: query
+        name: size
+        type: integer
+      responses:
+        "200":
+          description: code":200,"data":null,"msg":"success"}
+          schema:
+            $ref: '#/definitions/serializer.Response'
+      summary: 热门搜索
+      tags:
+      - es搜索
+swagger: "2.0"

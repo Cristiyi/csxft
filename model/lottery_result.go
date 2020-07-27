@@ -1,0 +1,28 @@
+/**
+ * @Description:
+ * @File: lotteryResult
+ * @Date: 2020/7/23 0023 14:26
+ */
+
+package model
+
+import "github.com/jinzhu/gorm"
+
+type LotteryResult struct {
+	gorm.Model
+	ProjectId uint `gorm:"not null;index:idx_project_id"`
+	UserId uint `gorm:"not null;index:idx_user_id"`
+	Type int32
+	IsNew int32
+	No int64
+	Username string
+	IdCard string
+	SolicitNo string
+	Title string
+	TotalHouse int64
+	TotalPerson int64
+	//类型 文字（仅用于展示）
+	TypeString string  `gorm:"-"`
+	//身份证备份
+	IdCardBack string  `gorm:"-"`
+}
