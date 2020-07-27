@@ -1,8 +1,8 @@
 package user
 
 import (
-	"CMD-XuanFangTong-Server/model"
-	"CMD-XuanFangTong-Server/serializer"
+	"csxft/model"
+	"csxft/serializer"
 )
 
 // UserRegisterService 管理用户注册服务

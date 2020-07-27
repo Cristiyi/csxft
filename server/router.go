@@ -1,8 +1,8 @@
 package server
 
 import (
-	"CMD-XuanFangTong-Server/api"
-	"CMD-XuanFangTong-Server/middleware"
+	"csxft/api"
+	"csxft/middleware"
 	"github.com/gin-gonic/gin"
 	"os"
 )

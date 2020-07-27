@@ -2,9 +2,9 @@ package conf
 
 import (
 	"os"
-	"CMD-XuanFangTong-Server/cache"
-	"CMD-XuanFangTong-Server/model"
-	"CMD-XuanFangTong-Server/util"
+	"csxft/cache"
+	"csxft/model"
+	"csxft/util"
 
 	"github.com/joho/godotenv"
 )

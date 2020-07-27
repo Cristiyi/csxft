@@ -7,9 +7,9 @@
 package es
 
 import (
-	"CMD-XuanFangTong-Server/model"
-	"CMD-XuanFangTong-Server/repo"
-	"CMD-XuanFangTong-Server/serializer"
+	"csxft/model"
+	"csxft/repo"
+	"csxft/serializer"
 	"fmt"
 	"reflect"
 	"strconv"

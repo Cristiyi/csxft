@@ -7,7 +7,7 @@
 package repo
 
 import (
-	"CMD-XuanFangTong-Server/model"
+	"csxft/model"
 )
 
 type HouseRepo interface {

@@ -1,7 +1,7 @@
 package api
 
 import (
-	service "CMD-XuanFangTong-Server/service/init"
+	service "csxft/service/init"
 	"github.com/gin-gonic/gin"
 )
 

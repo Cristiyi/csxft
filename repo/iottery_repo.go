@@ -6,7 +6,7 @@
 
 package repo
 
-import "CMD-XuanFangTong-Server/model"
+import "csxft/model"
 
 type IotteryRepo interface {
 	//获取插入到es的数据

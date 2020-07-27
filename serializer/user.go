@@ -1,6 +1,6 @@
 package serializer
 
-import "CMD-XuanFangTong-Server/model"
+import "csxft/model"
 
 // User 用户序列化器
 type User struct {

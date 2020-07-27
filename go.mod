@@ -1,4 +1,4 @@
-module CMD-XuanFangTong-Server
+module csxft
 
 go 1.12
 

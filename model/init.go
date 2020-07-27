@@ -1,7 +1,7 @@
 package model
 
 import (
-	"CMD-XuanFangTong-Server/util"
+	"csxft/util"
 	"time"
 
 	"github.com/jinzhu/gorm"

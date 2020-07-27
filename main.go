@@ -1,8 +1,8 @@
 package main
 
 import (
-	"CMD-XuanFangTong-Server/conf"
-	"CMD-XuanFangTong-Server/server"
+	"csxft/conf"
+	"csxft/server"
 )
 
 func main() {

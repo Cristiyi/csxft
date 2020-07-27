@@ -6,7 +6,7 @@
 
 package repo
 
-import "CMD-XuanFangTong-Server/model"
+import "csxft/model"
 
 type NoticeRepo interface {
 	//获取插入到es的数据

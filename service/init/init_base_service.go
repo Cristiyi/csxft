@@ -2,10 +2,10 @@ package init
 
 import (
 	"context"
-	"CMD-XuanFangTong-Server/model"
-	"CMD-XuanFangTong-Server/mongodb"
-	"CMD-XuanFangTong-Server/serializer"
-	"CMD-XuanFangTong-Server/util"
+	"csxft/model"
+	"csxft/mongodb"
+	"csxft/serializer"
+	"csxft/util"
 	"fmt"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"

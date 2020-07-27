@@ -1,8 +1,8 @@
 package middleware
 
 import (
-	"CMD-XuanFangTong-Server/model"
-	"CMD-XuanFangTong-Server/serializer"
+	"csxft/model"
+	"csxft/serializer"
 
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"

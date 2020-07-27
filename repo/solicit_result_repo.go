@@ -7,8 +7,8 @@
 package repo
 
 import (
-	"CMD-XuanFangTong-Server/model"
-	"CMD-XuanFangTong-Server/util"
+	"csxft/model"
+	"csxft/util"
 )
 
 type SolicitResultRepo interface {

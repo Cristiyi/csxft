@@ -1,7 +1,7 @@
 package es
 
 import (
-	"CMD-XuanFangTong-Server/serializer"
+	"csxft/serializer"
 )
 
 // InitBaseService 初始化基础数据服务

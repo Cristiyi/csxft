@@ -3,9 +3,9 @@ package api
 import (
 	"encoding/json"
 	"fmt"
-	"CMD-XuanFangTong-Server/conf"
-	"CMD-XuanFangTong-Server/model"
-	"CMD-XuanFangTong-Server/serializer"
+	"csxft/conf"
+	"csxft/model"
+	"csxft/serializer"
 
 	"github.com/gin-gonic/gin"
 	validator "gopkg.in/go-playground/validator.v8"

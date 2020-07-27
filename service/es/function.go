@@ -7,9 +7,9 @@
 package es
 
 import (
-	"CMD-XuanFangTong-Server/cache"
-	"CMD-XuanFangTong-Server/model"
-	"CMD-XuanFangTong-Server/util"
+	"csxft/cache"
+	"csxft/model"
+	"csxft/util"
 	"fmt"
 	"reflect"
 	"strconv"

@@ -1,8 +1,8 @@
 package api
 
 import (
-	"CMD-XuanFangTong-Server/serializer"
-	service "CMD-XuanFangTong-Server/service/user"
+	"csxft/serializer"
+	service "csxft/service/user"
 
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"

@@ -2,7 +2,7 @@ package cache
 
 import (
 	"os"
-	"CMD-XuanFangTong-Server/util"
+	"csxft/util"
 	"strconv"
 	"github.com/go-redis/redis"
 )

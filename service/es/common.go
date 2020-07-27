@@ -2,7 +2,7 @@ package es
 
 import (
 	"context"
-	"CMD-XuanFangTong-Server/elasticsearch"
+	"csxft/elasticsearch"
 	"fmt"
 	"github.com/olivere/elastic/v7"
 	"strings"

@@ -7,10 +7,10 @@
 package es
 
 import (
-	"CMD-XuanFangTong-Server/cache"
-	"CMD-XuanFangTong-Server/model"
-	"CMD-XuanFangTong-Server/repo"
-	"CMD-XuanFangTong-Server/serializer"
+	"csxft/cache"
+	"csxft/model"
+	"csxft/repo"
+	"csxft/serializer"
 	"encoding/json"
 	"reflect"
 	"strconv"

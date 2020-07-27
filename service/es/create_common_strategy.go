@@ -8,8 +8,8 @@ package es
 
 import (
 	"context"
-	"CMD-XuanFangTong-Server/elasticsearch"
-	"CMD-XuanFangTong-Server/repo"
+	"csxft/elasticsearch"
+	"csxft/repo"
 	"fmt"
 	"strconv"
 )
