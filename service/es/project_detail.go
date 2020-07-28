@@ -93,7 +93,6 @@ type GetNoticeService struct {
 //获取楼盘
 func (service *ProjectDetailService) ProjectDetail() serializer.Response {
 	res := GetProject(service.ProjectId)
-	fmt.Println(res)
 	if res == nil {
 		return serializer.Response{
 			Code: 400,
@@ -105,6 +104,7 @@ func (service *ProjectDetailService) ProjectDetail() serializer.Response {
 	data["detail"] = res.Source
 
 	newCred := GetNewCred(service.ProjectId)
+	fmt.Println(newCred)
 
 	data["follow"] = 0
 	projectId, _ := strconv.Atoi(service.ProjectId)
