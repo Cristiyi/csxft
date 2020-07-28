@@ -12,7 +12,6 @@ import (
 	"csxft/repo"
 	"csxft/serializer"
 	"encoding/json"
-	"fmt"
 	"reflect"
 	"strconv"
 	"strings"
@@ -104,7 +103,6 @@ func (service *ProjectDetailService) ProjectDetail() serializer.Response {
 	data["detail"] = res.Source
 
 	newCred := GetNewCred(service.ProjectId)
-	fmt.Println(newCred)
 
 	data["follow"] = 0
 	projectId, _ := strconv.Atoi(service.ProjectId)
