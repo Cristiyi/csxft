@@ -1,4 +1,6 @@
 .vscode/
 .env
 go.sum
-./log
+/log
+.air.conf
+/tmp

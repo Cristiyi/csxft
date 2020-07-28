@@ -11,6 +11,7 @@ import "csxft/model"
 type CredRepo interface {
 	//获取插入到es的数据
 	GetToEsData(id uint64) (cred *model.Cred, err error)
+	GetByProjectId(projectId uint64) (creds []*model.Cred, err error)
 }
 
 func NewCredRepo() CredRepo {
@@ -47,6 +48,37 @@ func (c credRepo) GetToEsData(id uint64) (cred *model.Cred, err error) {
 	case 5:
 		cred.StatusName = "在售楼盘"
 		break
+	}
+	return
+}
+
+func (c credRepo) GetByProjectId(projectId uint64) (creds []*model.Cred, err error) {
+	err = model.DB.Model(c.thisModel).Where("project_id = ?", projectId).Find(&creds).Error
+	for i, cred := range creds {
+		if cred.Renovation != 0 {
+			if cred.Renovation == 1 {
+				creds[i].RenovationString = "精装"
+			} else {
+				creds[i].RenovationString = "毛坯"
+			}
+		}
+		switch cred.Status {
+		case 1:
+			creds[i].StatusName = "即将取证"
+			break
+		case 2:
+			creds[i].StatusName = "最新取证"
+			break
+		case 3:
+			creds[i].StatusName = "正在认筹"
+			break
+		case 4:
+			creds[i].StatusName = "最新摇号"
+			break
+		case 5:
+			creds[i].StatusName = "在售楼盘"
+			break
+		}
 	}
 	return
 }

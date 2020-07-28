@@ -10,6 +10,11 @@ type CreateService struct {
 	TargetId    uint64 `form:"target_id" json:"targetId" binding:"required"`
 }
 
+//初始化楼盘相关所有信息
+type ProjectAllInfoService struct {
+	ProjectId    uint64 `form:"project_id" json:"project_id" binding:"required"`
+}
+
 // 初始化
 func (service *CreateService) CommonCreate() serializer.Response {
 
@@ -22,6 +27,20 @@ func (service *CreateService) CommonCreate() serializer.Response {
 	}
 
 }
+
+// 初始化
+func (service *ProjectAllInfoService) Create() serializer.Response {
+
+	CreateAllProjectInfo(service.ProjectId)
+
+	return serializer.Response{
+		Code: 200,
+		Msg: "success",
+	}
+
+}
+
+
 
 
 

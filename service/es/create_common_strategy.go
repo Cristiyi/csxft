@@ -85,11 +85,6 @@ type houseHandler struct {
 
 }
 
-//摇号数据
-type iotteryHandler struct {
-
-}
-
 //房屋handler
 func newHouseHandler() houseHandler {
 	instance := new(houseHandler)
@@ -112,6 +107,11 @@ func (h houseHandler) Create(id uint64) (code int, msg string) {
 	}
 
 	return
+
+}
+
+//摇号数据
+type iotteryHandler struct {
 
 }
 

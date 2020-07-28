@@ -101,9 +101,7 @@ func (service *ProjectDetailService) ProjectDetail() serializer.Response {
 	}
 	data := make(map[string]interface{})
 	data["detail"] = res.Source
-
 	newCred := GetNewCred(service.ProjectId)
-
 	data["follow"] = 0
 	projectId, _ := strconv.Atoi(service.ProjectId)
 	follow, err := repo.NewFollowRepo().Get(service.UserId, uint64(projectId))
