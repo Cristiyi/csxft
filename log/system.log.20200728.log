@@ -1,1 +1,0 @@
-{"client_ip":"::1","latency_time":717001000,"level":"info","msg":"","req_method":"GET","req_uri":"/api/es/get_project_detail?project_id=1\u0026user_id=1","status_code":200,"time":"2020-07-28 09:53:13"}
