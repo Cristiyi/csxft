@@ -12,6 +12,7 @@ import (
 	"csxft/repo"
 	"csxft/serializer"
 	"encoding/json"
+	"fmt"
 	"reflect"
 	"strconv"
 	"strings"
@@ -92,6 +93,7 @@ type GetNoticeService struct {
 //获取楼盘
 func (service *ProjectDetailService) ProjectDetail() serializer.Response {
 	res := GetProject(service.ProjectId)
+	fmt.Println(res)
 	if res == nil {
 		return serializer.Response{
 			Code: 400,
