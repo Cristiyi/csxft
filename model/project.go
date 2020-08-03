@@ -46,6 +46,7 @@ type Project struct {
 	IsNewCred int32  `gorm:"default:0"`
 	IsRecognition int32  `gorm:"default:0"`
 	IsIottery int32  `gorm:"default:0"`
+	Tag string
 	IsSell int32  `gorm:"default:0"`
 	//效果图
 	EffectImages []Image `gorm:"ForeignKey:ProjectId"`
