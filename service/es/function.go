@@ -119,6 +119,11 @@ func calTimeLine(batch *model.Batch) int32 {
 		if todayTime>=solicitBeginUnix && todayTime<=solicitEndUnix {
 			return 2
 		}
+		if preSellTimeUnix := batch.PreSellTime.Unix(); preSellTimeUnix != 0{
+			if todayTime >= preSellTimeUnix && todayTime < solicitBeginUnix {
+				return 1
+			}
+		}
 	}
 	if solicitTimeUnix := batch.SolicitTime.Unix(); solicitTimeUnix != 0{
 		if todayTime == solicitTimeUnix {
