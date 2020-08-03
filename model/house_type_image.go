@@ -11,6 +11,7 @@ import "github.com/jinzhu/gorm"
 type HouseTypeImage struct {
 	gorm.Model
 	ProjectId uint `gorm:"not null;index:idx_project_id"`
+	BatchId uint
 	HomeNum string
 	HouseStruct string
 	Acreage string

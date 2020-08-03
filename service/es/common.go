@@ -295,8 +295,8 @@ func QueryLotteryResult(start,size int, commonParams map[string]string) *elastic
 
 	queryService := elastic.NewBoolQuery()
 	queryService.Must(elastic.NewTermQuery("ProjectId",commonParams["ProjectId"]))
-	if commonParams["IsNew"] != "" {
-		queryService.Must(elastic.NewQueryStringQuery("IsNew:"+"1"))
+	if commonParams["BatchId"] != "" {
+		queryService.Must(elastic.NewTermQuery("BatchId", commonParams["BatchId"]))
 	}
 	if commonParams["Search"] != "" {
 		searchQuery := elastic.NewBoolQuery()
@@ -332,9 +332,9 @@ func QuerySolicitResult(start,size int, commonParams map[string]string) *elastic
 	searchService := elasticsearch.GetEsCli().Search("solicit_result")
 
 	queryService := elastic.NewBoolQuery()
-	queryService.Must(elastic.NewTermQuery("ProjectId",commonParams["ProjectId"]))
-	if commonParams["IsNew"] != "" {
-		queryService.Must(elastic.NewQueryStringQuery("IsNew:"+"1"))
+	queryService.Must(elastic.NewTermQuery("ProjectId", commonParams["ProjectId"]))
+	if commonParams["BatchId"] != "" {
+		queryService.Must(elastic.NewTermQuery("BatchId", commonParams["BatchId"]))
 	}
 	if commonParams["Search"] != "" {
 		searchQuery := elastic.NewBoolQuery()
@@ -385,6 +385,9 @@ func QueryHouseTypeImage(start,size int, commonParams map[string]string) *elasti
 
 	queryService := elastic.NewBoolQuery()
 	queryService.Must(elastic.NewTermQuery("ProjectId", commonParams["ProjectId"]))
+	if commonParams["BatchId"] != "" {
+		queryService.Must(elastic.NewTermQuery("BatchId", commonParams["BatchId"]))
+	}
 	if commonParams["HomeNum"] != "" {
 		queryService.Must(elastic.NewTermQuery("HomeNum.keyword", commonParams["HomeNum"]))
 	}
@@ -413,6 +416,9 @@ func HouseTypeImageCount(commonParams map[string]string) (count int64) {
 	searchService := elasticsearch.GetEsCli().Count("house_type_image")
 	queryService := elastic.NewBoolQuery()
 	queryService.Must(elastic.NewTermQuery("ProjectId", commonParams["ProjectId"]))
+	if commonParams["BatchId"] != "" {
+		queryService.Must(elastic.NewTermQuery("BatchId", commonParams["BatchId"]))
+	}
 	if commonParams["HomeNum"] != "" {
 		queryService.Must(elastic.NewTermQuery("HomeNum.keyword", commonParams["HomeNum"]))
 	}
@@ -432,8 +438,7 @@ func GetNotice(commonParams map[string]string) *elastic.SearchResult {
 	queryService.Must(elastic.NewTermQuery("ProjectId", commonParams["ProjectId"]))
 	queryService.Must(elastic.NewTermQuery("Status", 1))
 	if commonParams["NoticeType"] != "" {
-		fmt.Println(commonParams)
-		queryService.Must(elastic.NewQueryStringQuery("NoticeType:" +commonParams["NoticeType"]))
+		queryService.Must(elastic.NewTermQuery("NoticeType", commonParams["NoticeType"]))
 	}
 	searchService = searchService.Query(queryService)
 	searchResult, err := searchService.
@@ -447,4 +452,26 @@ func GetNotice(commonParams map[string]string) *elastic.SearchResult {
 	}
 	return searchResult
 }
+
+//获取批次
+func GetBatch(projectId string, status int32) *elastic.SearchResult {
+	searchService := elasticsearch.GetEsCli().Search("batch")
+	queryService := elastic.NewBoolQuery()
+	queryService.Must(elastic.NewTermQuery("ProjectId", projectId))
+	if status != 0 {
+		queryService.Must(elastic.NewTermQuery("Status", status))
+	}
+	searchService = searchService.Query(queryService)
+	searchResult, err := searchService.
+		Sort("BatchNo", false).
+		From(0).Size(1).
+		Pretty(true).
+		Do(context.Background())
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	return searchResult
+}
+
 

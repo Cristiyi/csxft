@@ -7,20 +7,18 @@
 package es
 
 import (
-	"csxft/cache"
 	"csxft/model"
 	"csxft/repo"
 	"csxft/serializer"
-	"encoding/json"
 	"reflect"
 	"strconv"
-	"strings"
 )
 
 //获取楼盘服务
 type ProjectDetailService struct {
 	ProjectId    string `form:"project_id" json:"project_id" binding:"required"`
 	UserId  uint64 `form:"user_id" json:"project_id" binding:"required"`
+	Status int32 `form:"status" json:"status"`
 }
 
 //获取最新开盘一房一价服务
@@ -32,7 +30,7 @@ type NewCredHouseService struct {
 	BuildNo string `form:"build_no" json:"build_no"`
 	Start int `form:"start" json:"start"`
 	Size int `form:"size" json:"size"`
-
+	Status int32 `form:"status" json:"status"`
 }
 
 //获取历史摇号服务
@@ -45,11 +43,13 @@ type HistoryIotteryService struct {
 //获取历史摇号服务
 type AllBuildNoService struct {
 	ProjectId    string `form:"project_id" json:"project_id" binding:"required"`
+	Status int32 `form:"status" json:"status"`
 }
 
 //获取时间轴服务
 type TimeLineService struct {
 	ProjectId    string `form:"project_id" json:"project_id" binding:"required"`
+	Status int32 `form:"status" json:"status"`
 }
 
 //时间轴
@@ -66,13 +66,14 @@ type TimeLine struct {
 }
 
 type TimeLineResult struct {
-	TimeLine TimeLine
+	TimeLine map[string]interface{}
 	Stage int32
 }
 
 //楼盘数据检测服务
 type DetailCheckService struct {
 	ProjectId    string `form:"project_id" json:"project_id" binding:"required"`
+	Status int32 `form:"status" json:"status"`
 }
 
 //楼盘数据检测
@@ -89,7 +90,7 @@ type GetNoticeService struct {
 	NoticeType    string `form:"notice_type" json:"notice_type" binding:"required"`
 }
 
-//获取楼盘
+//获取楼盘详情
 func (service *ProjectDetailService) ProjectDetail() serializer.Response {
 	res := GetProject(service.ProjectId)
 	if res == nil {
@@ -101,7 +102,7 @@ func (service *ProjectDetailService) ProjectDetail() serializer.Response {
 	}
 	data := make(map[string]interface{})
 	data["detail"] = res.Source
-	newCred := GetNewCred(service.ProjectId)
+	data["newCred"] = GetTargetBatch(service.ProjectId, service.Status)
 	data["follow"] = 0
 	projectId, _ := strconv.Atoi(service.ProjectId)
 	follow, err := repo.NewFollowRepo().Get(service.UserId, uint64(projectId))
@@ -110,11 +111,6 @@ func (service *ProjectDetailService) ProjectDetail() serializer.Response {
 	}
 
 	data["follow_count"] = repo.NewFollowRepo().GetCount(uint64(projectId))
-
-	if newCred != nil {
-		data["newCred"] = newCred
-	}
-
 	return serializer.Response{
 		Code: 200,
 		Data: data,
@@ -125,28 +121,12 @@ func (service *ProjectDetailService) ProjectDetail() serializer.Response {
 //获取最近开盘的一房一价
 func (service NewCredHouseService) GetNewCredHouse() serializer.Response {
 
-	//获取最新的预售信息 先从redis取，取不到去es查询
 	var credIdResult []string
-	rs, err := cache.RedisClient.HGet("PROJECT_NEW_CRED", service.ProjectId).Result()
-	if err != nil {
-		credParam := make(map[string]string)
-		credParam["ProjectId"] = service.ProjectId
-		credParam["IsNew"] = "1"
-		credParam["sort"] = "UpdatedAt"
-		credParam["sortType"] = "desc"
-		credRes := GetProjectCred(0, 10, credParam)
-		if credRes != nil {
-			for _, item := range credRes.Each(reflect.TypeOf(model.Cred{})) {
-				if t, ok := item.(model.Cred); ok {
-					credIdResult = append(credIdResult, strconv.Itoa(int(t.ID)))
-				}
-			}
+	batch := GetTargetBatch(service.ProjectId, service.Status)
+	if batch.Creds != nil {
+		for _, item := range batch.Creds {
+			credIdResult = append(credIdResult, strconv.Itoa(int(item.ID)))
 		}
-	} else {
-		credIdResult = strings.Split(rs, ",")
-	}
-	if credIdResult != nil {
-		//根据最新的预售信息的id范围获取房屋信息
 		var houseResult []model.House
 		houseParam := make(map[string]string)
 		if service.Sort != "" {
@@ -187,10 +167,10 @@ func (service NewCredHouseService) GetNewCredHouse() serializer.Response {
 				Msg: "success",
 			}
 		}
-
 	}
 	return serializer.Response{
-		Code: 400,
+		Code: 200,
+		Data: nil,
 		Msg: "暂无数据",
 	}
 }
@@ -231,19 +211,24 @@ func (service HistoryIotteryService) GetHistoryIottery() serializer.Response {
 //获取所有楼栋
 func (service AllBuildNoService) GetAllBuildNo() serializer.Response {
 
-	rs, err := cache.RedisClient.HGet("PROJECT_NEW_BUILD_NO", service.ProjectId).Result()
-	if err != nil {
-		return serializer.Response{
-			Code: 400,
-			Msg: "暂无数据",
+	var result []string
+	batch := GetTargetBatch(service.ProjectId, service.Status)
+	if batch.Creds != nil {
+		for _, item := range batch.Creds {
+			result = append(result, item.BuildingNo)
 		}
-	} else {
-		result := strings.Split(rs, ",")
-		return serializer.Response{
-			Code: 200,
-			Data: result,
-			Msg: "success",
+		if result != nil {
+			return serializer.Response{
+				Code: 200,
+				Data: result,
+				Msg: "success",
+			}
 		}
+	}
+	return serializer.Response{
+		Code: 200,
+		Data: nil,
+		Msg: "暂无数据",
 	}
 
 }
@@ -251,100 +236,61 @@ func (service AllBuildNoService) GetAllBuildNo() serializer.Response {
 //获取时间轴
 func (service TimeLineService) GetTimeLine() serializer.Response {
 
-	//获取最新的预售信息 先从redis取，取不到去es查询
-	var credIdResult []string
-	rs, err := cache.RedisClient.HGet("PROJECT_NEW_CRED", service.ProjectId).Result()
-	if err != nil {
-		credParam := make(map[string]string)
-		credParam["ProjectId"] = service.ProjectId
-		credParam["IsNew"] = "1"
-		credParam["sort"] = "UpdatedAt"
-		credParam["sortType"] = "desc"
-		credRes := GetProjectCred(0, 10, credParam)
-		if credRes != nil {
-			for _, item := range credRes.Each(reflect.TypeOf(model.Cred{})) {
-				if t, ok := item.(model.Cred); ok {
-					credIdResult = append(credIdResult, strconv.Itoa(int(t.ID)))
-				}
-			}
-		}
+	batch := GetTargetBatch(service.ProjectId, service.Status)
+	res := make(map[string]interface{})
+	if batch.PreSellTime.IsZero() {
+		res["PreSellTime"] = nil
 	} else {
-		credIdResult = strings.Split(rs, ",")
+		res["PreSellTime"] = batch.PreSellTime
 	}
-
-	if credIdResult != nil {
-		credRes := GetCred(credIdResult[0]).Source
-		var res map[string]interface{}
-		cred := new(model.Cred)
-		json.Unmarshal([]byte(credRes), &res)
-		json.Unmarshal([]byte(credRes), &cred)
-		if cred.PreSellTime.IsZero() {
-			res["PreSellTime"] = nil
-		}
-		if cred.SolicitBegin.IsZero() {
-			res["SolicitBegin"] = nil
-		}
-		if cred.SolicitEnd.IsZero() {
-			res["SolicitEnd"] = nil
-		}
-		if cred.SolicitTime.IsZero() {
-			res["SolicitTime"] = nil
-		}
-		if cred.LotteryTime.IsZero() {
-			res["LotteryTime"] = nil
-		}
-		if cred.LotteryBegin.IsZero() {
-			res["LotteryBegin"] = nil
-		}
-		if cred.LotteryEnd.IsZero() {
-			res["LotteryEnd"] = nil
-		}
-		if cred.ChooseHouseBegin.IsZero() {
-			res["ChooseHouseBegin"] = nil
-		}
-		if cred.ChooseHouseEnd.IsZero() {
-			res["ChooseHouseEnd"] = nil
-		}
-		if res != nil {
-			timeLine := TimeLine{
-				PreSellTime: res["PreSellTime"],
-				SolicitBegin: res["SolicitBegin"],
-				SolicitEnd: res["SolicitEnd"],
-				SolicitTime: res["SolicitTime"],
-				LotteryTime: res["LotteryTime"],
-				LotteryBegin: res["LotteryBegin"],
-				LotteryEnd: res["LotteryEnd"],
-				ChooseHouseBegin: res["ChooseHouseBegin"],
-				ChooseHouseEnd: res["ChooseHouseEnd"],
-			}
-			stage := calTimeLine(cred)
-			timeLineResult := TimeLineResult{
-				timeLine,
-				stage,
-			}
-			return serializer.Response{
-				Code: 200,
-				Data: timeLineResult,
-				Msg: "success",
-			}
-		}
+	if batch.SolicitBegin.IsZero() {
+		res["SolicitBegin"] = nil
+	} else {
+		res["SolicitBegin"] = batch.SolicitBegin
 	}
-
-	timeLine := TimeLine{
-		PreSellTime: nil,
-		SolicitBegin: nil,
-		SolicitEnd: nil,
-		SolicitTime: nil,
-		LotteryTime: nil,
-		LotteryBegin: nil,
-		LotteryEnd: nil,
-		ChooseHouseBegin: nil,
-		ChooseHouseEnd: nil,
+	if batch.SolicitEnd.IsZero() {
+		res["SolicitEnd"] = nil
+	} else {
+		res["SolicitEnd"] = batch.SolicitEnd
 	}
-
+	if batch.SolicitTime.IsZero() {
+		res["SolicitTime"] = nil
+	} else {
+		res["SolicitTime"] = batch.SolicitTime
+	}
+	if batch.LotteryTime.IsZero() {
+		res["LotteryTime"] = nil
+	} else {
+		res["LotteryTime"] = batch.LotteryTime
+	}
+	if batch.LotteryBegin.IsZero() {
+		res["LotteryBegin"] = nil
+	} else {
+		res["LotteryBegin"] = batch.LotteryBegin
+	}
+	if batch.LotteryEnd.IsZero() {
+		res["LotteryEnd"] = nil
+	} else {
+		res["LotteryEnd"] = batch.LotteryEnd
+	}
+	if batch.ChooseHouseBegin.IsZero() {
+		res["ChooseHouseBegin"] = nil
+	} else {
+		res["ChooseHouseBegin"] = batch.ChooseHouseBegin
+	}
+	if batch.ChooseHouseEnd.IsZero() {
+		res["ChooseHouseEnd"] = nil
+	} else {
+		res["ChooseHouseEnd"] = batch.ChooseHouseEnd
+	}
+	stage := calTimeLine(batch)
+	timeLineResult := TimeLineResult{
+		res,
+		stage,
+	}
 	return serializer.Response{
 		Code: 200,
-		Data: timeLine,
+		Data: timeLineResult,
 		Msg: "success",
 	}
 }
@@ -352,10 +298,11 @@ func (service TimeLineService) GetTimeLine() serializer.Response {
 //详情检测
 func (service DetailCheckService) DetailCheck () serializer.Response {
 
+	batch := GetTargetBatch(service.ProjectId, service.Status)
 	data := new(DetailCheckResult)
 	solicitParam := make(map[string]string)
 	solicitParam["ProjectId"] = service.ProjectId
-	solicitParam["IsNew"] = "1"
+	solicitParam["BatchId"] = strconv.Itoa(int(batch.ID))
 	solicitParam["sort"] = "UpdatedAt"
 	solicitParam["sortType"] = "asc"
 	solicitRes := QuerySolicitResult(1,10, solicitParam)
@@ -365,7 +312,7 @@ func (service DetailCheckService) DetailCheck () serializer.Response {
 
 	lotteryParam := make(map[string]string)
 	lotteryParam["ProjectId"] = service.ProjectId
-	lotteryParam["IsNew"] = "1"
+	solicitParam["BatchId"] = strconv.Itoa(int(batch.ID))
 	lotteryParam["sort"] = "No"
 	lotteryParam["sort"] = "UpdatedAt"
 	lotteryParam["sortType"] = "asc"

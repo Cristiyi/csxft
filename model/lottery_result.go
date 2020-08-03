@@ -13,7 +13,7 @@ type LotteryResult struct {
 	ProjectId uint `gorm:"not null;index:idx_project_id"`
 	UserId uint `gorm:"not null;index:idx_user_id"`
 	Type int32
-	IsNew int32
+	BatchId int64
 	No int64
 	Username string
 	IdCard string

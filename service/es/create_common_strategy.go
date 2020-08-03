@@ -75,6 +75,9 @@ func (c credHandler) Create(id uint64) (code int, msg string) {
 		code = 400
 		msg = "存储失败"
 	}
+	//for _, item := range credObj {
+	//	_, err = elasticsearch.GetEsCli().Index().Index("cred").Id(strconv.Itoa(int(item.ID))).BodyJson(item).Do(context.Background())
+	//}
 
 	return
 
@@ -336,6 +339,42 @@ func (c noticeHandler) Create(id uint64) (code int, msg string) {
 
 }
 
+//批次handler
+type batchHandler struct {
+
+}
+
+func newBatchHandler() batchHandler {
+	instance := new(batchHandler)
+	return *instance
+}
+
+func (c batchHandler) Create(id uint64) (code int, msg string) {
+
+	batchObj, err := repo.NewBatchRepo().GetToEsData(id)
+	if err != nil {
+		fmt.Println(err)
+		code = 400
+		msg = "未找到数据"
+	} else {
+		code = 200
+		msg = "success"
+	}
+
+	_, err = elasticsearch.GetEsCli().Index().Index("batch").Id(strconv.Itoa(int(id))).BodyJson(batchObj).Do(context.Background())
+	if err != nil {
+		fmt.Println(err)
+		code = 400
+		msg = "存储失败"
+	}
+
+	strategy := NewCreateContext(2)
+	strategy.Create(id)
+
+	return
+
+}
+
 
 type CreateContext struct {
 	Strategy createHandler
@@ -365,6 +404,8 @@ func NewCreateContext(insertType uint32) CreateContext {
 		c.Strategy = newHouseTypeImageHandler()  //户型图
 	case 10:
 		c.Strategy = newNoticeHandler()  //公告
+	case 11:
+		c.Strategy = newBatchHandler()  //公告
 	default:
 		c.Strategy = newBaseHandler()
 	}

@@ -33,6 +33,7 @@ type DecorationResult struct {
 // InitCredService 初始化开盘房屋数据服务
 type InitHouseService struct {
 	Date string `form:"date" json:"date" binding:"required"`
+	Skip int64 `form:"skip" json:"skip"`
 }
 
 // 初始化
@@ -40,7 +41,10 @@ func (service *InitHouseService) Init() serializer.Response {
 
 	collection = client.Database(os.Getenv("MONGO_DATABASE")).Collection("HouseItem")
 	filter := bson.M{"created_at":service.Date}
-	if cursor, err = collection.Find(context.TODO(), filter, options.Find()); err != nil {
+	limit := options.Find().SetLimit(10000)
+	skip := options.Find().SetSkip(service.Skip)
+
+	if cursor, err = collection.Find(context.TODO(), filter, limit, skip); err != nil {
 		log.Fatal(err)
 	}
 	//延迟关闭游标
@@ -94,9 +98,9 @@ func insertHouseToMysql(tempResult bson.M, credId uint64) {
 			decorationResult.ID = 0
 		}
 		//房屋入库
-		house := model.House{CredId: credId, HouseNo: util.InConvertString(tempResult["houseNo"]), FloorNo: util.InConvertInt(tempResult["floorNo"]),
-			PurposeId: purposeIdResult.ID, TypeId: typeIdResult.ID, DecorationId: decorationResult.ID, HouseAcreage: util.InConvertFloat64(tempResult["houseAcreage"]),
-			UseAcreage: util.InConvertFloat64(tempResult["useAcreage"]), ShareAcreage: util.InConvertFloat64(tempResult["shareAcreage"]),
+		house := model.House{CredId: credId, HouseNo: util.InConvertString(tempResult["houseNo"]), FloorNo: util.String2Int(util.InConvertString(tempResult["floorNo"])),
+			PurposeId: purposeIdResult.ID, TypeId: typeIdResult.ID, DecorationId: decorationResult.ID, HouseAcreage: util.String2Float64(util.InConvertString(tempResult["houseAcreage"])),
+			UseAcreage: util.String2Float64(util.InConvertString(tempResult["useAcreage"])), ShareAcreage: util.String2Float64(util.InConvertString(tempResult["shareAcreage"])),
 		}
 		//入库失败 记录到mongo
 		if err := model.DB.Create(&house).Error; err != nil {

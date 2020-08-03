@@ -23,6 +23,7 @@ func NewRouter() *gin.Engine {
 		initData.GET("base", api.InitBase)
 		initData.GET("cred", api.InitCred)
 		initData.GET("house", api.InitHouse)
+		initData.GET("fdc", api.InitFdc)
 	}
 
 	//es

@@ -10,6 +10,7 @@ import (
 	"csxft/model"
 	"csxft/serializer"
 	"reflect"
+	"strconv"
 )
 
 //搜索摇号结果服务
@@ -20,15 +21,16 @@ type LotteryResultService struct {
 	Start int `form:"start" json:"start"`
 	Size int `form:"size" json:"size"`
 	Search    string `form:"search" json:"search"`
+	Status int32 `form:"status" json:"status"`
 }
 
 
 func (service *LotteryResultService) GetLotteryResult() serializer.Response {
 
 	commonParam := make(map[string]string)
-
+	batch := GetTargetBatch(service.ProjectId, service.Status)
 	commonParam["ProjectId"] = service.ProjectId
-	commonParam["IsNew"] = "1"
+	commonParam["BatchId"] = strconv.Itoa(int(batch.ID))
 	if service.Sort != "" {
 		commonParam["sort"] = service.Sort
 	} else {

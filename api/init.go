@@ -40,3 +40,14 @@ func InitHouse(c *gin.Context) {
 	}
 }
 
+//初始化开盘房屋数据
+func InitFdc(c *gin.Context) {
+	var service service.InitFdcService
+	if err := c.ShouldBind(&service); err == nil {
+		res := service.Init()
+		c.JSON(200, res)
+	} else {
+		c.JSON(400, ErrorResponse(err))
+	}
+}
+

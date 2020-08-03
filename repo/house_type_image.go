@@ -14,7 +14,7 @@ type HouseTypeImageRepo interface {
 	//获取插入到es的数据
 	GetToEsData(id uint64) (houseTypeImage *model.HouseTypeImage, err error)
 	//获取户型图分组
-	GetHouseImageGroup(projectId uint64) (houseTypeImage []HouseImageGroup)
+	GetHouseImageGroup(projectId uint64, batchId uint) (houseTypeImage []HouseImageGroup)
 }
 
 func NewHouseTypeImageRepo() HouseTypeImageRepo {
@@ -37,8 +37,13 @@ func (c houseTypeImageRepo) GetToEsData(id uint64) (houseTypeImage *model.HouseT
 }
 
 //获取户型图分组
-func (c houseTypeImageRepo) GetHouseImageGroup(projectId uint64) (houseTypeImage []HouseImageGroup) {
-	err := model.DB.Table("xft_house_type_images").Select("home_num").Where("project_id = ?", projectId).Group("home_num").Scan(&houseTypeImage).Error
+func (c houseTypeImageRepo) GetHouseImageGroup(projectId uint64, batchId uint) (houseTypeImage []HouseImageGroup) {
+	var err error
+	if batchId != 0 {
+		err = model.DB.Table("xft_house_type_images").Select("home_num").Where("project_id = ? and batch_id = ?", projectId, batchId).Group("home_num").Scan(&houseTypeImage).Error
+	} else {
+		err = model.DB.Table("xft_house_type_images").Select("home_num").Where("project_id = ?", projectId).Group("home_num").Scan(&houseTypeImage).Error
+	}
 	if err != nil {
 		return nil
 	}

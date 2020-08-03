@@ -1,6 +1,7 @@
 package util
 
 import (
+	"fmt"
 	"math/rand"
 	"strconv"
 	"time"
@@ -56,6 +57,7 @@ func InConvertString(inter interface{}) string {
 //interface转换为int
 func InConvertInt(inter interface{}) int {
 	b, ok := inter.(int) // 肯定转换失败的，如果是string，则 b 为空
+	fmt.Println(ok)
 	if ok{
 		return b
 	} else {
@@ -86,6 +88,26 @@ func InConvertTime(inter interface{}) time.Time {
 //float转string
 func Float2String(des float64, byte int) string {
 	return strconv.FormatFloat(des, 'e', -1, byte)
+}
+
+//string转float64
+func String2Float64(str string) float64 {
+	v, err := strconv.ParseFloat(str, 64)
+	if err != nil {
+		return 0
+	} else {
+		return v
+	}
+}
+
+//string转int
+func String2Int(str string) int {
+	v, err := strconv.Atoi(str)
+	if err != nil {
+		return 0
+	} else {
+		return v
+	}
 }
 
 //时间转时间戳

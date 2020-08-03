@@ -9,6 +9,8 @@ type Project struct {
 	gorm.Model
 	ConstructionNo string `gorm:"not null;index:idx_construction_no"`
 	ProjectName string `gorm:"not null"`
+	PromotionFirstName string
+	PromotionSecondName string
 	AreaId uint
 	Approval string
 	DevelopCompany string
@@ -41,7 +43,7 @@ type Project struct {
 	AveragePrice float64 `gorm:"type:decimal(10,2);default:null"`
 	SaleStatus int32
 	IsWillCred int32 `gorm:"default:0"`
-	IsNewCred int32  `gorm:"default:1"`
+	IsNewCred int32  `gorm:"default:0"`
 	IsRecognition int32  `gorm:"default:0"`
 	IsIottery int32  `gorm:"default:0"`
 	IsSell int32  `gorm:"default:0"`

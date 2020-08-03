@@ -10,7 +10,6 @@ import (
 	"csxft/model"
 	"csxft/repo"
 	"csxft/serializer"
-	"fmt"
 	"reflect"
 	"strconv"
 )
@@ -21,11 +20,13 @@ type GetHouseTypeImageService struct {
 	HomeNum    string `form:"home_num" json:"home_num"`
 	Start int `form:"start" json:"start"`
 	Size int `form:"size" json:"size"`
+	Status int32 `form:"status" json:"status"`
 }
 
 //获取户型图数量服务
 type GetHouseTypeImageNumService struct {
-	ProjectId    uint64 `form:"project_id" json:"project_id" binding:"required"`
+	ProjectId    string `form:"project_id" json:"project_id" binding:"required"`
+	Status int32 `form:"status" json:"status"`
 }
 
 type HouseTypeImageResult struct {
@@ -34,18 +35,20 @@ type HouseTypeImageResult struct {
 }
 
 func (service *GetHouseTypeImageNumService) GetGroup() serializer.Response {
-
-	res := repo.NewHouseTypeImageRepo().GetHouseImageGroup(service.ProjectId)
+	batch := GetTargetBatch(service.ProjectId, service.Status)
+	projectId, _ := strconv.Atoi(service.ProjectId)
+	res := repo.NewHouseTypeImageRepo().GetHouseImageGroup(uint64(projectId), batch.ID)
 	var data []HouseTypeImageResult
 	if res != nil {
 		allTypeName := repo.HouseImageGroup{
 			HomeNum:"全部",
 		}
-		res = append(res, allTypeName)
-		fmt.Println(len(res))
+		var groupRes []repo.HouseImageGroup
+		groupRes = append(groupRes, allTypeName)
+		groupRes = append(groupRes, res...)
 		commonParam := make(map[string]string)
-		commonParam["ProjectId"] = strconv.Itoa(int(service.ProjectId))
-		for _, item := range res {
+		commonParam["ProjectId"] = service.ProjectId
+		for _, item := range groupRes {
 			if item.HomeNum == "全部" {
 				commonParam["HomeNum"] = ""
 			} else {
@@ -81,6 +84,8 @@ func (service *GetHouseTypeImageService) GetHouseTypeImage() serializer.Response
 		size = 10
 	}
 	commonParam["ProjectId"] = service.ProjectId
+	batch := GetTargetBatch(service.ProjectId, service.Status)
+	commonParam["BatchId"] = strconv.Itoa(int(batch.ID))
 	if service.HomeNum != "" {
 		commonParam["HomeNum"] = service.HomeNum
 	}

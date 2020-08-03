@@ -11,7 +11,7 @@ import "github.com/jinzhu/gorm"
 type SolicitResult struct {
 	gorm.Model
 	ProjectId uint `gorm:"not null;index:idx_project_id"`
-	IsNew int32
+	BatchId int32
 	SolicitNo string
 	Username string
 	IdCard string
