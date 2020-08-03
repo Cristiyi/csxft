@@ -368,9 +368,6 @@ func (c batchHandler) Create(id uint64) (code int, msg string) {
 		msg = "存储失败"
 	}
 
-	strategy := NewCreateContext(2)
-	strategy.Create(id)
-
 	return
 
 }

@@ -17,7 +17,7 @@ import (
 //获取楼盘服务
 type ProjectDetailService struct {
 	ProjectId    string `form:"project_id" json:"project_id" binding:"required"`
-	UserId  uint64 `form:"user_id" json:"project_id" binding:"required"`
+	UserId  uint64 `form:"user_id" json:"project_id"`
 	Status int32 `form:"status" json:"status"`
 }
 
@@ -104,13 +104,16 @@ func (service *ProjectDetailService) ProjectDetail() serializer.Response {
 	data["detail"] = res.Source
 	data["newCred"] = GetTargetBatch(service.ProjectId, service.Status)
 	data["follow"] = 0
-	projectId, _ := strconv.Atoi(service.ProjectId)
-	follow, err := repo.NewFollowRepo().Get(service.UserId, uint64(projectId))
-	if err == nil {
-		data["follow"] = follow.Status
-	}
+	data["follow_count"] = 0
+	if service.UserId != 0 {
+		projectId, _ := strconv.Atoi(service.ProjectId)
+		follow, err := repo.NewFollowRepo().Get(service.UserId, uint64(projectId))
+		if err == nil {
+			data["follow"] = follow.Status
+		}
 
-	data["follow_count"] = repo.NewFollowRepo().GetCount(uint64(projectId))
+		data["follow_count"] = repo.NewFollowRepo().GetCount(uint64(projectId))
+	}
 	return serializer.Response{
 		Code: 200,
 		Data: data,

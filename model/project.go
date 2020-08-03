@@ -63,5 +63,8 @@ type Project struct {
 	CommentCount int  `gorm:"-"`
 	//地区名称 仅用于查询后的展示
 	AreaName string `gorm:"-"`
+	//摇号状态 仅用于查询
+	LotteryStatus int  `gorm:"-"`
+
 }
 
