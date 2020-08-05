@@ -402,7 +402,7 @@ func NewCreateContext(insertType uint32) CreateContext {
 	case 10:
 		c.Strategy = newNoticeHandler()  //公告
 	case 11:
-		c.Strategy = newBatchHandler()  //公告
+		c.Strategy = newBatchHandler()  //批次
 	default:
 		c.Strategy = newBaseHandler()
 	}

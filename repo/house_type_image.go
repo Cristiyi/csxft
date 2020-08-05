@@ -52,16 +52,26 @@ func (c houseTypeImageRepo) GetHouseImageGroup(projectId uint64) (houseTypeImage
 //获取户型图分组
 func (c houseTypeImageRepo) GetHouseImageCount(projectId uint64, homeNum string) (count int64) {
 	count = 0
-	var houseTypeImage *model.HouseTypeImage
+	houseTypeImage := new(model.HouseTypeImage)
+	var houseTypeImageArray []*model.HouseTypeImage
+	var err error
 	if homeNum == "全部" {
-		model.DB.Table("xft_house_type_images").Where("project_id = ?", projectId).First(&houseTypeImage)
+		err = model.DB.Table("xft_house_type_images").Where("project_id = ?", projectId).Find(&houseTypeImageArray).Error
+		if err == nil {
+			for _, item := range houseTypeImageArray {
+				if item.ImageUrl != "" {
+					str := strings.Split(item.ImageUrl,",")
+					for _, _ = range str {
+						count++
+					}
+				}
+			}
+		}
 	} else {
-		model.DB.Table("xft_house_type_images").Where("project_id = ? and home_num = ?", projectId, homeNum).First(&houseTypeImage)
-	}
-	if houseTypeImage != nil && houseTypeImage.ImageUrl != "" {
-		str := strings.Split(houseTypeImage.ImageUrl,"")
-		for _,v := range str{
-			if v == "," {
+		err = model.DB.Table("xft_house_type_images").Where("project_id = ? and home_num = ?", projectId, homeNum).First(&houseTypeImage).Error
+		if err == nil && houseTypeImage.ImageUrl != "" {
+			str := strings.Split(houseTypeImage.ImageUrl,",")
+			for _, _ = range str {
 				count++
 			}
 		}
