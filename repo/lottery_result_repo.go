@@ -13,7 +13,7 @@ import (
 
 type LotteryResultRepo interface {
 	//获取插入到es的数据
-	GetToEsData(id uint64) (lotteryResult *model.LotteryResult, err error)
+	GetToEsData(batchId uint64) (lotteryResult []*model.LotteryResult, err error)
 }
 
 func NewLotteryResultRepo() LotteryResultRepo {
@@ -24,18 +24,20 @@ type lotteryResultRepo struct {
 	thisModel model.LotteryResult
 }
 
-func (c lotteryResultRepo) GetToEsData(id uint64) (lotteryResult *model.LotteryResult, err error) {
-	lotteryResult = new(model.LotteryResult)
-	err = model.DB.Model(c.thisModel).Where("id = ?", id).First(&lotteryResult).Error
-	if lotteryResult.Type == 1 {
-		lotteryResult.TypeString = "刚需"
-	}
-	if lotteryResult.Type == 2 {
-		lotteryResult.TypeString = "普通"
-	}
-	if lotteryResult.IdCard != "" {
-		lotteryResult.IdCardBack = lotteryResult.IdCard
-		lotteryResult.IdCard = util.HideIdCard(lotteryResult.IdCard)
+func (c lotteryResultRepo) GetToEsData(id uint64) (lotteryResult []*model.LotteryResult, err error) {
+
+	err = model.DB.Model(c.thisModel).Where("batch_id = ?", id).First(&lotteryResult).Error
+	for i, item := range lotteryResult {
+		if item.Type == 1 {
+			lotteryResult[i].TypeString = "刚需"
+		}
+		if item.Type == 2 {
+			lotteryResult[i].TypeString = "普通"
+		}
+		if item.IdCard != "" {
+			lotteryResult[i].IdCardBack = lotteryResult[i].IdCard
+			lotteryResult[i].IdCard = util.HideIdCard(lotteryResult[i].IdCard)
+		}
 	}
 	return
 }

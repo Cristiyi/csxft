@@ -199,11 +199,8 @@ func (c lotteryResultHandler) Create(id uint64) (code int, msg string) {
 		msg = "success"
 	}
 
-	_, err = elasticsearch.GetEsCli().Index().Index("lottery_result").Id(strconv.Itoa(int(id))).BodyJson(lotteryResultObj).Do(context.Background())
-	if err != nil {
-		fmt.Println(err)
-		code = 400
-		msg = "存储失败"
+	for _, item := range lotteryResultObj {
+		_, err = elasticsearch.GetEsCli().Index().Index("lottery_result").Id(strconv.Itoa(int(item.ID))).BodyJson(item).Do(context.Background())
 	}
 
 	return
@@ -232,12 +229,10 @@ func (c solicitResultHandler) Create(id uint64) (code int, msg string) {
 		msg = "success"
 	}
 
-	_, err = elasticsearch.GetEsCli().Index().Index("solicit_result").Id(strconv.Itoa(int(id))).BodyJson(solicitResultObj).Do(context.Background())
-	if err != nil {
-		fmt.Println(err)
-		code = 400
-		msg = "存储失败"
+	for _, item := range solicitResultObj {
+		_, err = elasticsearch.GetEsCli().Index().Index("solicit_result").Id(strconv.Itoa(int(item.ID))).BodyJson(item).Do(context.Background())
 	}
+
 
 	return
 
