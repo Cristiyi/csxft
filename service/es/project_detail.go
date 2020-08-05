@@ -126,6 +126,13 @@ func (service NewCredHouseService) GetNewCredHouse() serializer.Response {
 
 	var credIdResult []string
 	batch := GetTargetBatch(service.ProjectId, service.Status)
+	if batch == nil {
+		return serializer.Response{
+			Code: 200,
+			Data: nil,
+			Msg: "暂无数据",
+		}
+	}
 	if batch.Creds != nil {
 		for _, item := range batch.Creds {
 			credIdResult = append(credIdResult, strconv.Itoa(int(item.ID)))
@@ -216,6 +223,13 @@ func (service AllBuildNoService) GetAllBuildNo() serializer.Response {
 
 	var result []string
 	batch := GetTargetBatch(service.ProjectId, service.Status)
+	if batch == nil {
+		return serializer.Response{
+			Code: 200,
+			Data: nil,
+			Msg: "暂无数据",
+		}
+	}
 	if batch.Creds != nil {
 		for _, item := range batch.Creds {
 			result = append(result, item.BuildingNo)
@@ -240,6 +254,13 @@ func (service AllBuildNoService) GetAllBuildNo() serializer.Response {
 func (service TimeLineService) GetTimeLine() serializer.Response {
 
 	batch := GetTargetBatch(service.ProjectId, service.Status)
+	if batch == nil {
+		return serializer.Response{
+			Code: 200,
+			Data: nil,
+			Msg: "暂无数据",
+		}
+	}
 	res := make(map[string]interface{})
 	if batch.PreSellTime.IsZero() {
 		res["PreSellTime"] = nil
@@ -303,6 +324,13 @@ func (service DetailCheckService) DetailCheck () serializer.Response {
 
 	batch := GetTargetBatch(service.ProjectId, service.Status)
 	data := new(DetailCheckResult)
+	if batch == nil {
+		return serializer.Response{
+			Code: 200,
+			Data: data,
+			Msg: "暂无数据",
+		}
+	}
 	solicitParam := make(map[string]string)
 	solicitParam["ProjectId"] = service.ProjectId
 	solicitParam["BatchId"] = strconv.Itoa(int(batch.ID))

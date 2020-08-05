@@ -15,7 +15,7 @@ import (
 //搜索楼盘服务
 type SearchProjectService struct {
 	SortType    string `form:"sort_type" json:"sort_type"`
-	Sort    string `form:"sort_type" json:"sort_type"`
+	Sort    string `form:"sort" json:"sort"`
 	//Status    string `form:"status" json:"status"`
 	Name    string `form:"name" json:"name"`
 	Start int `form:"start" json:"start"`

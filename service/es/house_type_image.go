@@ -36,6 +36,12 @@ type HouseTypeImageResult struct {
 
 func (service *GetHouseTypeImageNumService) GetGroup() serializer.Response {
 	batch := GetTargetBatch(service.ProjectId, service.Status)
+	if batch == nil {
+		return serializer.Response{
+			Code: 200,
+			Msg: "暂无数据",
+		}
+	}
 	projectId, _ := strconv.Atoi(service.ProjectId)
 	res := repo.NewHouseTypeImageRepo().GetHouseImageGroup(uint64(projectId), batch.ID)
 	var data []HouseTypeImageResult
@@ -70,12 +76,19 @@ func (service *GetHouseTypeImageNumService) GetGroup() serializer.Response {
 		}
 	}
 	return serializer.Response{
-		Code: 400,
+		Code: 200,
 		Msg: "暂无数据",
 	}
 }
 
 func (service *GetHouseTypeImageService) GetHouseTypeImage() serializer.Response {
+	batch := GetTargetBatch(service.ProjectId, service.Status)
+	if batch == nil {
+		return serializer.Response{
+			Code: 200,
+			Msg: "暂无数据",
+		}
+	}
 	commonParam := make(map[string]string)
 	var size int = 0
 	if service.Size != 0 {
@@ -84,7 +97,6 @@ func (service *GetHouseTypeImageService) GetHouseTypeImage() serializer.Response
 		size = 10
 	}
 	commonParam["ProjectId"] = service.ProjectId
-	batch := GetTargetBatch(service.ProjectId, service.Status)
 	commonParam["BatchId"] = strconv.Itoa(int(batch.ID))
 	if service.HomeNum != "" {
 		commonParam["HomeNum"] = service.HomeNum
@@ -109,7 +121,7 @@ func (service *GetHouseTypeImageService) GetHouseTypeImage() serializer.Response
 		}
 	} else {
 		return serializer.Response{
-			Code: 400,
+			Code: 200,
 			Msg: "暂无数据",
 		}
 	}

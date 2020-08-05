@@ -83,6 +83,8 @@ func LogerMiddleware() gin.HandlerFunc {
 		statusCode := c.Writer.Status()
 		//请求ip
 		clientIP := c.ClientIP()
+		//data
+		requestData := c.Request.PostForm
 
 
 		// 日志格式
@@ -92,6 +94,7 @@ func LogerMiddleware() gin.HandlerFunc {
 			"client_ip":    clientIP,
 			"req_method":   reqMethod,
 			"req_uri":      reqUrl,
+			"data": requestData,
 		}).Info()
 
 	}
