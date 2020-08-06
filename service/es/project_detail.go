@@ -324,7 +324,7 @@ func (service TimeLineService) GetTimeLine() serializer.Response {
 func (service DetailCheckService) DetailCheck () serializer.Response {
 
 	batch := GetTargetBatch(service.ProjectId, service.Status)
-	fmt.Println(batch)
+	fmt.Println(batch.ID)
 	data := new(DetailCheckResult)
 	if batch == nil {
 		return serializer.Response{
