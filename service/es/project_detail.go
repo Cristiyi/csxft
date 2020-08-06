@@ -370,6 +370,7 @@ func (service DetailCheckService) DetailCheck () serializer.Response {
 	chooseHouseNoticeParam["BatchId"] = strconv.Itoa(int(batch.ID))
 	chooseHouseNoticeParam["NoticeType"] = "1"
 	chooseHouseNoticeRes := GetNotice(chooseHouseNoticeParam)
+	fmt.Println(len(chooseHouseNoticeRes.Hits.Hits))
 	if chooseHouseNoticeRes != nil && len(chooseHouseNoticeRes.Hits.Hits) > 0 {
 		data.ChooseHouseNotice = true
 	}
