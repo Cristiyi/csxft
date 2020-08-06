@@ -10,7 +10,6 @@ import (
 	"csxft/model"
 	"csxft/repo"
 	"csxft/serializer"
-	"fmt"
 	"reflect"
 	"strconv"
 )
@@ -324,7 +323,6 @@ func (service TimeLineService) GetTimeLine() serializer.Response {
 func (service DetailCheckService) DetailCheck () serializer.Response {
 
 	batch := GetTargetBatch(service.ProjectId, service.Status)
-	fmt.Println(batch.ID)
 	data := new(DetailCheckResult)
 	if batch == nil {
 		return serializer.Response{
@@ -339,7 +337,6 @@ func (service DetailCheckService) DetailCheck () serializer.Response {
 	solicitParam["sort"] = "UpdatedAt"
 	solicitParam["sortType"] = "asc"
 	solicitRes := QuerySolicitResult(1,10, solicitParam)
-	fmt.Println(len(solicitRes.Hits.Hits))
 	if solicitRes != nil && len(solicitRes.Hits.Hits) > 0 {
 		data.Solicit = true
 	}
@@ -351,7 +348,6 @@ func (service DetailCheckService) DetailCheck () serializer.Response {
 	lotteryParam["sort"] = "UpdatedAt"
 	lotteryParam["sortType"] = "asc"
 	lotteryRes := QueryLotteryResult(1,10, lotteryParam)
-	fmt.Println(len(lotteryRes.Hits.Hits))
 	if lotteryRes != nil && len(lotteryRes.Hits.Hits) > 0 {
 		data.LotteryResult = true
 	}
@@ -370,7 +366,6 @@ func (service DetailCheckService) DetailCheck () serializer.Response {
 	chooseHouseNoticeParam["BatchId"] = strconv.Itoa(int(batch.ID))
 	chooseHouseNoticeParam["NoticeType"] = "1"
 	chooseHouseNoticeRes := GetNotice(chooseHouseNoticeParam)
-	fmt.Println(len(chooseHouseNoticeRes.Hits.Hits))
 	if chooseHouseNoticeRes != nil && len(chooseHouseNoticeRes.Hits.Hits) > 0 {
 		data.ChooseHouseNotice = true
 	}
