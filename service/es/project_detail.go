@@ -359,16 +359,16 @@ func (service DetailCheckService) DetailCheck () serializer.Response {
 	lotteryNoticeParam := make(map[string]string)
 	lotteryNoticeParam["ProjectId"] = service.ProjectId
 	lotteryNoticeParam["BatchId"] = strconv.Itoa(int(batch.ID))
-	lotteryNoticeParam["NoticeType"] = "1"
+	lotteryNoticeParam["NoticeType"] = "2"
 	lotteryNoticeRes := GetNotice(lotteryNoticeParam)
-	if lotteryNoticeRes != nil && len(solicitRes.Hits.Hits) > 0 {
+	if lotteryNoticeRes != nil && len(lotteryNoticeRes.Hits.Hits) > 0 {
 		data.LotteryNotice = true
 	}
 
 	chooseHouseNoticeParam := make(map[string]string)
 	chooseHouseNoticeParam["ProjectId"] = service.ProjectId
 	chooseHouseNoticeParam["BatchId"] = strconv.Itoa(int(batch.ID))
-	chooseHouseNoticeParam["NoticeType"] = "2"
+	chooseHouseNoticeParam["NoticeType"] = "1"
 	chooseHouseNoticeRes := GetNotice(chooseHouseNoticeParam)
 	if chooseHouseNoticeRes != nil && len(chooseHouseNoticeRes.Hits.Hits) > 0 {
 		data.ChooseHouseNotice = true
