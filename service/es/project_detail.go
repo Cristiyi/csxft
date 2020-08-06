@@ -343,11 +343,11 @@ func (service DetailCheckService) DetailCheck () serializer.Response {
 
 	lotteryParam := make(map[string]string)
 	lotteryParam["ProjectId"] = service.ProjectId
-	solicitParam["BatchId"] = strconv.Itoa(int(batch.ID))
+	lotteryParam["BatchId"] = strconv.Itoa(int(batch.ID))
 	lotteryParam["sort"] = "No"
 	lotteryParam["sort"] = "UpdatedAt"
 	lotteryParam["sortType"] = "asc"
-	lotteryRes := QueryLotteryResult(1,10, solicitParam)
+	lotteryRes := QueryLotteryResult(1,10, lotteryParam)
 	if lotteryRes != nil && len(solicitRes.Hits.Hits) > 0 {
 		data.LotteryResult = true
 	}
