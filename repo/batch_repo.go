@@ -18,7 +18,7 @@ func NewBatchRepo() BatchRepo {
 }
 
 type batchRepo struct {
-	thisModel model.Iottery
+	thisModel model.Batch
 }
 
 func (c batchRepo) GetToEsData(id uint64) (batch *model.Batch, err error) {
