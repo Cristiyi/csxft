@@ -25,7 +25,7 @@ type solicitResultRepo struct {
 }
 
 func (c solicitResultRepo) GetToEsData(id uint64) (solicitResult []*model.SolicitResult, err error) {
-	err = model.DB.Model(c.thisModel).Where("batch_id = ?", id).First(&solicitResult).Error
+	err = model.DB.Model(c.thisModel).Where("batch_id = ?", id).Find(&solicitResult).Error
 	for i, _ := range solicitResult {
 		solicitResult[i].IdCardBack = solicitResult[i].IdCard
 		solicitResult[i].IdCard = util.HideIdCard(solicitResult[i].IdCard)

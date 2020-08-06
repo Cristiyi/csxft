@@ -26,7 +26,7 @@ type lotteryResultRepo struct {
 
 func (c lotteryResultRepo) GetToEsData(id uint64) (lotteryResult []*model.LotteryResult, err error) {
 
-	err = model.DB.Model(c.thisModel).Where("batch_id = ?", id).First(&lotteryResult).Error
+	err = model.DB.Model(c.thisModel).Where("batch_id = ?", id).Find(&lotteryResult).Error
 	for i, item := range lotteryResult {
 		if item.Type == 1 {
 			lotteryResult[i].TypeString = "刚需"
