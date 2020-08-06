@@ -339,6 +339,7 @@ func (service DetailCheckService) DetailCheck () serializer.Response {
 	solicitParam["sort"] = "UpdatedAt"
 	solicitParam["sortType"] = "asc"
 	solicitRes := QuerySolicitResult(1,10, solicitParam)
+	fmt.Println(len(solicitRes.Hits.Hits))
 	if solicitRes != nil && len(solicitRes.Hits.Hits) > 0 {
 		data.Solicit = true
 	}
@@ -350,12 +351,14 @@ func (service DetailCheckService) DetailCheck () serializer.Response {
 	lotteryParam["sort"] = "UpdatedAt"
 	lotteryParam["sortType"] = "asc"
 	lotteryRes := QueryLotteryResult(1,10, lotteryParam)
-	if lotteryRes != nil && len(solicitRes.Hits.Hits) > 0 {
+	fmt.Println(len(lotteryRes.Hits.Hits))
+	if lotteryRes != nil && len(lotteryRes.Hits.Hits) > 0 {
 		data.LotteryResult = true
 	}
 
 	lotteryNoticeParam := make(map[string]string)
 	lotteryNoticeParam["ProjectId"] = service.ProjectId
+	lotteryNoticeParam["BatchId"] = strconv.Itoa(int(batch.ID))
 	lotteryNoticeParam["NoticeType"] = "1"
 	lotteryNoticeRes := GetNotice(lotteryNoticeParam)
 	if lotteryNoticeRes != nil && len(solicitRes.Hits.Hits) > 0 {
@@ -364,6 +367,7 @@ func (service DetailCheckService) DetailCheck () serializer.Response {
 
 	chooseHouseNoticeParam := make(map[string]string)
 	chooseHouseNoticeParam["ProjectId"] = service.ProjectId
+	chooseHouseNoticeParam["BatchId"] = strconv.Itoa(int(batch.ID))
 	chooseHouseNoticeParam["NoticeType"] = "2"
 	chooseHouseNoticeRes := GetNotice(chooseHouseNoticeParam)
 	if chooseHouseNoticeRes != nil && len(chooseHouseNoticeRes.Hits.Hits) > 0 {
