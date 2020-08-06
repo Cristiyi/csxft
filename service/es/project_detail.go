@@ -10,6 +10,7 @@ import (
 	"csxft/model"
 	"csxft/repo"
 	"csxft/serializer"
+	"fmt"
 	"reflect"
 	"strconv"
 )
@@ -133,6 +134,7 @@ func (service NewCredHouseService) GetNewCredHouse() serializer.Response {
 			Msg: "暂无数据",
 		}
 	}
+	fmt.Println(batch.Creds)
 	if batch.Creds != nil {
 		for _, item := range batch.Creds {
 			credIdResult = append(credIdResult, strconv.Itoa(int(item.ID)))
