@@ -39,7 +39,7 @@ type LinePointReturn struct {
 }
 
 type SubwayProject struct {
-	Id string
+	Id int
 	ProjectName string
 	Longitude float64
 	Latitude float64
@@ -92,7 +92,7 @@ func (service *SubwayProjectService) GetSubwayProject() serializer.Response {
 			for _, item := range esRes.Each(reflect.TypeOf(model.Project{})) {
 				if t, ok := item.(model.Project); ok {
 					subwayProject := new(SubwayProject)
-					subwayProject.Id = strconv.Itoa(int(t.ID))
+					subwayProject.Id = int(t.ID)
 					if t.PromotionFirstName != "" {
 						subwayProject.ProjectName = t.PromotionFirstName
 					} else if t.PromotionSecondName != "" {
