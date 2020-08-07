@@ -48,11 +48,11 @@ func (service *SubwayProjectCountService) GetSubwayProjectCount() serializer.Res
 			temp.Title = item.Title
 			temp.Count = count
 			linePointReturn = append(linePointReturn, temp)
-			return serializer.Response{
-				Code: 200,
-				Data: linePointReturn,
-				Msg:  "暂无数据",
-			}
+		}
+		return serializer.Response{
+			Code: 200,
+			Data: linePointReturn,
+			Msg:  "success",
 		}
 	}
 
