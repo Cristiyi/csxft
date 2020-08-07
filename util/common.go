@@ -2,10 +2,18 @@ package util
 
 import (
 	"fmt"
+	"math"
 	"math/rand"
 	"strconv"
 	"time"
 )
+
+type PointRange struct {
+	MaxLat float64
+	MinLat float64
+	MaxLng float64
+	MinLng float64
+}
 
 // RandStringRunes 返回随机字符串
 func RandStringRunes(n int) string {
@@ -134,5 +142,17 @@ func HideIdCard(idCard string) string {
 	}
 	target = string(targetRune)
 	return first + target + last
+}
+
+//根据经纬度计算距离
+func GetDistancePointRange(lat, lng, distant float64) PointRange {
+	var calRange float64 = 180 / math.Pi * distant / 6372.797
+	var lngR float64 = calRange / math.Cos(lat * math.Pi / 180)
+	pointRange := new(PointRange)
+	pointRange.maxLat = lat + calRange //最大纬度
+	pointRange.minLat= lat - calRange //最小纬度
+	pointRange.maxLng = lng + lngR//最大经度
+	pointRange.minLng = lng - lngR//最小经度
+	return *pointRange
 }
 

@@ -63,7 +63,7 @@ func (service *InitCredService) Init() serializer.Response {
 func checkCredMySQL() {
 	tempResult :=  <- mongoResult
 	var projectIdResult ProjectIdResult
-	if err := model.DB.Table("xft_projects").Select("id").Where("construction_no = ?", util.InConvertString(tempResult["constructionNo"])).Scan(&projectIdResult).Error; err == nil {
+	if err := model.DB.Table("xft_projects").Select("id").Where("project_name = ? and area_origin = ?", util.InConvertString(tempResult["name"]), util.InConvertString(tempResult["area"])).Scan(&projectIdResult).Error; err == nil {
 		count := 0
 		model.DB.Model(&model.Cred{}).Where("cred = ? and project_id = ?", util.InConvertString(tempResult["cred"]), projectIdResult.ID).Count(&count)
 		if count == 0 {

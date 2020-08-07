@@ -5,10 +5,7 @@ import (
 	"csxft/model"
 	"csxft/serializer"
 	"csxft/util"
-	"fmt"
 	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
-	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"log"
 	"os"
@@ -103,23 +100,24 @@ func insertHouseToMysql(tempResult bson.M, credId uint64) {
 			UseAcreage: util.String2Float64(util.InConvertString(tempResult["useAcreage"])), ShareAcreage: util.String2Float64(util.InConvertString(tempResult["shareAcreage"])),
 		}
 		//入库失败 记录到mongo
-		if err := model.DB.Create(&house).Error; err != nil {
-			fmt.Println("失败原因")
-			fmt.Println(err)
-			collection = client.Database(os.Getenv("MONGO_DATABASE")).Collection("HouseError")
-			var (
-				iResult    *mongo.InsertOneResult
-				id         primitive.ObjectID
-			)
-			//插入某一条数据
-			if iResult, err = collection.InsertOne(context.TODO(), tempResult); err != nil {
-				fmt.Print(err)
-				return
-			}
-			//_id:默认生成一个全局唯一ID
-			id = iResult.InsertedID.(primitive.ObjectID)
-			fmt.Println("house插入失败，入库mongo，自增ID", id.Hex())
-		}
+		//if err := model.DB.Create(&house).Error; err != nil {
+		//	fmt.Println("失败原因")
+		//	fmt.Println(err)
+		//	collection = client.Database(os.Getenv("MONGO_DATABASE")).Collection("HouseError")
+		//	var (
+		//		iResult    *mongo.InsertOneResult
+		//		id         primitive.ObjectID
+		//	)
+		//	//插入某一条数据
+		//	if iResult, err = collection.InsertOne(context.TODO(), tempResult); err != nil {
+		//		fmt.Print(err)
+		//		return
+		//	}
+		//	//_id:默认生成一个全局唯一ID
+		//	id = iResult.InsertedID.(primitive.ObjectID)
+		//	fmt.Println("house插入失败，入库mongo，自增ID", id.Hex())
+		//}
+		model.DB.Create(&house)
 	}
 }
 

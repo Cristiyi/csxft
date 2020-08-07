@@ -3,6 +3,7 @@ package es
 import (
 	"context"
 	"csxft/elasticsearch"
+	"csxft/util"
 	"fmt"
 	"github.com/olivere/elastic/v7"
 	"strings"
@@ -475,6 +476,26 @@ func GetBatch(projectId string, status int32) *elastic.SearchResult {
 		return nil
 	}
 	return searchResult
+}
+
+//根据经纬度范围获取楼盘数量
+func GetProjectCountByPoint(pointRange util.PointRange) (count int64) {
+	searchService := elasticsearch.GetEsCli().Count("project")
+	queryService := elastic.NewBoolQuery()
+	longRangeQuery := elastic.NewRangeQuery("Longitude")
+	longRangeQuery.Gte(pointRange.MinLng)
+	longRangeQuery.Lte(pointRange.MaxLng)
+	latRangeQuery := elastic.NewRangeQuery("Latitude")
+	latRangeQuery.Gte(pointRange.MinLat)
+	latRangeQuery.Lte(pointRange.MaxLat)
+	queryService.Must(longRangeQuery, latRangeQuery)
+	searchService = searchService.Query(queryService)
+	count, err := searchService.Do(context.Background())
+	if err != nil {
+		fmt.Println(err)
+		count = 0
+	}
+	return
 }
 
 

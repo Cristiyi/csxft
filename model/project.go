@@ -12,6 +12,7 @@ type Project struct {
 	PromotionFirstName string
 	PromotionSecondName string
 	AreaId uint
+	AreaOrigin string
 	Approval string
 	DevelopCompany string
 	CountBuilding string
@@ -41,6 +42,8 @@ type Project struct {
 	CheckStatus uint32
 	ViewCount uint64 `gorm:"default:0"`
 	AveragePrice float64 `gorm:"type:decimal(10,2);default:null"`
+	Longitude float64 `gorm:"type:decimal(20,20);default:null"`
+	Latitude float64 `gorm:"type:decimal(20,20);default:null"`
 	SaleStatus int32
 	IsWillCred int32 `gorm:"default:0"`
 	IsNewCred int32  `gorm:"default:0"`

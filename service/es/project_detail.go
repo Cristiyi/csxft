@@ -144,7 +144,7 @@ func (service NewCredHouseService) GetNewCredHouse() serializer.Response {
 		if service.Sort != "" {
 			houseParam["sort"] = service.Sort
 		} else {
-			houseParam["sort"] = "HouseNo"
+			houseParam["sort"] = "FloorNo"
 		}
 		if service.SortType != "" {
 			houseParam["sortType"] = service.SortType

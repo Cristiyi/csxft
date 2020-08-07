@@ -38,12 +38,16 @@ type InitBaseService struct {
 func (service *InitBaseService) Init() serializer.Response {
 
 	collection = client.Database(os.Getenv("MONGO_DATABASE")).Collection("CredItem")
-	groupStage := mongo.Pipeline{
-		{{"$group", bson.D{{"_id", "$constructionNo"}}}},
-		//{{"$match", bson.D{{"created_at", service.Date}}}},
-	}
-
-	if cursor, err = collection.Aggregate(context.TODO(), groupStage, ); err != nil {
+	//groupStage := mongo.Pipeline{
+	//	{{"$group", bson.D{{"_id", "$constructionNo"}}}},
+	//	//{{"$match", bson.D{{"created_at", service.Date}}}},
+	//}
+	//
+	//if cursor, err = collection.Aggregate(context.TODO(), groupStage, ); err != nil {
+	//	log.Fatal(err)
+	//}
+	filter := bson.M{"created_at":service.Date}
+	if cursor, err = collection.Find(context.TODO(), filter, options.Find()); err != nil {
 		log.Fatal(err)
 	}
 	//延迟关闭游标
@@ -58,10 +62,11 @@ func (service *InitBaseService) Init() serializer.Response {
 		log.Fatal(err)
 	}
 	for _, result := range results {
-		getFromMongo(service.Date, result["_id"].(string))
+		//wgBase.Add(1)
+		checkMySQL(result)
 	}
 
-	//wg.Wait()
+	//wgBase.Wait()
 
 	return serializer.Response{
 		Code: 200,
@@ -70,43 +75,36 @@ func (service *InitBaseService) Init() serializer.Response {
 }
 
 //mysql查重
-func checkMySQL(results []bson.M) {
-	for _, result := range results {
-		tempNo := util.DeleteTailBlank(util.InConvertString(result["constructionNo"]))
-		if tempNo != "" {
-			count := 0
-			model.DB.Model(&model.Project{}).Where("construction_no = ?", tempNo).Count(&count)
-			if count == 0 {
-				fmt.Println(count)
-				insertToMysql(result)
-			} else {
-				continue
-			}
-		}
+func checkMySQL(tempResult bson.M) {
+	count := 0
+	model.DB.Model(&model.Project{}).Where("project_name = ? and area_origin = ?", util.InConvertString(tempResult["name"]), util.InConvertString(tempResult["area"])).Count(&count)
+	if count == 0 {
+		insertToMysql(tempResult)
 	}
+	//defer wgBase.Done()
 }
 
 //从mongo中提取要插入的数据
-func getFromMongo(date string, tempNo string) {
-	if tempNo != "" {
-		collection = client.Database(os.Getenv("MONGO_DATABASE")).Collection("CredItem")
-		filter := bson.M{"created_at":date, "constructionNo":tempNo}
-		if cursor, err = collection.Find(context.TODO(), filter, options.Find()); err != nil {
-			log.Fatal(err)
-		}
-		//延迟关闭游标
-		defer func() {
-			if err = cursor.Close(context.TODO()); err != nil {
-				log.Fatal(err)
-			}
-		}()
-		var results []bson.M
-		if err = cursor.All(context.TODO(), &results); err != nil {
-			log.Fatal(err)
-		}
-		checkMySQL(results)
-	}
-}
+//func getFromMongo(date string, tempNo string) {
+//	if tempNo != "" {
+//		collection = client.Database(os.Getenv("MONGO_DATABASE")).Collection("CredItem")
+//		filter := bson.M{"created_at":date, "constructionNo":tempNo}
+//		if cursor, err = collection.Find(context.TODO(), filter, options.Find()); err != nil {
+//			log.Fatal(err)
+//		}
+//		//延迟关闭游标
+//		defer func() {
+//			if err = cursor.Close(context.TODO()); err != nil {
+//				log.Fatal(err)
+//			}
+//		}()
+//		var results []bson.M
+//		if err = cursor.All(context.TODO(), &results); err != nil {
+//			log.Fatal(err)
+//		}
+//		checkMySQL(results)
+//	}
+//}
 
 func insertToMysql(tempResult bson.M) {
 	if tempResult != nil {
@@ -115,7 +113,8 @@ func insertToMysql(tempResult bson.M) {
 			area.ID = 0
 		}
 		project := model.Project{ConstructionNo: util.InConvertString(tempResult["constructionNo"]), ProjectName: util.InConvertString(tempResult["name"]), AreaId: area.ID,
-			Approval: util.InConvertString(tempResult["approval"]), DevelopCompany: util.InConvertString(tempResult["developCompany"]), CountBuilding: util.InConvertString(tempResult["countBuilding"] ),
+			AreaOrigin: util.InConvertString(tempResult["area"]),
+			Approval: util.InConvertString(tempResult["approval"]), DevelopCompany: util.InConvertString(tempResult["developCompnay"]), CountBuilding: util.InConvertString(tempResult["countBuilding"] ),
 			ProjectAddress: util.InConvertString(tempResult["address"]), MinPrice: util.InConvertString(tempResult["minPrice"]), SaleAddress: util.InConvertString(tempResult["saleAddress"]),
 			SalePhone: util.InConvertString(tempResult["salePhone"]), AllHome: util.InConvertString(tempResult["allHome"]), BusLine: util.InConvertString(tempResult["busLine"]),
 			AllAcreage: util.InConvertString(tempResult["allAcreage"]), DesignCompany: util.InConvertString(tempResult["designCompany"]), AllArchitectureAcreage: util.InConvertString(tempResult["allArchitectureAcreage"]),

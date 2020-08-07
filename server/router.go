@@ -50,6 +50,7 @@ func NewRouter() *gin.Engine {
 		esData.GET("house_type_image", api.GetHouseTypeImage)
 		esData.GET("project_detail_check", api.ProjectDetailCheck)
 		esData.GET("get_notice", api.GetNotice)
+		esData.POST("get_subway_house_count", api.GetSubwayProjectCount)
 	}
 
 	return r
