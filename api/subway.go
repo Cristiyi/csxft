@@ -22,3 +22,14 @@ func GetSubwayProjectCount(c *gin.Context) {
 	}
 }
 
+//获取沿线地铁站楼盘
+func GetSubwayProject(c *gin.Context) {
+	var service service.SubwayProjectService
+	if err := c.ShouldBind(&service); err == nil {
+		res := service.GetSubwayProject()
+		c.JSON(200, res)
+	} else {
+		c.JSON(400, ErrorResponse(err))
+	}
+}
+

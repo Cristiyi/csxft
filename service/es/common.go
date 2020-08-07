@@ -499,3 +499,28 @@ func GetProjectCountByPoint(pointRange util.PointRange) (count int64) {
 }
 
 
+//根据经纬度范围获取楼盘数量
+func GetProjectByPoint(pointRange util.PointRange) *elastic.SearchResult {
+	searchService := elasticsearch.GetEsCli().Search("project")
+	queryService := elastic.NewBoolQuery()
+	longRangeQuery := elastic.NewRangeQuery("Longitude")
+	longRangeQuery.Gte(pointRange.MinLng)
+	longRangeQuery.Lte(pointRange.MaxLng)
+	latRangeQuery := elastic.NewRangeQuery("Latitude")
+	latRangeQuery.Gte(pointRange.MinLat)
+	latRangeQuery.Lte(pointRange.MaxLat)
+	queryService.Must(longRangeQuery, latRangeQuery)
+
+	searchService = searchService.Query(queryService)
+
+	searchResult, err := searchService.
+		Sort("Id", false).
+		Pretty(true).
+		Do(context.Background())
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	return searchResult
+}
+
