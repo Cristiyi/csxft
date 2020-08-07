@@ -149,10 +149,10 @@ func GetDistancePointRange(lat, lng, distant float64) PointRange {
 	var calRange float64 = 180 / math.Pi * distant / 6372.797
 	var lngR float64 = calRange / math.Cos(lat * math.Pi / 180)
 	pointRange := new(PointRange)
-	pointRange.maxLat = lat + calRange //最大纬度
-	pointRange.minLat= lat - calRange //最小纬度
-	pointRange.maxLng = lng + lngR//最大经度
-	pointRange.minLng = lng - lngR//最小经度
+	pointRange.MaxLat = lat + calRange //最大纬度
+	pointRange.MinLat= lat - calRange //最小纬度
+	pointRange.MaxLng = lng + lngR//最大经度
+	pointRange.MinLng = lng - lngR//最小经度
 	return *pointRange
 }
 
