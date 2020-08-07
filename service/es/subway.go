@@ -13,6 +13,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"reflect"
+	"strconv"
 )
 
 //地铁房数量服务
@@ -91,7 +92,7 @@ func (service *SubwayProjectService) GetSubwayProject() serializer.Response {
 			for _, item := range esRes.Each(reflect.TypeOf(model.Project{})) {
 				if t, ok := item.(model.Project); ok {
 					subwayProject := new(SubwayProject)
-					subwayProject.Id = string(t.ID)
+					subwayProject.Id = strconv.Itoa(int(t.ID))
 					if t.PromotionFirstName != "" {
 						subwayProject.ProjectName = t.PromotionFirstName
 					} else if t.PromotionSecondName != "" {
