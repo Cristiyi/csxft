@@ -60,6 +60,7 @@ type Project struct {
 	IsNearLineFouth  int32  `gorm:"default:0"`
 	IsNearLineFifth  int32  `gorm:"default:0"`
 	IsNearLineSixth  int32  `gorm:"default:0"`
+	PredictCredDate int
 	Tag string
 	//效果图
 	EffectImages []Image `gorm:"ForeignKey:ProjectId"`

@@ -103,6 +103,9 @@ func QueryProject(start,size int, commonParams map[string]string, calParams map[
 	if calParams["IsNearLineSixth"] != 0 {
 		queryService.Must(elastic.NewTermQuery("IsNearLineSixth", 1))
 	}
+	if calParams["PredictCredDate"] != 0 {
+		queryService.Must(elastic.NewTermQuery("PredictCredDate", calParams["PredictCredDate"]))
+	}
 
 	searchService = searchService.Query(queryService)
 
