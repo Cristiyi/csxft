@@ -41,7 +41,9 @@ func (service *IndexService) Index() serializer.Response {
 	//即将取证列表
 	willCredListParam["IsWillCred"] = "1"
 	var willCredList []model.Project
-	willCredRes := QueryProject(0, 3, willCredListParam)
+	calParams := make(map[string]float64)
+	calParams["needed"] = 1
+	willCredRes := QueryProject(0, 3, willCredListParam, calParams)
 	if willCredRes != nil {
 		for _, item := range willCredRes.Each(reflect.TypeOf(model.Project{})) {
 			if t, ok := item.(model.Project); ok {
@@ -57,7 +59,7 @@ func (service *IndexService) Index() serializer.Response {
 	recognitionListParam["sort"] = "ViewCount"
 	recognitionListParam["IsRecognition"] = "1"
 	var recognitionList []model.Project
-	recognitionRes:= QueryProject(0, 3, recognitionListParam)
+	recognitionRes:= QueryProject(0, 3, recognitionListParam, calParams)
 	if recognitionRes != nil {
 		for _, item := range recognitionRes.Each(reflect.TypeOf(model.Project{})) {
 			if t, ok := item.(model.Project); ok {
@@ -73,7 +75,7 @@ func (service *IndexService) Index() serializer.Response {
 	newIotteryListParam["sort"] = "ViewCount"
 	newIotteryListParam["IsIottery"] = "1"
 	var newIotteryList []model.Project
-	newIotteryRes:= QueryProject(0, 3, newIotteryListParam)
+	newIotteryRes:= QueryProject(0, 3, newIotteryListParam, calParams)
 	if newIotteryRes != nil {
 		for _, item := range newIotteryRes.Each(reflect.TypeOf(model.Project{})) {
 			if t, ok := item.(model.Project); ok {
@@ -89,7 +91,7 @@ func (service *IndexService) Index() serializer.Response {
 	newSellListParam["sort"] = "ViewCount"
 	newSellListParam["IsSell"] = "1"
 	var newSellList []model.Project
-	newSellRes:= QueryProject(0, 3, newSellListParam)
+	newSellRes:= QueryProject(0, 3, newSellListParam, calParams)
 	if newSellRes != nil {
 		for _, item := range newSellRes.Each(reflect.TypeOf(model.Project{})) {
 			if t, ok := item.(model.Project); ok {

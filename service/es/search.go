@@ -131,6 +131,7 @@ func (service *SearchProjectService) SearchProject() serializer.Response {
 	if service.IsNotDecoration != 0 {
 		calParams["IsNotDecoration"] = float64(service.IsNotDecoration)
 	}
+	calParams["needed"] = 1
 
 	var size int = 0
 	if service.Size != 0 {
@@ -270,7 +271,9 @@ func (service *GetHotService) GetHot() serializer.Response {
 	}
 	commonParam["sort"] = "ViewCount"
 	commonParam["sortType"] = "desc"
-	res := QueryProject(service.Start, size, commonParam)
+	calParams := make(map[string]float64)
+	calParams["needed"] = 1
+	res := QueryProject(service.Start, size, commonParam, calParams)
 	if res != nil {
 		var result []*HotProject
 		for _, item := range res.Each(reflect.TypeOf(model.Project{})) {
