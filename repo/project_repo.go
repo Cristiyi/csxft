@@ -36,14 +36,15 @@ func (p projectRepo) GetToEsData(id uint64) (project *model.Project, err error) 
 				   Preload("AerialImages", "type = 5").
 				   Preload("HouseTypeImages", "type = 6").
 				   Where("id = ?", id).First(&project).Error
+	fmt.Println(err)
 	if err == nil {
 		area := new(model.Area)
 		if err := model.DB.Where("id = ?", project.AreaId).First(&area).Error; err == nil {
 			project.AreaName = area.Name
 		}
-		//var count = 0
-		//model.DB.Model(model.Comment{}).Where("build_id = ? and pid = ?", project.ID, 0).Count(&count)
-		//project.CommentCount = count
+		var count = 0
+		model.DB.Model(model.Comment{}).Where("build_id = ? and pid = ? and status = ?", project.ID, 0, 1).Count(&count)
+		project.CommentCount = count
 	}
 	return
 }
