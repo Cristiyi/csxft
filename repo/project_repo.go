@@ -51,7 +51,7 @@ func (p projectRepo) GetToEsData(id uint64) (project *model.Project, err error) 
 func (p projectRepo) GetPredictCredDate() (group []*model.PredictCredDate) {
 	var predictCredDate []*model.PredictCredDate
 	var predictCredTemp []*model.PredictCredTemp
-	err := model.DB.Model(p.thisModel).Select("predict_cred_date").Where("is_will_cred = ?", 1).Group("predict_cred_date").Scan(&predictCredTemp).Error
+	err := model.DB.Model(p.thisModel).Select("predict_cred_date").Where("is_will_cred = ? and predict_cred_date is not null", 1).Group("predict_cred_date").Scan(&predictCredTemp).Error
 	if err != nil {
 		return nil
 	} else {
