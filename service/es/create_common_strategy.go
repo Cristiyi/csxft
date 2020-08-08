@@ -40,6 +40,7 @@ func (b baseHandler) Create(id uint64) (code int, msg string) {
 
 	_, err = elasticsearch.GetEsCli().Index().Index("project").Id(strconv.Itoa(int(id))).BodyJson(projectObj).Do(context.Background())
 	if err != nil {
+		fmt.Println(err)
 		code = 400
 		msg = "存储失败"
 	}
