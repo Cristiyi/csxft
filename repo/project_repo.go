@@ -58,9 +58,11 @@ func (p projectRepo) GetPredictCredDate() (group []*model.PredictCredDate) {
 		fmt.Println(predictCredTemp)
 		fmt.Println(predictCredTemp[0])
 		timeLayout := "2006年01月"
-		for i, item := range predictCredTemp {
-			predictCredDate[i].PredictCredDate = item.PredictCredDate.Unix()
-			predictCredDate[i].PredictCredMonth = time.Unix(item.PredictCredDate.Unix(), 0).Format(timeLayout)
+		for _, item := range predictCredTemp {
+			temp := new(model.PredictCredDate)
+			temp.PredictCredDate = item.PredictCredDate.Unix()
+			temp.PredictCredMonth = time.Unix(item.PredictCredDate.Unix(), 0).Format(timeLayout)
+			predictCredDate = append(predictCredDate, temp)
 		}
 		return predictCredDate
 	}
