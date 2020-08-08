@@ -85,6 +85,24 @@ func QueryProject(start,size int, commonParams map[string]string, calParams map[
 	if calParams["IsDecoration"]!= 0 {
 		queryService.Must(elastic.NewTermQuery("IsNotDecoration", 1))
 	}
+	if calParams["IsNearLineOne"] != 0 {
+		queryService.Must(elastic.NewTermQuery("IsNearLineOne", 1))
+	}
+	if calParams["IsNearLineTwo"] != 0 {
+		queryService.Must(elastic.NewTermQuery("IsNearLineTwo", 1))
+	}
+	if calParams["IsNearLineThird"] != 0 {
+		queryService.Must(elastic.NewTermQuery("IsNearLineThird", 1))
+	}
+	if calParams["IsNearLineFouth"] != 0 {
+		queryService.Must(elastic.NewTermQuery("IsNearLineFouth", 1))
+	}
+	if calParams["IsNearLineFifth"] != 0 {
+		queryService.Must(elastic.NewTermQuery("IsNearLineFifth", 1))
+	}
+	if calParams["IsNearLineSixth"] != 0 {
+		queryService.Must(elastic.NewTermQuery("IsNearLineSixth", 1))
+	}
 
 	searchService = searchService.Query(queryService)
 

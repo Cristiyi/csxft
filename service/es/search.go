@@ -34,6 +34,12 @@ type SearchProjectService struct {
 	MinAcreage float64 `form:"min_acreage" json:"min_acreage"`
 	IsDecoration int `form:"is_decoration" json:"is_decoration"`
 	IsNotDecoration int `form:"is_not_decoration" json:"is_not_decoration"`
+	IsNearLineOne  int `form:"is_near_line_one" json:"is_near_line_one"`
+	IsNearLineTwo  int `form:"is_near_line_two" json:"is_near_line_two"`
+	IsNearLineThird int `form:"is_near_line_third" json:"is_near_line_third"`
+	IsNearLineFouth  int `form:"is_near_line_fouth" json:"is_near_line_fouth"`
+	IsNearLineFifth  int `form:"is_near_line_fifth" json:"is_near_line_fifth"`
+	IsNearLineSixth  int `form:"is_near_line_sixth" json:"is_near_line_sixth"`
 }
 
 //获取楼盘服务
@@ -130,6 +136,27 @@ func (service *SearchProjectService) SearchProject() serializer.Response {
 	}
 	if service.IsNotDecoration != 0 {
 		calParams["IsNotDecoration"] = float64(service.IsNotDecoration)
+	}
+	if service.IsNotDecoration != 0 {
+		calParams["IsNotDecoration"] = float64(service.IsNotDecoration)
+	}
+	if service.IsNearLineOne != 0 {
+		calParams["IsNearLineOne"] = float64(service.IsNearLineOne)
+	}
+	if service.IsNearLineTwo != 0 {
+		calParams["IsNearLineTwo"] = float64(service.IsNearLineTwo)
+	}
+	if service.IsNearLineThird != 0 {
+		calParams["IsNearLineThird"] = float64(service.IsNearLineThird)
+	}
+	if service.IsNearLineFouth != 0 {
+		calParams["IsNearLineFouth"] = float64(service.IsNearLineFouth)
+	}
+	if service.IsNearLineFifth != 0 {
+		calParams["IsNearLineFifth"] = float64(service.IsNearLineFifth)
+	}
+	if service.IsNearLineSixth != 0 {
+		calParams["IsNearLineSixth"] = float64(service.IsNearLineSixth)
 	}
 	calParams["needed"] = 1
 
