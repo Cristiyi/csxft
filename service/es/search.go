@@ -26,6 +26,14 @@ type SearchProjectService struct {
 	IsIottery string `form:"is_iottery" json:"is_iottery"`
 	IsSell string `form:"is_sell" json:"is_sell"`
 	AreaId string `form:"area_id" json:"area_id"`
+	MaxTotalPrice float64 `form:"max_total_price" json:"max_total_price"`
+	MinTotalPrice float64 `form:"min_total_price" json:"min_total_price"`
+	MaxUnitPrice float64 `form:"max_unit_price" json:"max_unit_price"`
+	MinUnitPrice float64 `form:"min_unit_price" json:"min_unit_price"`
+	MaxAcreage float64 `form:"max_acreage" json:"max_acreage"`
+	MinAcreage float64 `form:"min_acreage" json:"min_acreage"`
+	IsDecoration int `form:"is_decoration" json:"is_decoration"`
+	IsNotDecoration int `form:"is_not_decoration" json:"is_not_decoration"`
 }
 
 //获取楼盘服务
@@ -97,13 +105,40 @@ func (service *SearchProjectService) SearchProject() serializer.Response {
 	if service.AreaId != "" {
 		commonParam["AreaId"] = service.AreaId
 	}
+
+	calParams := make(map[string]float64)
+	if service.MaxAcreage != 0 {
+		calParams["MaxAcreage"] = service.MaxAcreage
+	}
+	if service.MinAcreage != 0 {
+		calParams["MinAcreage"] = service.MinAcreage
+	}
+	if service.MaxTotalPrice != 0 {
+		calParams["MaxTotalPrice"] = service.MaxTotalPrice
+	}
+	if service.MinTotalPrice != 0 {
+		calParams["MinTotalPrice"] = service.MinTotalPrice
+	}
+	if service.MaxUnitPrice != 0 {
+		calParams["MaxUnitPrice"] = service.MaxUnitPrice
+	}
+	if service.MinUnitPrice != 0 {
+		calParams["MinUnitPrice"] = service.MinUnitPrice
+	}
+	if service.IsDecoration != 0 {
+		calParams["IsDecoration"] = float64(service.IsDecoration)
+	}
+	if service.IsNotDecoration != 0 {
+		calParams["IsNotDecoration"] = float64(service.IsNotDecoration)
+	}
+
 	var size int = 0
 	if service.Size != 0 {
 		size = service.Size
 	}  else {
 		size = 10
 	}
-	res := QueryProject(service.Start, size, commonParam)
+	res := QueryProject(service.Start, size, commonParam, calParams)
 	if res != nil {
 		var result []model.Project
 		for _, item := range res.Each(reflect.TypeOf(model.Project{})) {

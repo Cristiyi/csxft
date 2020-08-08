@@ -11,7 +11,7 @@ import (
 )
 
 //搜索楼盘
-func QueryProject(start,size int, commonParams map[string]string) *elastic.SearchResult {
+func QueryProject(start,size int, commonParams map[string]string, calParams map[string]float64) *elastic.SearchResult {
 	sortType := true
 	if commonParams["sortType"] == "desc" {
 		sortType = false
@@ -47,6 +47,43 @@ func QueryProject(start,size int, commonParams map[string]string) *elastic.Searc
 			}
 			queryService.Must(areaQueryService)
 		}
+	}
+
+	if calParams["MaxAcreage"] != 0 {
+		maxAcreageRangeQuery := elastic.NewRangeQuery("AverageAcreage")
+		maxAcreageRangeQuery.Lte(calParams["MaxAcreage"])
+		queryService.Must(maxAcreageRangeQuery)
+	}
+	if calParams["MinAcreage"] != 0 {
+		minAcreageRangeQuery := elastic.NewRangeQuery("AverageAcreage")
+		minAcreageRangeQuery.Gte(calParams["MinAcreage"])
+		queryService.Must(minAcreageRangeQuery)
+	}
+	if calParams["MaxTotalPrice"] != 0 {
+		maxTotalPriceRangeQuery := elastic.NewRangeQuery("AverageTotalPrice")
+		maxTotalPriceRangeQuery.Lte(calParams["MaxTotalPrice"])
+		queryService.Must(maxTotalPriceRangeQuery)
+	}
+	if calParams["MinTotalPrice"] != 0 {
+		minTotalPriceRangeQuery := elastic.NewRangeQuery("AverageTotalPrice")
+		minTotalPriceRangeQuery.Gte(calParams["MinTotalPrice"])
+		queryService.Must(minTotalPriceRangeQuery)
+	}
+	if calParams["MaxUnitPrice"] != 0 {
+		maxUnitPriceRangeQuery := elastic.NewRangeQuery("AveragePrice")
+		maxUnitPriceRangeQuery.Lte(calParams["MaxUnitPrice"])
+		queryService.Must(maxUnitPriceRangeQuery)
+	}
+	if calParams["MinUnitPrice"] != 0 {
+		maxUnitPriceRangeQuery := elastic.NewRangeQuery("AveragePrice")
+		maxUnitPriceRangeQuery.Lte(calParams["MaxUnitPrice"])
+		queryService.Must(maxUnitPriceRangeQuery)
+	}
+	if calParams["IsDecoration"] != 0 {
+		queryService.Must(elastic.NewTermQuery("IsDecoration", 1))
+	}
+	if calParams["IsDecoration"]!= 0 {
+		queryService.Must(elastic.NewTermQuery("IsNotDecoration", 1))
 	}
 
 	searchService = searchService.Query(queryService)
