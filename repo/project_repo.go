@@ -36,7 +36,6 @@ func (p projectRepo) GetToEsData(id uint64) (project *model.Project, err error) 
 				   Preload("AerialImages", "type = 5").
 				   Preload("HouseTypeImages", "type = 6").
 				   Where("id = ?", id).First(&project).Error
-	fmt.Println(err)
 	if err == nil {
 		area := new(model.Area)
 		if err := model.DB.Where("id = ?", project.AreaId).First(&area).Error; err == nil {
