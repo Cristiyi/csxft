@@ -8,6 +8,7 @@ package repo
 
 import (
 	"csxft/model"
+	"fmt"
 	"time"
 )
 
@@ -54,6 +55,8 @@ func (p projectRepo) GetPredictCredDate() (group []*model.PredictCredDate) {
 	if err != nil {
 		return nil
 	} else {
+		fmt.Println(predictCredTemp)
+		fmt.Println(predictCredTemp[0])
 		timeLayout := "2006年01月"
 		for i, item := range predictCredTemp {
 			predictCredDate[i].PredictCredDate = item.PredictCredDate.Unix()
