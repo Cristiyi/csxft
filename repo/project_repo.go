@@ -8,11 +8,14 @@ package repo
 
 import (
 	"csxft/model"
+	"time"
 )
 
 type ProjectRepo interface {
 	//获取插入到es的数据
 	GetToEsData(id uint64) (project *model.Project, err error)
+	//获取即将取证的分组
+	GetPredictCredDate() (group []*model.PredictCredDate)
 }
 
 func NewProjectRepo() ProjectRepo {
@@ -22,7 +25,6 @@ func NewProjectRepo() ProjectRepo {
 type projectRepo struct {
 	thisModel model.Project
 }
-
 
 func (p projectRepo) GetToEsData(id uint64) (project *model.Project, err error) {
 	project = new(model.Project)
@@ -43,5 +45,19 @@ func (p projectRepo) GetToEsData(id uint64) (project *model.Project, err error) 
 		//project.CommentCount = count
 	}
 	return
+}
+
+func (p projectRepo) GetPredictCredDate() (group []*model.PredictCredDate) {
+	var predictCredDate []*model.PredictCredDate
+	err := model.DB.Model(p.thisModel).Select("predict_cred_date").Where("is_will_cred = ?", 1).Group("predict_cred_date").Scan(&predictCredDate).Error
+	if err != nil {
+		return nil
+	} else {
+		timeLayout := "2006年01月"
+		for i, item := range predictCredDate {
+			predictCredDate[i].PredictCredMonth = time.Unix(item.PredictCredDate, 0).Format(timeLayout)
+		}
+		return predictCredDate
+	}
 }
 

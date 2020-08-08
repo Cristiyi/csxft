@@ -83,3 +83,7 @@ type Project struct {
 
 }
 
+type PredictCredDate struct {
+	PredictCredDate int64
+	PredictCredMonth string
+}

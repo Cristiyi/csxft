@@ -236,6 +236,17 @@ func GetNotice(c *gin.Context) {
 	}
 }
 
+//获取公告
+func GetPredictCredDate(c *gin.Context) {
+	var service service.GetPredictCredDate
+	if err := c.ShouldBind(&service); err == nil {
+		res := service.GetPredictCredDate()
+		c.JSON(200, res)
+	} else {
+		c.JSON(400, ErrorResponse(err))
+	}
+}
+
 ////获取公告
 //func GetNotice(c *gin.Context) {
 //	var service service.GetNoticeService

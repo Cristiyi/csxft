@@ -8,6 +8,7 @@ package es
 
 import (
 	"csxft/model"
+	"csxft/repo"
 	"csxft/serializer"
 	"reflect"
 )
@@ -40,7 +41,7 @@ type SearchProjectService struct {
 	IsNearLineFouth  int `form:"is_near_line_fouth" json:"is_near_line_fouth"`
 	IsNearLineFifth  int `form:"is_near_line_fifth" json:"is_near_line_fifth"`
 	IsNearLineSixth  int `form:"is_near_line_sixth" json:"is_near_line_sixth"`
-	PredictCredDate int `form:"predict_cred_date" json:"predict_cred_date"`
+	PredictCredDate int64 `form:"predict_cred_date" json:"predict_cred_date"`
 }
 
 //获取楼盘服务
@@ -64,6 +65,10 @@ type GetCredHouseService struct {
 	CredId    string `form:"cred_id" json:"cred_id" binding:"required"`
 	Start int `form:"start" json:"start"`
 	Size int `form:"size" json:"size"`
+}
+
+//即将取证时间分组服务
+type GetPredictCredDate struct {
 }
 
 //热门搜索
@@ -325,5 +330,24 @@ func (service *GetHotService) GetHot() serializer.Response {
 			Code: 400,
 			Msg: "暂无数据",
 		}
+	}
+}
+
+//即将取证时间分组服务
+func (service *GetPredictCredDate) GetPredictCredDate() serializer.Response {
+
+	res := repo.NewProjectRepo().GetPredictCredDate()
+
+	if res != nil {
+		return serializer.Response{
+			Code: 200,
+			Data: res,
+			Msg: "暂无数据",
+		}
+	}
+
+	return serializer.Response{
+		Code: 200,
+		Msg: "暂无数据",
 	}
 }

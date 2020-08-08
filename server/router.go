@@ -52,6 +52,7 @@ func NewRouter() *gin.Engine {
 		esData.GET("get_notice", api.GetNotice)
 		esData.POST("get_subway_house_count", api.GetSubwayProjectCount)
 		esData.POST("get_subway_house", api.GetSubwayProject)
+		esData.GET("get_predict_cred_date", api.GetPredictCredDate)
 	}
 
 	return r
