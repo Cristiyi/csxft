@@ -49,13 +49,15 @@ func (p projectRepo) GetToEsData(id uint64) (project *model.Project, err error) 
 
 func (p projectRepo) GetPredictCredDate() (group []*model.PredictCredDate) {
 	var predictCredDate []*model.PredictCredDate
-	err := model.DB.Model(p.thisModel).Select("predict_cred_date").Where("is_will_cred = ?", 1).Group("predict_cred_date").Scan(&predictCredDate).Error
+	var predictCredTemp []*model.PredictCredTemp
+	err := model.DB.Model(p.thisModel).Select("predict_cred_date").Where("is_will_cred = ?", 1).Group("predictCredTemp").Scan(&predictCredDate).Error
 	if err != nil {
 		return nil
 	} else {
 		timeLayout := "2006年01月"
-		for i, item := range predictCredDate {
-			predictCredDate[i].PredictCredMonth = time.Unix(item.PredictCredDate, 0).Format(timeLayout)
+		for i, item := range predictCredTemp {
+			predictCredDate[i].PredictCredDate = item.PredictCredDate.Unix()
+			predictCredDate[i].PredictCredMonth = time.Unix(item.PredictCredDate.Unix(), 0).Format(timeLayout)
 		}
 		return predictCredDate
 	}

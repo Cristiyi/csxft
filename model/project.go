@@ -87,3 +87,7 @@ type PredictCredDate struct {
 	PredictCredDate int64
 	PredictCredMonth string
 }
+
+type PredictCredTemp struct {
+	PredictCredDate time.Time
+}
