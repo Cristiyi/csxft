@@ -12,6 +12,13 @@ import (
 	"reflect"
 )
 
+type AreaResult struct{
+	ID uint
+	Name string
+	Pid int64
+	ProjectCount int64
+}
+
 //搜索摇号结果服务
 type CsAreaService struct {
 }
@@ -19,10 +26,17 @@ type CsAreaService struct {
 func (service *CsAreaService) GetCsArea() serializer.Response {
 	res := GetCsArea()
 	if res != nil && len(res.Hits.Hits)>0 {
-		var result []model.Area
+		var result []AreaResult
 		for _, item := range res.Each(reflect.TypeOf(model.Area{})) {
 			if t, ok := item.(model.Area); ok {
-				result = append(result, t)
+				projectCount := QueryProjectAreaCount(t.ID)
+				tempResult := AreaResult{
+					ID: t.ID,
+					Name: t.Name,
+					Pid: t.Pid,
+					ProjectCount: projectCount,
+				}
+				result = append(result, tempResult)
 			}
 		}
 		return serializer.Response{

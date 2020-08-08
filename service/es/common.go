@@ -6,6 +6,7 @@ import (
 	"csxft/util"
 	"fmt"
 	"github.com/olivere/elastic/v7"
+	"strconv"
 	"strings"
 )
 
@@ -77,19 +78,45 @@ func QueryProjectCount(commonParams map[string]string) (count int64) {
 		break
 	case "2":
 		searchService = searchService.Query(elastic.NewQueryStringQuery("IsNewCred:"+"1"))
+		break
 	case "3":
 		searchService = searchService.Query(elastic.NewQueryStringQuery("IsRecognition:"+"1"))
+		break
 	case "4":
 		searchService = searchService.Query(elastic.NewQueryStringQuery("IsIottery:"+"1"))
+		break
 	case "5":
 		searchService = searchService.Query(elastic.NewQueryStringQuery("IsSell:"+"1"))
+		break
 	default:
 		searchService = searchService.Query(elastic.NewQueryStringQuery("IsSell:"+"1"))
+		break
+	}
+	if commonParams["areaId"] != "" {
+		areaId, err := strconv.Atoi(commonParams["areaId"])
+		fmt.Println(err)
+		fmt.Println(areaId)
+		searchService = searchService.Query(elastic.NewTermQuery("AreaId", areaId))
 	}
 	count, err := searchService.Do(context.Background())
 	if err != nil {
+		fmt.Println(err)
 		count = 0
 	}
+	fmt.Println(count)
+	return
+}
+
+//查询楼盘数量
+func QueryProjectAreaCount(areaId uint) (count int64) {
+	searchService := elasticsearch.GetEsCli().Count("project")
+	searchService = searchService.Query(elastic.NewTermQuery("AreaId", areaId))
+	count, err := searchService.Do(context.Background())
+	if err != nil {
+		fmt.Println(err)
+		count = 0
+	}
+	fmt.Println(count)
 	return
 }
 
