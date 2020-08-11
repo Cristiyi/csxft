@@ -26,8 +26,6 @@ func (service *IndexService) Index() serializer.Response {
 	data["willCredCount"] = QueryProjectCount(countParam)
 	countParam["type"] = "2"
 	data["newCredCount"] = QueryProjectCount(countParam)
-	countParam["type"] = "2"
-	data["newCredCount"] = QueryProjectCount(countParam)
 	countParam["type"] = "3"
 	data["recognitionCount"] = QueryProjectCount(countParam)
 	countParam["type"] = "4"
