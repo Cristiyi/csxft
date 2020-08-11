@@ -9,7 +9,6 @@ package es
 import (
 	"csxft/model"
 	"csxft/serializer"
-	"fmt"
 	"reflect"
 )
 
@@ -107,7 +106,6 @@ func (service *IndexService) Index() serializer.Response {
 	newCredParam["IsNewCred"] = "1"
 	var newCredList []model.Project
 	newCredRes:= QueryProject(0, 3, newCredParam, calParams)
-	fmt.Println(newCredRes.Hits.Hits)
 	if newCredRes != nil {
 		for _, item := range newCredRes.Each(reflect.TypeOf(model.Project{})) {
 			if t, ok := item.(model.Project); ok {

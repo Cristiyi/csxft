@@ -27,7 +27,7 @@ func QueryProject(start,size int, commonParams map[string]string, calParams map[
 		queryService.Must(elastic.NewTermQuery("IsWillCred", 1))
 	}
 	if commonParams["IsNewCred"] != "" {
-		queryService.Must(elastic.NewTermQuery("IsNewCred:", 1))
+		queryService.Must(elastic.NewTermQuery("IsNewCred", 1))
 	}
 	if commonParams["IsRecognition"] != "" {
 		queryService.Must(elastic.NewTermQuery("IsRecognition", 1))
