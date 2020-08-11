@@ -132,22 +132,22 @@ func QueryProjectCount(commonParams map[string]string) (count int64) {
 	searchService := elasticsearch.GetEsCli().Count("project")
 	switch commonParams["type"] {
 	case "1":
-		searchService = searchService.Query(elastic.NewQueryStringQuery("IsWillCred:"+"1"))
+		searchService = searchService.Query(elastic.NewTermQuery("IsWillCred", 1))
 		break
 	case "2":
-		searchService = searchService.Query(elastic.NewQueryStringQuery("IsNewCred:"+"1"))
+		searchService = searchService.Query(elastic.NewTermQuery("IsNewCred", 1))
 		break
 	case "3":
-		searchService = searchService.Query(elastic.NewQueryStringQuery("IsRecognition:"+"1"))
+		searchService = searchService.Query(elastic.NewTermQuery("IsRecognition", 1))
 		break
 	case "4":
-		searchService = searchService.Query(elastic.NewQueryStringQuery("IsIottery:"+"1"))
+		searchService = searchService.Query(elastic.NewTermQuery("IsIottery", 1))
 		break
 	case "5":
-		searchService = searchService.Query(elastic.NewQueryStringQuery("IsSell:"+"1"))
+		searchService = searchService.Query(elastic.NewTermQuery("IsSell", 1))
 		break
 	default:
-		searchService = searchService.Query(elastic.NewQueryStringQuery("IsSell:"+"1"))
+		searchService = searchService.Query(elastic.NewTermQuery("IsSell", 1))
 		break
 	}
 	if commonParams["areaId"] != "" {

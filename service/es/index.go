@@ -113,7 +113,7 @@ func (service *IndexService) Index() serializer.Response {
 			}
 		}
 	}
-	data["newCredList"] = newSellList
+	data["newCredList"] = newCredList
 
 	return serializer.Response{
 		Code: 200,
