@@ -9,6 +9,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"log"
 	"os"
+	"strings"
 )
 
 type CredIdResult struct {
@@ -94,10 +95,16 @@ func insertHouseToMysql(tempResult bson.M, credId uint64) {
 		if err := model.DB.Table("xft_decorations").Select("id").Where("name = ?", util.InConvertString(tempResult["decorationStatus"])).Scan(&decorationResult).Error; err != nil {
 			decorationResult.ID = 0
 		}
+		var saleStatus int32
+		if strings.Index(util.InConvertString(tempResult["saleStatus"]), "可售") >= 0 {
+			saleStatus = 1
+		} else {
+			saleStatus = 2
+		}
 		//房屋入库
 		house := model.House{CredId: credId, HouseNo: util.InConvertString(tempResult["houseNo"]), FloorNo: util.String2Int(util.InConvertString(tempResult["floorNo"])),
 			PurposeId: purposeIdResult.ID, TypeId: typeIdResult.ID, DecorationId: decorationResult.ID, HouseAcreage: util.String2Float64(util.InConvertString(tempResult["houseAcreage"])),
-			UseAcreage: util.String2Float64(util.InConvertString(tempResult["useAcreage"])), ShareAcreage: util.String2Float64(util.InConvertString(tempResult["shareAcreage"])),
+			UseAcreage: util.String2Float64(util.InConvertString(tempResult["useAcreage"])), ShareAcreage: util.String2Float64(util.InConvertString(tempResult["shareAcreage"])), SaleStatus: saleStatus,
 		}
 		//入库失败 记录到mongo
 		//if err := model.DB.Create(&house).Error; err != nil {

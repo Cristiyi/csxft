@@ -101,6 +101,22 @@ func (service *IndexService) Index() serializer.Response {
 	}
 	data["newSellList"] = newSellList
 
+	//最新取证楼盘列表
+	newCredParam := make(map[string]string)
+	newCredParam["sortType"] = "desc"
+	newCredParam["sort"] = "ViewCount"
+	newCredParam["IsNewCred"] = "1"
+	var newCredList []model.Project
+	newCredRes:= QueryProject(0, 3, newCredParam, calParams)
+	if newCredRes != nil {
+		for _, item := range newCredRes.Each(reflect.TypeOf(model.Project{})) {
+			if t, ok := item.(model.Project); ok {
+				newSellList = append(newCredList, t)
+			}
+		}
+	}
+	data["newCredList"] = newSellList
+
 	return serializer.Response{
 		Code: 200,
 		Data: data,
