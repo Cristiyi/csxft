@@ -109,7 +109,7 @@ func (service *IndexService) Index() serializer.Response {
 	if newCredRes != nil {
 		for _, item := range newCredRes.Each(reflect.TypeOf(model.Project{})) {
 			if t, ok := item.(model.Project); ok {
-				newSellList = append(newCredList, t)
+				newCredList = append(newCredList, t)
 			}
 		}
 	}

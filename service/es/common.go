@@ -24,19 +24,19 @@ func QueryProject(start,size int, commonParams map[string]string, calParams map[
 		queryService.Must(elastic.NewMatchQuery("ProjectName", commonParams["name"]))
 	}
 	if commonParams["IsWillCred"] != "" {
-		queryService.Must(elastic.NewQueryStringQuery("IsWillCred:"+"1"))
+		queryService.Must(elastic.NewTermQuery("IsWillCred", 1))
 	}
 	if commonParams["IsNewCred"] != "" {
-		queryService.Must(elastic.NewQueryStringQuery("IsNewCred:"+"1"))
+		queryService.Must(elastic.NewTermQuery("IsNewCred:", 1))
 	}
 	if commonParams["IsRecognition"] != "" {
-		queryService.Must(elastic.NewQueryStringQuery("IsRecognition:"+"1"))
+		queryService.Must(elastic.NewTermQuery("IsRecognition", 1))
 	}
 	if commonParams["IsIottery"] != "" {
-		queryService.Must(elastic.NewQueryStringQuery("IsIottery:"+"1"))
+		queryService.Must(elastic.NewTermQuery("IsIottery", 1))
 	}
 	if commonParams["IsSell"] != "" {
-		queryService.Must(elastic.NewQueryStringQuery("IsSell:"+"1"))
+		queryService.Must(elastic.NewTermQuery("IsSell", 1))
 	}
 	if commonParams["AreaId"] != "" {
 		areaArr := strings.Split(commonParams["AreaId"], ",")
