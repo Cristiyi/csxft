@@ -39,7 +39,7 @@ func (service *InitHouseService) Init() serializer.Response {
 
 	collection = client.Database(os.Getenv("MONGO_DATABASE")).Collection("HouseItem")
 	filter := bson.M{"created_at":service.Date}
-	limit := options.Find().SetLimit(10000)
+	limit := options.Find().SetLimit(5000)
 	skip := options.Find().SetSkip(service.Skip)
 
 	if cursor, err = collection.Find(context.TODO(), filter, limit, skip); err != nil {

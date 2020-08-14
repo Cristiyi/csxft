@@ -11,11 +11,11 @@ import (
 	"time"
 )
 
-type Iottery struct {
+type LotteryHistory struct {
 	gorm.Model
 	ProjectId uint `gorm:"not null;index:idx_project_id"`
-	IotteryName string
-	IotteryPrice string
+	LotteryName string
+	LotteryPrice string
 	PreSellDate time.Time
 	AllHome uint
 	ProbabilityHasHome string

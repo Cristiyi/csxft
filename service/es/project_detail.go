@@ -41,7 +41,7 @@ type HistoryIotteryService struct {
 	Size int `form:"size" json:"size"`
 }
 
-//获取历史摇号服务
+//获取一房一价楼栋
 type AllBuildNoService struct {
 	ProjectId    string `form:"project_id" json:"project_id" binding:"required"`
 	Status int32 `form:"status" json:"status"`
@@ -201,9 +201,9 @@ func (service HistoryIotteryService) GetHistoryIottery() serializer.Response {
 	}
 	res := GetProjectIottery(service.Start, size, commonParam)
 	if res != nil {
-		var result []model.Iottery
-		for _, item := range res.Each(reflect.TypeOf(model.Iottery{})) {
-			if t, ok := item.(model.Iottery); ok {
+		var result []model.LotteryHistory
+		for _, item := range res.Each(reflect.TypeOf(model.LotteryHistory{})) {
+			if t, ok := item.(model.LotteryHistory); ok {
 				result = append(result, t)
 			}
 		}

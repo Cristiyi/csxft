@@ -120,14 +120,14 @@ type iotteryHandler struct {
 }
 
 //摇号handler
-func newIotteryHandler() iotteryHandler {
+func newLotteryHistoryHandler() iotteryHandler {
 	instance := new(iotteryHandler)
 	return *instance
 }
 
 func (h iotteryHandler) Create(id uint64) (code int, msg string) {
 
-	iotteryObj, err := repo.NewIotteryRepo().GetToEsData(id)
+	lotteryHistoryObj, err := repo.NewLotteryHistoryRepo().GetToEsData(id)
 	if err != nil {
 		code = 400
 		msg = "未找到数据"
@@ -136,7 +136,7 @@ func (h iotteryHandler) Create(id uint64) (code int, msg string) {
 		msg = "success"
 	}
 
-	_, err = elasticsearch.GetEsCli().Index().Index("iottery").Id(strconv.Itoa(int(id))).BodyJson(iotteryObj).Do(context.Background())
+	_, err = elasticsearch.GetEsCli().Index().Index("lottery_history").Id(strconv.Itoa(int(id))).BodyJson(lotteryHistoryObj).Do(context.Background())
 	if err != nil {
 		code = 400
 		msg = "存储失败"
@@ -384,7 +384,7 @@ func NewCreateContext(insertType uint32) CreateContext {
 	case 3:
 		c.Strategy = newHouseHandler()  //房屋数据策略
 	case 4:
-		c.Strategy = newIotteryHandler()  //摇号数据策略
+		c.Strategy = newLotteryHistoryHandler()  //历史摇号数据策略
 	case 5:
 		c.Strategy = newDynamicHandler()  //楼盘动态数据策略
 	case 6:
