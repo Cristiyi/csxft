@@ -53,7 +53,7 @@ type Project struct {
 	IsNewCred int32  `gorm:"default:0"`
 	IsRecognition int32  `gorm:"default:0"`
 	IsIottery int32  `gorm:"default:0"`
-	IsSell int32  `gorm:"default:1"`
+	IsSell int32  `gorm:"default:0"`
 	IsNearLineOne  int32  `gorm:"default:0"`
 	IsNearLineTwo  int32  `gorm:"default:0"`
 	IsNearLineThird int32  `gorm:"default:0"`

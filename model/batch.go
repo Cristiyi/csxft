@@ -44,6 +44,11 @@ type Batch struct {
 	Acreage float64  `gorm:"type:decimal(10,2);default:null"`
 	VerifyMoney string
 	Status int32 `gorm:"default:2"`
+	IsWillCred int32 `gorm:"default:0"`
+	IsNewCred int32  `gorm:"default:0"`
+	IsRecognition int32  `gorm:"default:0"`
+	IsIottery int32  `gorm:"default:0"`
+	IsSell int32  `gorm:"default:0"`
 	//状态名称（仅用于展示）
 	StatusName string  `gorm:"-"`
 	Creds []Cred `gorm:"ForeignKey:BatchID;"`

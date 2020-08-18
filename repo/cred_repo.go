@@ -6,13 +6,20 @@
 
 package repo
 
-import "csxft/model"
+import (
+	"csxft/model"
+	"os"
+)
 
 type CredRepo interface {
 	//获取插入到es的数据
 	GetToEsData(id uint64) (cred *model.Cred, err error)
 	GetByProjectId(projectId uint64) (creds []*model.Cred, err error)
 	GetByCred(cred string) (creds []*model.Cred)
+	//获取最新取证自动化任务数据
+	GetNewCredTask() (creds []model.Cred, err error)
+	//获取最新取证到期自动化任务数据
+	GetNotNewCredTask() (creds []model.Cred, err error)
 }
 
 func NewCredRepo() CredRepo {
@@ -121,4 +128,23 @@ func (c credRepo) GetByCred(cred string) (creds []*model.Cred) {
 		return nil
 	}
 	return creds
+}
+
+//获取最新取证自动化任务数据
+func (c credRepo) GetNewCredTask() (creds []model.Cred, err error) {
+	//err = model.DB.Raw("SELECT * FROM xft_creds WHERE TO_DAYS(DATE_ADD(cred_date, INTERVAL" + os.Getenv("NEW_CRED_TIME_BASE") + "DAY))>=TO_DAYS(now())").Find(&creds).Error
+	err = model.DB.Model(c.thisModel).Where("TO_DAYS(DATE_ADD(cred_date, INTERVAL " + os.Getenv("NEW_CRED_TIME_BASE") + " DAY)) >= TO_DAYS(now())").Find(&creds).Error
+	return
+}
+
+//获取最新取证到期自动化任务数据
+func (c credRepo) GetNotNewCredTask() (creds []model.Cred, err error) {
+	err = model.DB.Table("xft_creds").
+		           Select("xft_creds.*").
+		           Joins("left join xft_batches as batch on xft_creds.batch_id = batch.id").
+		           Where("TO_DAYS(DATE_ADD(xft_creds.cred_date, INTERVAL " + os.Getenv("NEW_CRED_TIME_BASE") + " DAY)) < TO_DAYS(now()) and batch.is_new_cred = 1").
+		           Find(&creds).
+		           Error
+	return
+
 }

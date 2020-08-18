@@ -11,6 +11,7 @@ import "csxft/model"
 type BatchRepo interface {
 	//获取插入到es的数据
 	GetToEsData(id uint64) (batch *model.Batch, err error)
+	GetRecognitionTask() (batches []*model.Batch, err error)
 }
 
 func NewBatchRepo() BatchRepo {
@@ -20,6 +21,7 @@ func NewBatchRepo() BatchRepo {
 type batchRepo struct {
 	thisModel model.Batch
 }
+
 
 func (c batchRepo) GetToEsData(id uint64) (batch *model.Batch, err error) {
 	batch = new(model.Batch)
@@ -50,3 +52,9 @@ func (c batchRepo) GetToEsData(id uint64) (batch *model.Batch, err error) {
 	}
 	return
 }
+
+func (c batchRepo) GetRecognitionTask() (batches []*model.Batch, err error) {
+	err = model.DB.Model(c.thisModel).Where("TO_DAYS(solicit_begin) <= TO_DAYS(now()) and TO_DAYS(solicit_end) >= TO_DAYS(now())").Find(&batches).Error
+	return
+}
+

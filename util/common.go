@@ -123,6 +123,13 @@ func timeToUnix(targetTime time.Time) int64 {
 	return targetTime.Unix()
 }
 
+//获取当天0点
+func GetToday() time.Time {
+	timeStr := time.Now().Format("2006-01-02")
+	t, _ := time.Parse("2006-01-02", timeStr)
+	return t
+}
+
 //获取当天0点时间戳
 func GetTodayUnix() int64 {
 	timeStr := time.Now().Format("2006-01-02")

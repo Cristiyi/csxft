@@ -55,5 +55,18 @@ func NewRouter() *gin.Engine {
 		esData.GET("get_predict_cred_date", api.GetPredictCredDate)
 	}
 
+	taskData := r.Group("/api/task")
+	{
+		taskData.GET("new_cred_task", api.NewCredTask)
+		taskData.GET("not_new_cred_task", api.NotNewCredTask)
+		taskData.GET("recognition", api.NotNewCredTask)
+	}
+
+	deleteData := r.Group("/api/delete")
+	{
+		deleteData.POST("delete_project", api.DeleteProject)
+		deleteData.POST("delete_batch", api.DeleteBatch)
+	}
+
 	return r
 }

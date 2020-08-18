@@ -19,7 +19,7 @@ type AreaResult struct{
 	ProjectCount int64
 }
 
-//搜索摇号结果服务
+//长沙区域结果服务
 type CsAreaService struct {
 }
 
