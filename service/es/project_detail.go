@@ -232,6 +232,7 @@ func (service AllBuildNoService) GetAllBuildNo() serializer.Response {
 			Msg: "暂无数据1",
 		}
 	}
+	fmt.Println(batch.ID)
 	if batch.Creds != nil && len(batch.Creds) > 0 {
 		for _, item := range batch.Creds {
 			result = append(result, item.BuildingNo)
