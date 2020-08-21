@@ -125,7 +125,7 @@ func (service *ProjectDetailService) ProjectDetail() serializer.Response {
 //获取最近开盘的一房一价
 func (service NewCredHouseService) GetNewCredHouse() serializer.Response {
 
-	var credIdResult []string
+	var credIdResult []int
 	batch := GetTargetBatch(service.ProjectId, service.Status)
 	if batch == nil {
 		return serializer.Response{
@@ -137,7 +137,7 @@ func (service NewCredHouseService) GetNewCredHouse() serializer.Response {
 	fmt.Println(batch.ID)
 	if batch.Creds != nil {
 		for _, item := range batch.Creds {
-			credIdResult = append(credIdResult, strconv.Itoa(int(item.ID)))
+			credIdResult = append(credIdResult, int(item.ID))
 		}
 		var houseResult []model.House
 		houseParam := make(map[string]string)

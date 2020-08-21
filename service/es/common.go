@@ -234,7 +234,7 @@ func GetProjectCred (start,size int, commonParams map[string]string) *elastic.Se
 }
 
 //根据开盘信息获取楼盘信息
-func GetCredHouse (start,size int, commonParams map[string]string, credIds []string) *elastic.SearchResult {
+func GetCredHouse (start,size int, commonParams map[string]string, credIds []int) *elastic.SearchResult {
 
 	var sortType bool
 	if commonParams["sortType"] == "desc" {
