@@ -134,7 +134,7 @@ func (service NewCredHouseService) GetNewCredHouse() serializer.Response {
 			Msg: "暂无数据",
 		}
 	}
-	fmt.Println(batch.Creds)
+	fmt.Println(batch.ID)
 	if batch.Creds != nil {
 		for _, item := range batch.Creds {
 			credIdResult = append(credIdResult, strconv.Itoa(int(item.ID)))
