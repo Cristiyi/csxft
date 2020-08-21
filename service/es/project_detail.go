@@ -135,7 +135,7 @@ func (service NewCredHouseService) GetNewCredHouse() serializer.Response {
 		}
 	}
 	fmt.Println(batch.ID)
-	if batch.Creds != nil {
+	if batch.Creds != nil && len(batch.Creds) > 0 {
 		for _, item := range batch.Creds {
 			credIdResult = append(credIdResult, int(item.ID))
 		}
