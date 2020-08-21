@@ -229,7 +229,7 @@ func (service AllBuildNoService) GetAllBuildNo() serializer.Response {
 		return serializer.Response{
 			Code: 200,
 			Data: nil,
-			Msg: "暂无数据",
+			Msg: "暂无数据1",
 		}
 	}
 	if batch.Creds != nil && len(batch.Creds) > 0 {
@@ -245,7 +245,7 @@ func (service AllBuildNoService) GetAllBuildNo() serializer.Response {
 	return serializer.Response{
 		Code: 200,
 		Data: nil,
-		Msg: "暂无数据",
+		Msg: "暂无数据2",
 	}
 
 }
