@@ -232,16 +232,14 @@ func (service AllBuildNoService) GetAllBuildNo() serializer.Response {
 			Msg: "暂无数据",
 		}
 	}
-	if batch.Creds != nil {
+	if batch.Creds != nil && len(batch.Creds) > 0 {
 		for _, item := range batch.Creds {
 			result = append(result, item.BuildingNo)
 		}
-		if result != nil {
-			return serializer.Response{
-				Code: 200,
-				Data: result,
-				Msg: "success",
-			}
+		return serializer.Response{
+			Code: 200,
+			Data: result,
+			Msg: "success",
 		}
 	}
 	return serializer.Response{
