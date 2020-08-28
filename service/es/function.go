@@ -9,7 +9,6 @@ package es
 import (
 	"csxft/model"
 	"csxft/util"
-	"fmt"
 	"reflect"
 )
 
@@ -113,22 +112,23 @@ func calTimeLine(batch *model.Batch) int32 {
 	//选房时间判断
 	if chooseHouseBeginUnix := batch.ChooseHouseBegin.Unix(); chooseHouseBeginUnix != 0{
 		chooseHouseEndUnix := batch.ChooseHouseEnd.Unix()
-		if todayTime >= chooseHouseBeginUnix && todayTime <= chooseHouseEndUnix {
-			return 11
-		} else if todayTime > chooseHouseEndUnix {
-			fmt.Println(todayTime)
-			fmt.Println(batch.ChooseHouseEnd)
-			fmt.Println(batch.ChooseHouseEnd.Unix())
-			return 12
+		if chooseHouseEndUnix > 0 {
+			if todayTime >= chooseHouseBeginUnix && todayTime <= chooseHouseEndUnix {
+				return 11
+			} else if todayTime > chooseHouseEndUnix {
+				return 12
+			}
 		}
 	}
 	//摇号公示时间判断
 	if lotteryBeginUnix := batch.LotteryBegin.Unix(); lotteryBeginUnix != 0{
 		lotteryEndUnix := batch.LotteryEnd.Unix()
-		if todayTime >= lotteryBeginUnix && todayTime <= lotteryEndUnix {
-			return 9
-		} else if todayTime > lotteryEndUnix {
-			return 10
+		if lotteryEndUnix > 0 {
+			if todayTime >= lotteryBeginUnix && todayTime <= lotteryEndUnix {
+				return 9
+			} else if todayTime > lotteryEndUnix {
+				return 10
+			}
 		}
 	}
 	//摇号时间判断
@@ -150,14 +150,16 @@ func calTimeLine(batch *model.Batch) int32 {
 	//认筹公告时间判断
 	if solicitBeginUnix := batch.SolicitEnd.Unix(); solicitBeginUnix != 0{
 		solicitEndUnix := batch.SolicitEnd.Unix()
-		if todayTime>=solicitBeginUnix && todayTime<=solicitEndUnix {
-			return 3
-		} else if todayTime > solicitEndUnix {
-			return 4
-		}
-		if preSellTimeUnix := batch.PreSellTime.Unix(); preSellTimeUnix != 0{
-			if todayTime >= preSellTimeUnix && todayTime < solicitBeginUnix {
+		if solicitEndUnix > 0 {
+			if todayTime>=solicitBeginUnix && todayTime<=solicitEndUnix {
 				return 3
+			} else if todayTime > solicitEndUnix {
+				return 4
+			}
+			if preSellTimeUnix := batch.PreSellTime.Unix(); preSellTimeUnix != 0{
+				if todayTime >= preSellTimeUnix && todayTime < solicitBeginUnix {
+					return 3
+				}
 			}
 		}
 	}
