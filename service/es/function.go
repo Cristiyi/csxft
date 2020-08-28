@@ -110,7 +110,7 @@ func GetNewCred(projectId string, status int32) *NewCredResult {
 func calTimeLine(batch *model.Batch) int32 {
 	todayTime := util.GetTodayUnix()
 	//选房时间判断
-	if chooseHouseBeginUnix := batch.ChooseHouseBegin.Unix(); chooseHouseBeginUnix != 0{
+	if chooseHouseBeginUnix := batch.ChooseHouseBegin.Unix(); chooseHouseBeginUnix > 0{
 		chooseHouseEndUnix := batch.ChooseHouseEnd.Unix()
 		if chooseHouseEndUnix > 0 {
 			if todayTime >= chooseHouseBeginUnix && todayTime <= chooseHouseEndUnix {
@@ -121,7 +121,7 @@ func calTimeLine(batch *model.Batch) int32 {
 		}
 	}
 	//摇号公示时间判断
-	if lotteryBeginUnix := batch.LotteryBegin.Unix(); lotteryBeginUnix != 0{
+	if lotteryBeginUnix := batch.LotteryBegin.Unix(); lotteryBeginUnix > 0{
 		lotteryEndUnix := batch.LotteryEnd.Unix()
 		if lotteryEndUnix > 0 {
 			if todayTime >= lotteryBeginUnix && todayTime <= lotteryEndUnix {
@@ -132,7 +132,7 @@ func calTimeLine(batch *model.Batch) int32 {
 		}
 	}
 	//摇号时间判断
-	if lotteryTimeUnix := batch.LotteryTime.Unix(); lotteryTimeUnix != 0{
+	if lotteryTimeUnix := batch.LotteryTime.Unix(); lotteryTimeUnix > 0{
 		if todayTime == lotteryTimeUnix {
 			return 7
 		} else if todayTime > lotteryTimeUnix {
@@ -140,7 +140,7 @@ func calTimeLine(batch *model.Batch) int32 {
 		}
 	}
 	//认筹时间判断
-	if solicitTimeUnix := batch.SolicitTime.Unix(); solicitTimeUnix != 0{
+	if solicitTimeUnix := batch.SolicitTime.Unix(); solicitTimeUnix > 0{
 		if todayTime == solicitTimeUnix {
 			return 5
 		} else if todayTime > solicitTimeUnix {
@@ -148,7 +148,7 @@ func calTimeLine(batch *model.Batch) int32 {
 		}
 	}
 	//认筹公告时间判断
-	if solicitBeginUnix := batch.SolicitEnd.Unix(); solicitBeginUnix != 0{
+	if solicitBeginUnix := batch.SolicitEnd.Unix(); solicitBeginUnix > 0{
 		solicitEndUnix := batch.SolicitEnd.Unix()
 		if solicitEndUnix > 0 {
 			if todayTime>=solicitBeginUnix && todayTime<=solicitEndUnix {
@@ -156,7 +156,7 @@ func calTimeLine(batch *model.Batch) int32 {
 			} else if todayTime > solicitEndUnix {
 				return 4
 			}
-			if preSellTimeUnix := batch.PreSellTime.Unix(); preSellTimeUnix != 0{
+			if preSellTimeUnix := batch.PreSellTime.Unix(); preSellTimeUnix > 0{
 				if todayTime >= preSellTimeUnix && todayTime < solicitBeginUnix {
 					return 3
 				}
@@ -164,7 +164,7 @@ func calTimeLine(batch *model.Batch) int32 {
 		}
 	}
 	//预售时间
-	if preSellTimeUnix := batch.PreSellTime.Unix(); preSellTimeUnix != 0{
+	if preSellTimeUnix := batch.PreSellTime.Unix(); preSellTimeUnix > 0{
 		if todayTime == preSellTimeUnix {
 			return 1
 		} else if todayTime > preSellTimeUnix {
