@@ -22,6 +22,12 @@ type Project struct {
 	SalePhone string
 	AllHome string
 	BusLine string
+	//20200828新加字段begin
+	PropertyRight string
+	FinishTime string
+	Floor string
+	Other string
+	//20200828新加字段end
 	School string
 	ShoppingMall string
 	Hospital string
@@ -80,7 +86,6 @@ type Project struct {
 	AreaName string `gorm:"-"`
 	//摇号状态 仅用于查询
 	LotteryStatus int  `gorm:"-"`
-
 }
 
 type PredictCredDate struct {
