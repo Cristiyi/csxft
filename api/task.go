@@ -43,3 +43,14 @@ func NewRecognitionTask(c *gin.Context) {
 		c.JSON(400, ErrorResponse(err))
 	}
 }
+
+//正在认筹到期定时处理
+func NotNewRecognitionTask(c *gin.Context) {
+	var service service.NotRecognitionService
+	if err := c.ShouldBind(&service); err == nil {
+		res := service.GetNotRecognitionTask()
+		c.JSON(200, res)
+	} else {
+		c.JSON(400, ErrorResponse(err))
+	}
+}

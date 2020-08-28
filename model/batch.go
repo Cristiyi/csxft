@@ -33,6 +33,7 @@ type Batch struct {
 	MinArea float64  `gorm:"type:decimal(10,2);default:null"`
 	MaxArea float64  `gorm:"type:decimal(10,2);default:null"`
 	AllNo int
+	LotteryNo int
 	RigidNo int
 	OrdinaryNo int
 	LeftNo int

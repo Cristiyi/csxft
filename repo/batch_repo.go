@@ -6,12 +6,22 @@
 
 package repo
 
-import "csxft/model"
+import (
+	"csxft/model"
+	"os"
+)
 
 type BatchRepo interface {
 	//获取插入到es的数据
 	GetToEsData(id uint64) (batch *model.Batch, err error)
+	//获取正在认筹任务数据
 	GetRecognitionTask() (batches []*model.Batch, err error)
+	//获取正在认筹到期任务数据
+	GetNotRecognitionTask() (batches []*model.Batch, err error)
+	//获取正在摇号任务数据
+	GetLotteryTask() (batches []*model.Batch, err error)
+	//获取正在摇号到期任务数据
+	GetNotLotteryTask() (batches []*model.Batch, err error)
 }
 
 func NewBatchRepo() BatchRepo {
@@ -21,7 +31,6 @@ func NewBatchRepo() BatchRepo {
 type batchRepo struct {
 	thisModel model.Batch
 }
-
 
 func (c batchRepo) GetToEsData(id uint64) (batch *model.Batch, err error) {
 	batch = new(model.Batch)
@@ -54,7 +63,22 @@ func (c batchRepo) GetToEsData(id uint64) (batch *model.Batch, err error) {
 }
 
 func (c batchRepo) GetRecognitionTask() (batches []*model.Batch, err error) {
-	err = model.DB.Model(c.thisModel).Where("TO_DAYS(solicit_begin) <= TO_DAYS(now()) and TO_DAYS(solicit_end) >= TO_DAYS(now())").Find(&batches).Error
+	err = model.DB.Model(c.thisModel).Where("TO_DAYS(solicit_begin) <= TO_DAYS(now()) and TO_DAYS(solicit_end) >= TO_DAYS(now()) and status != 3").Find(&batches).Error
+	return
+}
+
+func (c batchRepo) GetNotRecognitionTask() (batches []*model.Batch, err error) {
+	err = model.DB.Model(c.thisModel).Where("TO_DAYS(solicit_end) < TO_DAYS(now()) and status = 3").Find(&batches).Error
+	return
+}
+
+func (c batchRepo) GetLotteryTask() (batches []*model.Batch, err error) {
+	err = model.DB.Model(c.thisModel).Where("TO_DAYS(DATE_ADD(lottery_time, INTERVAL " + os.Getenv("NEW_LOTTERY_TIME_BASE") + " DAY)) >= TO_DAYS(now())").Find(&batches).Error
+	return
+}
+
+func (c batchRepo) GetNotLotteryTask() (batches []*model.Batch, err error) {
+	err = model.DB.Model(c.thisModel).Where("TO_DAYS(DATE_ADD(lottery_time, INTERVAL " + os.Getenv("NEW_LOTTERY_TIME_BASE") + " DAY)) <= TO_DAYS(now()) and status = 4").Find(&batches).Error
 	return
 }
 

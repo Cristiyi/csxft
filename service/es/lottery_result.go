@@ -34,7 +34,7 @@ func (service *LotteryResultService) GetLotteryResult() serializer.Response {
 	if service.Sort != "" {
 		commonParam["sort"] = service.Sort
 	} else {
-		commonParam["sort"] = "No"
+		commonParam["sort"] = "Type"
 	}
 	if service.SortType != "" {
 		commonParam["sortType"] = service.SortType
@@ -57,7 +57,9 @@ func (service *LotteryResultService) GetLotteryResult() serializer.Response {
 		var result []model.LotteryResult
 		for _, item := range res.Each(reflect.TypeOf(model.LotteryResult{})) {
 			if t, ok := item.(model.LotteryResult); ok {
-				t.IdCardBack = ""
+				//t.IdCardBack = ""
+				t.TotalHouse = batch.AllNo
+				t.TotalPerson = batch.LotteryNo
 				result = append(result, t)
 			}
 		}

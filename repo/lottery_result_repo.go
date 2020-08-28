@@ -8,7 +8,6 @@ package repo
 
 import (
 	"csxft/model"
-	"csxft/util"
 )
 
 type LotteryResultRepo interface {
@@ -31,13 +30,13 @@ func (c lotteryResultRepo) GetToEsData(id uint64) (lotteryResult []*model.Lotter
 		if item.Type == 1 {
 			lotteryResult[i].TypeString = "刚需"
 		}
-		if item.Type == 2 {
-			lotteryResult[i].TypeString = "普通"
+		if item.Type == 0 {
+			lotteryResult[i].TypeString = "非刚需"
 		}
-		if item.IdCard != "" {
-			lotteryResult[i].IdCardBack = lotteryResult[i].IdCard
-			lotteryResult[i].IdCard = util.HideIdCard(lotteryResult[i].IdCard)
-		}
+		//if item.IdCard != "" {
+		//	lotteryResult[i].IdCardBack = lotteryResult[i].IdCard
+		//	lotteryResult[i].IdCard = util.HideIdCard(lotteryResult[i].IdCard)
+		//}
 	}
 	return
 }

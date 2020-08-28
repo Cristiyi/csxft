@@ -43,18 +43,36 @@ func (service *NewCredTaskService) GetNewCredTask() serializer.Response {
 		} else {
 			continue
 		}
-
+		dbBatchParams := make(map[string]interface{})
+		dbBatchParams["is_will_cred"] = 1
 		//判断是否为今天取证 是则修改批次状态
 		if item.CredDate.Day() == util.GetToday().Day() {
 			batch.Status = 2
-			model.DB.Model(&batch).Update("status", 2)
+			dbBatchParams["status"] = 2
 		}
 
 		//修改批次 是否为最新取证 用于多状态
-		model.DB.Model(&batch).Update("is_will_cred", 1)
+		model.DB.Model(&batch).Updates(dbBatchParams)
 		batchEsParam := make(map[string]interface{})
 		batchEsParam["IsWillCred"] = 1
 		batchEsParam["Status"] = batch.Status
+		switch batch.Status {
+		case 1:
+			batchEsParam["StatusName"] = "即将取证"
+			break
+		case 2:
+			batchEsParam["StatusName"] = "最新取证"
+			break
+		case 3:
+			batchEsParam["StatusName"] = "正在认筹"
+			break
+		case 4:
+			batchEsParam["StatusName"] = "最新摇号"
+			break
+		case 5:
+			batchEsParam["StatusName"] = "在售楼盘"
+			break
+		}
 		es_update.Update(&batchEsParam, int(batch.ID), "batch")
 
 		//修改楼盘
@@ -63,7 +81,7 @@ func (service *NewCredTaskService) GetNewCredTask() serializer.Response {
 		if err != nil {
 			continue
 		}
-		project.IsNewCred = 1
+
 		model.DB.Model(&project).Update("is_will_cred", 1)
 		projectEsParam := make(map[string]interface{})
 		projectEsParam["IsWillCred"] = 1
@@ -81,9 +99,38 @@ func (service *NewCredTaskService) GetNewCredTask() serializer.Response {
 func (service *NotNewCredTaskService) GetNotNewCredTask() serializer.Response {
 
 	data, err := repo.NewCredRepo().GetNotNewCredTask()
+	if err == nil && len(data) > 0 {
+		for _, item := range data {
+			batch := new(model.Batch)
+			if item.BatchId != 0 {
+				err := model.DB.Model(model.Batch{}).Where("id = ?", item.BatchId).First(&batch).Error
+				if err != nil {
+					fmt.Println(err)
+					continue
+				}
+			} else {
+				continue
+			}
+			//修改批次 是否为最新取证 用于多状态
+			model.DB.Model(&batch).Update("is_new_cred", 0)
+			batchEsParam := make(map[string]interface{})
+			batchEsParam["IsNewCred"] = 0
+			es_update.Update(&batchEsParam, int(batch.ID), "batch")
 
-	fmt.Println(data)
-	fmt.Println(err)
+			//修改楼盘
+			project := new(model.Project)
+			err := model.DB.Model(model.Project{}).Where("id = ?", item.ProjectId).First(&project).Error
+			if err != nil {
+				continue
+			}
+			project.IsNewCred = 0
+			model.DB.Model(&project).Update("is_new_cred", 0)
+			projectEsParam := make(map[string]interface{})
+			projectEsParam["IsNewCred"] = 0
+			es_update.Update(&projectEsParam, int(project.ID), "project")
+
+		}
+	}
 
 	return serializer.Response{
 		Code: 200,
