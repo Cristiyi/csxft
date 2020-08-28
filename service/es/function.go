@@ -109,42 +109,60 @@ func GetNewCred(projectId string, status int32) *NewCredResult {
 
 func calTimeLine(batch *model.Batch) int32 {
 	todayTime := util.GetTodayUnix()
-	if preSellTimeUnix := batch.PreSellTime.Unix(); preSellTimeUnix != 0{
-		if todayTime == preSellTimeUnix {
-			return 1
-		}
-	}
-	if solicitBeginUnix := batch.SolicitEnd.Unix(); solicitBeginUnix != 0{
-		solicitEndUnix := batch.SolicitEnd.Unix()
-		if todayTime>=solicitBeginUnix && todayTime<=solicitEndUnix {
-			return 2
-		}
-		if preSellTimeUnix := batch.PreSellTime.Unix(); preSellTimeUnix != 0{
-			if todayTime >= preSellTimeUnix && todayTime < solicitBeginUnix {
-				return 1
-			}
-		}
-	}
-	if solicitTimeUnix := batch.SolicitTime.Unix(); solicitTimeUnix != 0{
-		if todayTime == solicitTimeUnix {
-			return 3
-		}
-	}
-	if lotteryTimeUnix := batch.LotteryTime.Unix(); lotteryTimeUnix != 0{
-		if todayTime == lotteryTimeUnix {
-			return 4
-		}
-	}
-	if lotteryBeginUnix := batch.LotteryBegin.Unix(); lotteryBeginUnix != 0{
-		lotteryEndUnix := batch.LotteryEnd.Unix()
-		if todayTime >= lotteryBeginUnix && todayTime <= lotteryEndUnix {
-			return 5
-		}
-	}
+	//选房时间判断
 	if chooseHouseBeginUnix := batch.ChooseHouseBegin.Unix(); chooseHouseBeginUnix != 0{
 		chooseHouseEndUnix := batch.ChooseHouseEnd.Unix()
 		if todayTime >= chooseHouseBeginUnix && todayTime <= chooseHouseEndUnix {
+			return 11
+		} else if todayTime > chooseHouseEndUnix {
+			return 12
+		}
+	}
+	//摇号公示时间判断
+	if lotteryBeginUnix := batch.LotteryBegin.Unix(); lotteryBeginUnix != 0{
+		lotteryEndUnix := batch.LotteryEnd.Unix()
+		if todayTime >= lotteryBeginUnix && todayTime <= lotteryEndUnix {
+			return 9
+		} else if todayTime > lotteryEndUnix {
+			return 10
+		}
+	}
+	//摇号时间判断
+	if lotteryTimeUnix := batch.LotteryTime.Unix(); lotteryTimeUnix != 0{
+		if todayTime == lotteryTimeUnix {
+			return 7
+		} else if todayTime > lotteryTimeUnix {
+			return 8
+		}
+	}
+	//认筹时间判断
+	if solicitTimeUnix := batch.SolicitTime.Unix(); solicitTimeUnix != 0{
+		if todayTime == solicitTimeUnix {
+			return 5
+		} else if todayTime > solicitTimeUnix {
 			return 6
+		}
+	}
+	//认筹公告时间判断
+	if solicitBeginUnix := batch.SolicitEnd.Unix(); solicitBeginUnix != 0{
+		solicitEndUnix := batch.SolicitEnd.Unix()
+		if todayTime>=solicitBeginUnix && todayTime<=solicitEndUnix {
+			return 3
+		} else if todayTime > solicitEndUnix {
+			return 4
+		}
+		if preSellTimeUnix := batch.PreSellTime.Unix(); preSellTimeUnix != 0{
+			if todayTime >= preSellTimeUnix && todayTime < solicitBeginUnix {
+				return 3
+			}
+		}
+	}
+	//预售时间
+	if preSellTimeUnix := batch.PreSellTime.Unix(); preSellTimeUnix != 0{
+		if todayTime == preSellTimeUnix {
+			return 1
+		} else if todayTime > preSellTimeUnix {
+			return 2
 		}
 	}
 	return 0

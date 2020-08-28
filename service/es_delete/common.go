@@ -22,3 +22,18 @@ func DeleteDoc(id int,index string)(*elastic.DeleteResponse, error){
 	}
 	return rsp,nil
 }
+
+
+//根据开盘删除一房一价
+func DeleteCredHouse(credId int)(){
+	client := elasticsearch.GetEsCli()
+	query := elastic.Query(elastic.NewTermQuery("CredId", credId))
+	client.DeleteByQuery("house").Query(query).Do(context.Background())
+}
+
+//根据批次删除摇号结果
+func DeleteBatchLotteryResult(batchId int)(){
+	client := elasticsearch.GetEsCli()
+	query := elastic.Query(elastic.NewTermQuery("BatchId", batchId))
+	client.DeleteByQuery("lottery_result").Query(query).Do(context.Background())
+}
