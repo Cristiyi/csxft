@@ -9,6 +9,7 @@ package es
 import (
 	"csxft/model"
 	"csxft/util"
+	"fmt"
 	"reflect"
 )
 
@@ -115,6 +116,9 @@ func calTimeLine(batch *model.Batch) int32 {
 		if todayTime >= chooseHouseBeginUnix && todayTime <= chooseHouseEndUnix {
 			return 11
 		} else if todayTime > chooseHouseEndUnix {
+			fmt.Println(todayTime)
+			fmt.Println(batch.ChooseHouseEnd)
+			fmt.Println(batch.ChooseHouseEnd.Unix())
 			return 12
 		}
 	}
