@@ -148,7 +148,7 @@ func calTimeLine(batch *model.Batch) int32 {
 		}
 	}
 	//认筹公告时间判断
-	if solicitBeginUnix := batch.SolicitEnd.Unix(); solicitBeginUnix > 0{
+	if solicitBeginUnix := batch.SolicitBegin.Unix(); solicitBeginUnix > 0{
 		solicitEndUnix := batch.SolicitEnd.Unix()
 		if solicitEndUnix > 0 {
 			if todayTime>=solicitBeginUnix && todayTime<=solicitEndUnix {
