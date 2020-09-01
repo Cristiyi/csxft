@@ -39,7 +39,7 @@ func (service *LotteryResultService) GetLotteryResult() serializer.Response {
 	if service.SortType != "" {
 		commonParam["sortType"] = service.SortType
 	} else {
-		commonParam["sortType"] = "asc"
+		commonParam["sortType"] = "desc"
 	}
 
 	if service.Search != "" {
