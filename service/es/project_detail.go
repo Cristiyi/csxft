@@ -32,6 +32,7 @@ type NewCredHouseService struct {
 	Start int `form:"start" json:"start"`
 	Size int `form:"size" json:"size"`
 	Status int32 `form:"status" json:"status"`
+	BatchId int `form:"batch_id" json:"batch_id"`
 }
 
 //获取历史摇号服务

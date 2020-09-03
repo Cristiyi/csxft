@@ -640,3 +640,21 @@ func GetProjectIottery (start, size, batchNo int, commonParams map[string]string
 	}
 	return searchResult
 }
+
+//获取认筹结果
+func GetBatchById(batchId int) *elastic.SearchResult {
+	searchService := elasticsearch.GetEsCli().Search("batch")
+	queryService := elastic.NewBoolQuery()
+	queryService.Must(elastic.NewTermQuery("ID", batchId))
+	searchService = searchService.Query(queryService)
+	searchResult, err := searchService.
+		Sort("BatchNo", false).
+		From(0).Size(1).
+		Pretty(true).
+		Do(context.Background())
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	return searchResult
+}

@@ -12,7 +12,7 @@ type PurposeNameResult struct {
 	Name string
 }
 
-func GetPurposeNameById(id uint) (nameResult DecorationNameResult) {
+func GetPurposeNameById(id uint) (nameResult PurposeNameResult) {
 	DB.Model(ProjectPurpose{}).Where("id = ?", id).Select("name").Scan(&nameResult)
 	return
 }
