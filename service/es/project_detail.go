@@ -249,7 +249,7 @@ func (service HistoryIotteryService) GetHistoryIottery() serializer.Response {
 	}
 
 	//获取es原始数据
-	esResult :=  GetProjectIottery(service.Start, size, int(batch.BatchNo), param)
+	esResult :=  GetProjectIottery(service.Start, size, int(batch.BatchNo), int(batch.ProjectId), param)
 	var batchResult []model.Batch
 	//提取es中的模型数据
 	if esResult != nil && len(esResult.Hits.Hits) > 0 {
