@@ -29,11 +29,14 @@ func (c houseRepo) GetToEsData(id uint64) (houses []model.House, err error) {
 	cred := new(model.Cred)
 	model.DB.Model(model.Cred{}).Where("id = ?", id).First(&cred)
 	for i, item := range houses {
-		if item.DecorationId != 0 {
+		if item.DecorationId >= 0 {
 			houses[i].DecorationString = model.GetDecorationNameById(item.DecorationId).Name
 		}
-		if item.PurposeId != 0 {
+		if item.PurposeId >= 0 {
 			houses[i].PurposeString = model.GetPurposeNameById(item.DecorationId).Name
+		}
+		if item.TypeId >= 0 {
+			houses[i].TypeString = model.GetTypeNameById(item.TypeId).Name
 		}
 		houses[i].BuildNo = cred.BuildingNo
 	}

@@ -94,9 +94,14 @@ func (service *LotteryService) GetNotLotteryTask() serializer.Response {
 		for _, item := range data {
 			batch := new(model.Batch)
 			//修改批次 是否为最新取证 用于多状态
-			model.DB.Model(&batch).Update("is_new_cred", 0)
+			dbBatchParams := make(map[string]interface{})
+			dbBatchParams["is_iottery"] = 0
+			dbBatchParams["status"] = 5
+			model.DB.Model(&batch).Updates(dbBatchParams)
+
 			batchEsParam := make(map[string]interface{})
-			batchEsParam["IsNewCred"] = 0
+			batchEsParam["IsIottery"] = 0
+			batchEsParam["Status"] = 5
 			es_update.Update(&batchEsParam, int(batch.ID), "batch")
 
 			//修改楼盘
@@ -105,10 +110,9 @@ func (service *LotteryService) GetNotLotteryTask() serializer.Response {
 			if err != nil {
 				continue
 			}
-			project.IsNewCred = 0
-			model.DB.Model(&project).Update("is_new_cred", 0)
+			model.DB.Model(&project).Update("is_iottery", 0)
 			projectEsParam := make(map[string]interface{})
-			projectEsParam["IsNewCred"] = 0
+			projectEsParam["IsIottery"] = 0
 			es_update.Update(&projectEsParam, int(project.ID), "project")
 
 		}

@@ -16,6 +16,8 @@ type House struct {
 	DecorationId uint
 	//装修 文字（仅用于展示）
 	DecorationString string  `gorm:"-"`
+	//类型 文字（仅用于展示）
+	TypeString string  `gorm:"-"`
 	HouseAcreage float64  `gorm:"type:decimal(10,2);default:null"`
 	UseAcreage float64  `gorm:"type:decimal(10,2);default:null"`
 	ShareAcreage float64  `gorm:"type:decimal(10,2);default:null"`

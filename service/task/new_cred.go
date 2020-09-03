@@ -44,7 +44,7 @@ func (service *NewCredTaskService) GetNewCredTask() serializer.Response {
 			continue
 		}
 		dbBatchParams := make(map[string]interface{})
-		dbBatchParams["is_will_cred"] = 1
+		dbBatchParams["is_new_cred"] = 1
 		//判断是否为今天取证 是则修改批次状态
 		if item.CredDate.Day() == util.GetToday().Day() {
 			batch.Status = 2
@@ -54,7 +54,7 @@ func (service *NewCredTaskService) GetNewCredTask() serializer.Response {
 		//修改批次 是否为最新取证 用于多状态
 		model.DB.Model(&batch).Updates(dbBatchParams)
 		batchEsParam := make(map[string]interface{})
-		batchEsParam["IsWillCred"] = 1
+		batchEsParam["IsNewCred"] = 1
 		batchEsParam["Status"] = batch.Status
 		switch batch.Status {
 		case 1:
@@ -82,7 +82,7 @@ func (service *NewCredTaskService) GetNewCredTask() serializer.Response {
 			continue
 		}
 
-		model.DB.Model(&project).Update("is_will_cred", 1)
+		model.DB.Model(&project).Update("is_new_cred", 1)
 		projectEsParam := make(map[string]interface{})
 		projectEsParam["IsWillCred"] = 1
 		es_update.Update(&projectEsParam, int(project.ID), "project")
@@ -112,9 +112,14 @@ func (service *NotNewCredTaskService) GetNotNewCredTask() serializer.Response {
 				continue
 			}
 			//修改批次 是否为最新取证 用于多状态
-			model.DB.Model(&batch).Update("is_new_cred", 0)
+			dbBatchParams := make(map[string]interface{})
+			dbBatchParams["is_new_cred"] = 0
+			dbBatchParams["status"] = 5
+			model.DB.Model(&batch).Updates(dbBatchParams)
+
 			batchEsParam := make(map[string]interface{})
 			batchEsParam["IsNewCred"] = 0
+			batchEsParam["Status"] = 5
 			es_update.Update(&batchEsParam, int(batch.ID), "batch")
 
 			//修改楼盘
@@ -123,7 +128,7 @@ func (service *NotNewCredTaskService) GetNotNewCredTask() serializer.Response {
 			if err != nil {
 				continue
 			}
-			project.IsNewCred = 0
+			//project.IsNewCred = 0
 			model.DB.Model(&project).Update("is_new_cred", 0)
 			projectEsParam := make(map[string]interface{})
 			projectEsParam["IsNewCred"] = 0

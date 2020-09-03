@@ -134,7 +134,6 @@ func (service NewCredHouseService) GetNewCredHouse() serializer.Response {
 			Msg: "暂无数据",
 		}
 	}
-	fmt.Println(batch.ID)
 	if batch.Creds != nil && len(batch.Creds) > 0 {
 		for _, item := range batch.Creds {
 			credIdResult = append(credIdResult, int(item.ID))
@@ -167,6 +166,9 @@ func (service NewCredHouseService) GetNewCredHouse() serializer.Response {
 		if esHouse != nil {
 			for _, item := range esHouse.Each(reflect.TypeOf(model.House{})) {
 				if t, ok := item.(model.House); ok {
+					if t.TypeId > 0 && len(t.TypeString) == 0 {
+						t.TypeString = model.GetTypeNameById(t.TypeId).Name
+					}
 					houseResult = append(houseResult, t)
 				}
 			}
