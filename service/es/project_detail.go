@@ -37,6 +37,7 @@ type NewCredHouseService struct {
 //获取历史摇号服务
 type HistoryIotteryService struct {
 	ProjectId    string `form:"project_id" json:"project_id" binding:"required"`
+	Status int32 `form:"status" json:"status"`
 	Start int `form:"start" json:"start"`
 	Size int `form:"size" json:"size"`
 }
@@ -190,35 +191,87 @@ func (service NewCredHouseService) GetNewCredHouse() serializer.Response {
 }
 
 //获取历史摇号
+//func (service HistoryIotteryService) GetHistoryIottery() serializer.Response {
+//	commonParam := make(map[string]string)
+//	commonParam["ProjectId"] = service.ProjectId
+//	commonParam["sort"] = "UpdatedAt"
+//	commonParam["sortType"] = "desc"
+//	var size int = 0
+//	if service.Size != 0 {
+//		size = service.Size
+//	}  else {
+//		size = 10
+//	}
+//	res := GetProjectIottery(service.Start, size, commonParam)
+//	if res != nil {
+//		var result []model.LotteryHistory
+//		for _, item := range res.Each(reflect.TypeOf(model.LotteryHistory{})) {
+//			if t, ok := item.(model.LotteryHistory); ok {
+//				result = append(result, t)
+//			}
+//		}
+//		return serializer.Response{
+//			Code: 200,
+//			Data: result,
+//			Msg: "success",
+//		}
+//	} else {
+//		return serializer.Response{
+//			Code: 400,
+//			Msg: "暂无数据",
+//		}
+//	}
+//}
+
+//获取历史摇号
 func (service HistoryIotteryService) GetHistoryIottery() serializer.Response {
-	commonParam := make(map[string]string)
-	commonParam["ProjectId"] = service.ProjectId
-	commonParam["sort"] = "UpdatedAt"
-	commonParam["sortType"] = "desc"
+
+	batch := GetTargetBatch(service.ProjectId, service.Status)
+	if batch == nil {
+		return serializer.Response{
+			Code: 200,
+			Data: nil,
+			Msg: "暂无数据",
+		}
+	}
+
+	param := make(map[string]string)
+
+	param["sortType"] = "desc"
+	param["sort"] = "BatchNo"
+
 	var size int = 0
 	if service.Size != 0 {
 		size = service.Size
 	}  else {
 		size = 10
 	}
-	res := GetProjectIottery(service.Start, size, commonParam)
-	if res != nil {
-		var result []model.LotteryHistory
-		for _, item := range res.Each(reflect.TypeOf(model.LotteryHistory{})) {
-			if t, ok := item.(model.LotteryHistory); ok {
-				result = append(result, t)
+
+	//获取es原始数据
+	esResult :=  GetProjectIottery(service.Start, size, int(batch.BatchNo), param)
+	var batchResult []model.Batch
+
+	//提取es中的模型数据
+	if esResult != nil && len(esResult.Hits.Hits) > 0 {
+		for _, item := range esResult.Each(reflect.TypeOf(model.House{})) {
+			if t, ok := item.(model.Batch); ok {
+				batchResult = append(batchResult, t)
 			}
 		}
+	}
+
+	if len(batchResult) > 0 {
 		return serializer.Response{
 			Code: 200,
-			Data: result,
-			Msg: "success",
-		}
-	} else {
-		return serializer.Response{
-			Code: 400,
+			Data: batchResult,
 			Msg: "暂无数据",
 		}
+	}
+
+	return serializer.Response{
+		Code: 200,
+		Data: nil,
+		Msg: "暂无数据",
 	}
 }
 

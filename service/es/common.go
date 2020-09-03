@@ -277,29 +277,29 @@ func GetCredHouse (start,size int, commonParams map[string]string, credIds []int
 }
 
 //根据楼盘获取摇号
-func GetProjectIottery (start,size int, commonParams map[string]string) *elastic.SearchResult {
-	sortType := true
-	if commonParams["sortType"] == "desc" {
-		sortType = false
-	}
-	searchService := elasticsearch.GetEsCli().Search("iottery")
-	searchService = searchService.Query(elastic.NewTermQuery("ProjectId", commonParams["ProjectId"]))
-	if start == 1 || start == 0 {
-		start = 0
-	} else {
-		start = (start-1)*size
-	}
-	searchResult, err := searchService.
-		Sort(commonParams["sort"], sortType).
-		From(start).Size(size).
-		Pretty(true).
-		Do(context.Background())
-	if err != nil {
-		fmt.Println(err)
-		return nil
-	}
-	return searchResult
-}
+//func GetProjectIottery (start,size int, commonParams map[string]string) *elastic.SearchResult {
+//	sortType := true
+//	if commonParams["sortType"] == "desc" {
+//		sortType = false
+//	}
+//	searchService := elasticsearch.GetEsCli().Search("iottery")
+//	searchService = searchService.Query(elastic.NewTermQuery("ProjectId", commonParams["ProjectId"]))
+//	if start == 1 || start == 0 {
+//		start = 0
+//	} else {
+//		start = (start-1)*size
+//	}
+//	searchResult, err := searchService.
+//		Sort(commonParams["sort"], sortType).
+//		From(start).Size(size).
+//		Pretty(true).
+//		Do(context.Background())
+//	if err != nil {
+//		fmt.Println(err)
+//		return nil
+//	}
+//	return searchResult
+//}
 
 //查询楼盘动态数量
 func QueryDynamicCount(commonParams map[string]string) (count int64) {
@@ -610,3 +610,33 @@ func GetProjectByPoint(pointRange util.PointRange) *elastic.SearchResult {
 	return searchResult
 }
 
+//根据楼盘获取摇号
+func GetProjectIottery (start, size, batchNo int, commonParams map[string]string) *elastic.SearchResult {
+	sortType := true
+	if commonParams["sortType"] == "desc" {
+		sortType = false
+	}
+	//批次号小于传入批次号的定义为历史摇号
+	searchService := elasticsearch.GetEsCli().Search("batch")
+	queryService := elastic.NewBoolQuery()
+	batchNoQuery := elastic.NewRangeQuery("Batch")
+	batchNoQuery.Lte(batchNo)
+	queryService.Must(batchNoQuery)
+
+	searchService = searchService.Query(queryService)
+	if start == 1 || start == 0 {
+		start = 0
+	} else {
+		start = (start-1)*size
+	}
+	searchResult, err := searchService.
+		Sort(commonParams["sort"], sortType).
+		From(start).Size(size).
+		Pretty(true).
+		Do(context.Background())
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	return searchResult
+}
