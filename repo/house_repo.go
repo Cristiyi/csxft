@@ -33,7 +33,7 @@ func (c houseRepo) GetToEsData(id uint64) (houses []model.House, err error) {
 			houses[i].DecorationString = model.GetDecorationNameById(item.DecorationId).Name
 		}
 		if item.PurposeId >= 0 {
-			houses[i].PurposeString = model.GetPurposeNameById(item.DecorationId).Name
+			houses[i].PurposeString = model.GetPurposeNameById(item.PurposeId).Name
 		}
 		if item.TypeId >= 0 {
 			houses[i].TypeString = model.GetTypeNameById(item.TypeId).Name
