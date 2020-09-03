@@ -227,7 +227,6 @@ func (service NewCredHouseService) GetNewCredHouse() serializer.Response {
 func (service HistoryIotteryService) GetHistoryIottery() serializer.Response {
 
 	batch := GetTargetBatch(service.ProjectId, service.Status)
-	fmt.Println(batch.ID)
 	if batch == nil {
 		return serializer.Response{
 			Code: 200,
@@ -251,10 +250,9 @@ func (service HistoryIotteryService) GetHistoryIottery() serializer.Response {
 	//获取es原始数据
 	esResult :=  GetProjectIottery(service.Start, size, int(batch.BatchNo), param)
 	var batchResult []model.Batch
-	fmt.Println(esResult.Hits.Hits)
 	//提取es中的模型数据
 	if esResult != nil && len(esResult.Hits.Hits) > 0 {
-		for _, item := range esResult.Each(reflect.TypeOf(model.House{})) {
+		for _, item := range esResult.Each(reflect.TypeOf(model.Batch{})) {
 			if t, ok := item.(model.Batch); ok {
 				batchResult = append(batchResult, t)
 			}
