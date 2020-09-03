@@ -619,7 +619,7 @@ func GetProjectIottery (start, size, batchNo int, commonParams map[string]string
 	//批次号小于传入批次号的定义为历史摇号
 	searchService := elasticsearch.GetEsCli().Search("batch")
 	queryService := elastic.NewBoolQuery()
-	batchNoQuery := elastic.NewRangeQuery("Batch")
+	batchNoQuery := elastic.NewRangeQuery("BatchNo")
 	batchNoQuery.Lte(batchNo)
 	queryService.Must(batchNoQuery)
 
