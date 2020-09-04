@@ -114,6 +114,7 @@ func (service *ProjectDetailService) ProjectDetail() serializer.Response {
 	fmt.Println(GetTargetBatch(service.ProjectId, service.Status, service.BatchId).ID)
 	data["follow"] = 0
 	data["follow_count"] = 0
+	data["target_batch_id"] = service.BatchId
 	if service.UserId != 0 {
 		projectId, _ := strconv.Atoi(service.ProjectId)
 		follow, err := repo.NewFollowRepo().Get(service.UserId, uint64(projectId))
