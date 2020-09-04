@@ -20,6 +20,7 @@ type ProjectDetailService struct {
 	ProjectId    string `form:"project_id" json:"project_id" binding:"required"`
 	UserId  uint64 `form:"user_id" json:"project_id"`
 	Status int32 `form:"status" json:"status"`
+	BatchId int `form:"batch_id" json:"batch_id"`
 }
 
 //获取最新开盘一房一价服务
@@ -41,18 +42,21 @@ type HistoryIotteryService struct {
 	Status int32 `form:"status" json:"status"`
 	Start int `form:"start" json:"start"`
 	Size int `form:"size" json:"size"`
+	BatchId int `form:"batch_id" json:"batch_id"`
 }
 
 //获取一房一价楼栋
 type AllBuildNoService struct {
 	ProjectId    string `form:"project_id" json:"project_id" binding:"required"`
 	Status int32 `form:"status" json:"status"`
+	BatchId int `form:"batch_id" json:"batch_id"`
 }
 
 //获取时间轴服务
 type TimeLineService struct {
 	ProjectId    string `form:"project_id" json:"project_id" binding:"required"`
 	Status int32 `form:"status" json:"status"`
+	BatchId int `form:"batch_id" json:"batch_id"`
 }
 
 //时间轴
@@ -77,6 +81,7 @@ type TimeLineResult struct {
 type DetailCheckService struct {
 	ProjectId    string `form:"project_id" json:"project_id" binding:"required"`
 	Status int32 `form:"status" json:"status"`
+	BatchId int `form:"batch_id" json:"batch_id"`
 }
 
 //楼盘数据检测
@@ -105,7 +110,8 @@ func (service *ProjectDetailService) ProjectDetail() serializer.Response {
 	}
 	data := make(map[string]interface{})
 	data["detail"] = res.Source
-	data["newCred"] = GetTargetBatch(service.ProjectId, service.Status)
+	data["newCred"] = GetTargetBatch(service.ProjectId, service.Status, service.BatchId)
+	fmt.Println(GetTargetBatch(service.ProjectId, service.Status, service.BatchId).ID)
 	data["follow"] = 0
 	data["follow_count"] = 0
 	if service.UserId != 0 {
@@ -128,7 +134,7 @@ func (service *ProjectDetailService) ProjectDetail() serializer.Response {
 func (service NewCredHouseService) GetNewCredHouse() serializer.Response {
 
 	var credIdResult []int
-	batch := GetTargetBatch(service.ProjectId, service.Status)
+	batch := GetTargetBatch(service.ProjectId, service.Status, service.BatchId)
 	if batch == nil {
 		return serializer.Response{
 			Code: 200,
@@ -150,7 +156,7 @@ func (service NewCredHouseService) GetNewCredHouse() serializer.Response {
 		if service.SortType != "" {
 			houseParam["sortType"] = service.SortType
 		} else {
-			houseParam["sortType"] = "desc"
+			houseParam["sortType"] = "asc"
 		}
 		//if service.FloorNo != "" {
 		//	houseParam["FloorNo"] = service.FloorNo
@@ -227,12 +233,12 @@ func (service NewCredHouseService) GetNewCredHouse() serializer.Response {
 //获取历史摇号
 func (service HistoryIotteryService) GetHistoryIottery() serializer.Response {
 
-	batch := GetTargetBatch(service.ProjectId, service.Status)
+	batch := GetTargetBatch(service.ProjectId, service.Status, service.BatchId)
 	if batch == nil {
 		return serializer.Response{
 			Code: 200,
 			Data: nil,
-			Msg: "暂无数据1",
+			Msg: "暂无数据",
 		}
 	}
 
@@ -271,7 +277,7 @@ func (service HistoryIotteryService) GetHistoryIottery() serializer.Response {
 	return serializer.Response{
 		Code: 200,
 		Data: nil,
-		Msg: "暂无数据2",
+		Msg: "暂无数据",
 	}
 }
 
@@ -279,7 +285,7 @@ func (service HistoryIotteryService) GetHistoryIottery() serializer.Response {
 func (service AllBuildNoService) GetAllBuildNo() serializer.Response {
 
 	var result []string
-	batch := GetTargetBatch(service.ProjectId, service.Status)
+	batch := GetTargetBatch(service.ProjectId, service.Status, service.BatchId)
 	if batch == nil {
 		return serializer.Response{
 			Code: 200,
@@ -309,7 +315,7 @@ func (service AllBuildNoService) GetAllBuildNo() serializer.Response {
 //获取时间轴
 func (service TimeLineService) GetTimeLine() serializer.Response {
 
-	batch := GetTargetBatch(service.ProjectId, service.Status)
+	batch := GetTargetBatch(service.ProjectId, service.Status, service.BatchId)
 	if batch == nil {
 		return serializer.Response{
 			Code: 200,
@@ -378,7 +384,7 @@ func (service TimeLineService) GetTimeLine() serializer.Response {
 //详情检测
 func (service DetailCheckService) DetailCheck () serializer.Response {
 
-	batch := GetTargetBatch(service.ProjectId, service.Status)
+	batch := GetTargetBatch(service.ProjectId, service.Status, service.BatchId)
 	data := new(DetailCheckResult)
 	if batch == nil {
 		return serializer.Response{

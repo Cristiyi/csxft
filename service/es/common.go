@@ -611,7 +611,7 @@ func GetProjectByPoint(pointRange util.PointRange) *elastic.SearchResult {
 }
 
 //根据楼盘获取摇号
-func GetProjectIottery (start, size, batchNo, projectId int, commonParams map[string]string) *elastic.SearchResult {
+func GetProjectIottery(start, size, batchNo, projectId int, commonParams map[string]string) *elastic.SearchResult {
 	sortType := true
 	if commonParams["sortType"] == "desc" {
 		sortType = false
@@ -620,7 +620,7 @@ func GetProjectIottery (start, size, batchNo, projectId int, commonParams map[st
 	searchService := elasticsearch.GetEsCli().Search("batch")
 	queryService := elastic.NewBoolQuery()
 	batchNoQuery := elastic.NewRangeQuery("BatchNo")
-	batchNoQuery.Lte(batchNo)
+	batchNoQuery.Lt(batchNo)
 	projectIdQuery := elastic.NewTermQuery("ProjectId", projectId)
 	queryService.Must(batchNoQuery, projectIdQuery)
 
@@ -642,7 +642,7 @@ func GetProjectIottery (start, size, batchNo, projectId int, commonParams map[st
 	return searchResult
 }
 
-//获取认筹结果
+//根据id获取批次
 func GetBatchById(batchId int) *elastic.SearchResult {
 	searchService := elasticsearch.GetEsCli().Search("batch")
 	queryService := elastic.NewBoolQuery()

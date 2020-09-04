@@ -22,13 +22,14 @@ type SolicitResultService struct {
 	Size int `form:"size" json:"size"`
 	Search    string `form:"search" json:"search"`
 	Status int32 `form:"status" json:"status"`
+	BatchId int `form:"batch_id" json:"batch_id"`
 }
 
 
 func (service *SolicitResultService) GetSolicitResult() serializer.Response {
 
 	commonParam := make(map[string]string)
-	batch := GetTargetBatch(service.ProjectId, service.Status)
+	batch := GetTargetBatch(service.ProjectId, service.Status, service.BatchId)
 	commonParam["ProjectId"] = service.ProjectId
 	commonParam["BatchId"] = strconv.Itoa(int(batch.ID))
 	if service.Sort != "" {

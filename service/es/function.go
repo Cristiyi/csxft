@@ -9,6 +9,7 @@ package es
 import (
 	"csxft/model"
 	"csxft/util"
+	"github.com/olivere/elastic/v7"
 	"reflect"
 )
 
@@ -174,8 +175,13 @@ func calTimeLine(batch *model.Batch) int32 {
 	return 0
 }
 
-func GetTargetBatch(projectId string, status int32) *model.Batch {
-	batchRes := GetBatch(projectId, status)
+func GetTargetBatch(projectId string, status int32, batchId int) *model.Batch {
+	var batchRes  *elastic.SearchResult
+	if batchId != 0 {
+		batchRes = GetBatchById(batchId)
+	} else {
+		batchRes = GetBatch(projectId, status)
+	}
 	if batchRes != nil && len(batchRes.Hits.Hits) > 0 {
 		var batches []model.Batch
 		for _, item := range batchRes.Each(reflect.TypeOf(model.Batch{})) {
