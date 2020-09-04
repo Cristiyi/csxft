@@ -29,14 +29,16 @@ func (service *CsAreaService) GetCsArea() serializer.Response {
 		var result []AreaResult
 		for _, item := range res.Each(reflect.TypeOf(model.Area{})) {
 			if t, ok := item.(model.Area); ok {
-				projectCount := QueryProjectAreaCount(t.ID)
-				tempResult := AreaResult{
-					ID: t.ID,
-					Name: t.Name,
-					Pid: t.Pid,
-					ProjectCount: projectCount,
+				if t.ID != 48941 && t.ID != 48943 {
+					projectCount := QueryProjectAreaCount(t.ID)
+					tempResult := AreaResult{
+						ID:           t.ID,
+						Name:         t.Name,
+						Pid:          t.Pid,
+						ProjectCount: projectCount,
+					}
+					result = append(result, tempResult)
 				}
-				result = append(result, tempResult)
 			}
 		}
 		return serializer.Response{
