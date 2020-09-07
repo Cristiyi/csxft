@@ -72,6 +72,7 @@ func NewRouter() *gin.Engine {
 		deleteData.POST("delete_cred_house", api.DeleteCredHouse)
 		deleteData.POST("delete_lottery_result", api.DeleteLotteryResult)
 		deleteData.POST("delete_batch_lottery_result", api.DeleteBatchLotteryResult)
+		deleteData.POST("delete_dynamics", api.DeleteDynamics)
 	}
 
 	return r

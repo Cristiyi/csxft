@@ -111,7 +111,6 @@ func (service *ProjectDetailService) ProjectDetail() serializer.Response {
 	data := make(map[string]interface{})
 	data["detail"] = res.Source
 	data["newCred"] = GetTargetBatch(service.ProjectId, service.Status, service.BatchId)
-	fmt.Println(GetTargetBatch(service.ProjectId, service.Status, service.BatchId).ID)
 	data["follow"] = 0
 	data["follow_count"] = 0
 	data["target_batch_id"] = service.BatchId
