@@ -36,6 +36,10 @@ type InitDynamicAllService struct {
 type InitLotteryResultAllService struct {
 }
 
+//初始化公告相关所有信息
+type InitNoticeAllService struct {
+}
+
 // 初始化
 func (service *CreateService) CommonCreate() serializer.Response {
 
@@ -155,7 +159,23 @@ func (service *InitLotteryResultAllService) InitLotteryAll() serializer.Response
 
 }
 
+// 初始化所有公告到es
+func (service *InitNoticeAllService) InitNoticeAll() serializer.Response {
 
+	notices, err := repo.NewNoticeRepo().GetAllToEsData()
+	if err == nil {
+		for _, item := range notices {
+			strategy := NewCreateContext(10)
+			strategy.Create(uint64(item.ID))
+		}
+	}
+
+	return serializer.Response{
+		Code: 200,
+		Msg: "success",
+	}
+
+}
 
 
 
