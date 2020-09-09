@@ -32,3 +32,14 @@ func InitAllBatch(c *gin.Context) {
 		c.JSON(400, ErrorResponse(err))
 	}
 }
+
+//初始化所有一房一价数据
+func InitAllHouse(c *gin.Context) {
+	var service service.InitHouseAllService
+	if err := c.ShouldBind(&service); err == nil {
+		res := service.InitHouseAll()
+		c.JSON(200, res)
+	} else {
+		c.JSON(400, ErrorResponse(err))
+	}
+}
