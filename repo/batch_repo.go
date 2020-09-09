@@ -22,6 +22,8 @@ type BatchRepo interface {
 	GetLotteryTask() (batches []*model.Batch, err error)
 	//获取正在摇号到期任务数据
 	GetNotLotteryTask() (batches []*model.Batch, err error)
+	//获取所有插入到es的数据
+	GetAllToEsData() (batches []*model.Batch, err error)
 }
 
 func NewBatchRepo() BatchRepo {
@@ -30,6 +32,39 @@ func NewBatchRepo() BatchRepo {
 
 type batchRepo struct {
 	thisModel model.Batch
+}
+
+func (c batchRepo) GetAllToEsData() (batches []*model.Batch, err error) {
+	err = model.DB.Model(c.thisModel).Preload("Creds").Find(&batches).Error
+	if err != nil {
+		for i, batch := range batches {
+			if batch.Renovation != 0 {
+				if batch.Renovation == 1 {
+					batches[i].RenovationString = "精装"
+				} else {
+					batches[i].RenovationString = "毛坯"
+				}
+			}
+			switch batch.Status {
+			case 1:
+				batches[i].StatusName = "即将取证"
+				break
+			case 2:
+				batches[i].StatusName = "最新取证"
+				break
+			case 3:
+				batches[i].StatusName = "正在认筹"
+				break
+			case 4:
+				batches[i].StatusName = "最新摇号"
+				break
+			case 5:
+				batches[i].StatusName = "在售楼盘"
+				break
+			}
+		}
+	}
+	return
 }
 
 func (c batchRepo) GetToEsData(id uint64) (batch *model.Batch, err error) {

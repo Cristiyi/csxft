@@ -78,6 +78,7 @@ func NewRouter() *gin.Engine {
 	initAllEs := r.Group("/api/init_all")
 	{
 		initAllEs.GET("project", api.InitAllProject)
+		initAllEs.GET("batch", api.InitAllBatch)
 	}
 
 	return r

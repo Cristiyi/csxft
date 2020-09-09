@@ -20,6 +20,10 @@ type ProjectAllInfoService struct {
 type InitProjectAllService struct {
 }
 
+//初始化批次相关所有信息
+type InitBatchAllService struct {
+}
+
 // 初始化
 func (service *CreateService) CommonCreate() serializer.Response {
 
@@ -45,7 +49,7 @@ func (service *ProjectAllInfoService) Create() serializer.Response {
 
 }
 
-// 初始化
+// 初始化所有楼盘到es
 func (service *InitProjectAllService) InitProjectAll() serializer.Response {
 
 	projects, err := repo.NewProjectRepo().GetAllToEsData()
@@ -62,6 +66,27 @@ func (service *InitProjectAllService) InitProjectAll() serializer.Response {
 	}
 
 }
+
+// 初始化所有楼盘到es
+func (service *InitBatchAllService) InitBatchAll() serializer.Response {
+
+	batches, err := repo.NewBatchRepo().GetAllToEsData()
+	if err == nil {
+		for _, item := range batches {
+			strategy := NewCreateContext(11)
+			strategy.Create(uint64(item.ID))
+		}
+	}
+
+	return serializer.Response{
+		Code: 200,
+		Msg: "success",
+	}
+
+}
+
+
+
 
 
 

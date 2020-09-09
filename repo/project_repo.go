@@ -17,7 +17,7 @@ type ProjectRepo interface {
 	GetToEsData(id uint64) (project *model.Project, err error)
 	//获取即将取证的分组
 	GetPredictCredDate() (group []*model.PredictCredDate)
-	//获取插入到es的数据
+	//获取所有插入到es的数据
 	GetAllToEsData() (projects []*model.Project, err error)
 }
 
