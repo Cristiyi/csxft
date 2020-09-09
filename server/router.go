@@ -81,6 +81,7 @@ func NewRouter() *gin.Engine {
 		initAllEs.GET("batch", api.InitAllBatch)
 		initAllEs.GET("house", api.InitAllHouse)
 		initAllEs.GET("dynamic", api.InitAllDynamic)
+		initAllEs.GET("lottery_result", api.InitAllLotteryResult)
 	}
 
 	return r

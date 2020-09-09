@@ -54,3 +54,14 @@ func InitAllDynamic(c *gin.Context) {
 		c.JSON(400, ErrorResponse(err))
 	}
 }
+
+//初始化所有摇号结果数据
+func InitAllLotteryResult(c *gin.Context) {
+	var service service.InitLotteryResultAllService
+	if err := c.ShouldBind(&service); err == nil {
+		res := service.InitLotteryAll()
+		c.JSON(200, res)
+	} else {
+		c.JSON(400, ErrorResponse(err))
+	}
+}

@@ -32,6 +32,10 @@ type InitHouseAllService struct {
 type InitDynamicAllService struct {
 }
 
+//初始化摇号结果相关所有信息
+type InitLotteryResultAllService struct {
+}
+
 // 初始化
 func (service *CreateService) CommonCreate() serializer.Response {
 
@@ -122,6 +126,24 @@ func (service *InitDynamicAllService) InitDynamicAll() serializer.Response {
 	if err == nil {
 		for _, item := range projects {
 			strategy := NewCreateContext(5)
+			strategy.Create(uint64(item.ID))
+		}
+	}
+
+	return serializer.Response{
+		Code: 200,
+		Msg: "success",
+	}
+
+}
+
+// 初始化所有摇号结果到es
+func (service *InitLotteryResultAllService) InitLotteryAll() serializer.Response {
+
+	batches, err := repo.NewBatchRepo().GetAllToEsData()
+	if err == nil {
+		for _, item := range batches {
+			strategy := NewCreateContext(6)
 			strategy.Create(uint64(item.ID))
 		}
 	}
