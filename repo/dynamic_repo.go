@@ -11,6 +11,8 @@ import "csxft/model"
 type DynamicRepo interface {
 	//获取插入到es的数据
 	GetToEsData(id uint64) (dynamic *model.Dynamic, err error)
+	//获取所有插入到es的数据
+	GetAllToEsData() (dynamics []*model.Dynamic, err error)
 }
 
 func NewDynamicRepo() DynamicRepo {
@@ -19,6 +21,11 @@ func NewDynamicRepo() DynamicRepo {
 
 type dynamicRepo struct {
 	thisModel model.Dynamic
+}
+
+func (c dynamicRepo) GetAllToEsData() (dynamics []*model.Dynamic, err error) {
+	err = model.DB.Model(c.thisModel).Find(&dynamics).Error
+	return
 }
 
 func (c dynamicRepo) GetToEsData(id uint64) (dynamic *model.Dynamic, err error) {

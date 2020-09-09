@@ -28,6 +28,9 @@ type InitBatchAllService struct {
 type InitHouseAllService struct {
 }
 
+//初始化一房一价相关所有信息
+type InitDynamicAllService struct {
+}
 
 // 初始化
 func (service *CreateService) CommonCreate() serializer.Response {
@@ -112,7 +115,23 @@ func (service *InitHouseAllService) InitHouseAll() serializer.Response {
 
 }
 
+// 初始化所有楼盘动态到es
+func (service *InitDynamicAllService) InitDynamicAll() serializer.Response {
 
+	projects, err := repo.NewDynamicRepo().GetAllToEsData()
+	if err == nil {
+		for _, item := range projects {
+			strategy := NewCreateContext(5)
+			strategy.Create(uint64(item.ID))
+		}
+	}
+
+	return serializer.Response{
+		Code: 200,
+		Msg: "success",
+	}
+
+}
 
 
 
