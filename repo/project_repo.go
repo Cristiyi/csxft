@@ -17,6 +17,8 @@ type ProjectRepo interface {
 	GetToEsData(id uint64) (project *model.Project, err error)
 	//获取即将取证的分组
 	GetPredictCredDate() (group []*model.PredictCredDate)
+	//获取插入到es的数据
+	GetAllToEsData() (projects []*model.Project, err error)
 }
 
 func NewProjectRepo() ProjectRepo {
@@ -25,6 +27,28 @@ func NewProjectRepo() ProjectRepo {
 
 type projectRepo struct {
 	thisModel model.Project
+}
+
+func (p projectRepo) GetAllToEsData() (projects []*model.Project, err error) {
+	err = model.DB.Preload("EffectImages", "type = 1").
+		Preload("TempletImages", "type = 2").
+		Preload("LiveImages", "type = 3").
+		Preload("CircumImages", "type = 4").
+		Preload("AerialImages", "type = 5").
+		Preload("HouseTypeImages", "type = 6").
+		Where("no_status = ?", 1).Find(&projects).Error
+	if err == nil {
+		for i, item := range projects {
+			area := new(model.Area)
+			if err := model.DB.Where("id = ?", item.AreaId).First(&area).Error; err == nil {
+				projects[i].AreaName = area.Name
+			}
+			var count = 0
+			model.DB.Model(model.Comment{}).Where("build_id = ? and pid = ? and status = ?", item.ID, 0, 1).Count(&count)
+			projects[i].CommentCount = count
+		}
+	}
+	return
 }
 
 func (p projectRepo) GetToEsData(id uint64) (project *model.Project, err error) {
