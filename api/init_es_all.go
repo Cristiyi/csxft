@@ -76,3 +76,14 @@ func InitAllNoticeResult(c *gin.Context) {
 		c.JSON(400, ErrorResponse(err))
 	}
 }
+
+//初始化所有公告数据
+func InitAllHouseTypeImageResult(c *gin.Context) {
+	var service service.InitHouseTypeImageAllService
+	if err := c.ShouldBind(&service); err == nil {
+		res := service.InitHouseTypeImageAll()
+		c.JSON(200, res)
+	} else {
+		c.JSON(400, ErrorResponse(err))
+	}
+}

@@ -83,6 +83,7 @@ func NewRouter() *gin.Engine {
 		initAllEs.GET("dynamic", api.InitAllDynamic)
 		initAllEs.GET("lottery_result", api.InitAllLotteryResult)
 		initAllEs.GET("notice", api.InitAllNoticeResult)
+		initAllEs.GET("house_type_image", api.InitAllHouseTypeImageResult)
 	}
 
 	return r

@@ -40,6 +40,10 @@ type InitLotteryResultAllService struct {
 type InitNoticeAllService struct {
 }
 
+//初始化户型图所有信息
+type InitHouseTypeImageAllService struct {
+}
+
 // 初始化
 func (service *CreateService) CommonCreate() serializer.Response {
 
@@ -177,6 +181,22 @@ func (service *InitNoticeAllService) InitNoticeAll() serializer.Response {
 
 }
 
+// 初始化所有公告到es
+func (service *InitHouseTypeImageAllService) InitHouseTypeImageAll() serializer.Response {
 
+	houseTypeImages, err := repo.NewHouseTypeImageRepo().GetAllToEsData()
+	if err == nil {
+		for _, item := range houseTypeImages {
+			strategy := NewCreateContext(9)
+			strategy.Create(uint64(item.ID))
+		}
+	}
+
+	return serializer.Response{
+		Code: 200,
+		Msg: "success",
+	}
+
+}
 
 

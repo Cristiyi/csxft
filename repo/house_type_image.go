@@ -18,6 +18,8 @@ type HouseTypeImageRepo interface {
 	GetHouseImageGroup(projectId uint64) (houseTypeImage []HouseImageGroup)
 	//获取户型图数量
 	GetHouseImageCount(projectId uint64, homeNum string) (count int64)
+	//获取所有插入到es的数据
+	GetAllToEsData() (houseTypeImages []*model.HouseTypeImage, err error)
 }
 
 func NewHouseTypeImageRepo() HouseTypeImageRepo {
@@ -26,6 +28,11 @@ func NewHouseTypeImageRepo() HouseTypeImageRepo {
 
 type houseTypeImageRepo struct {
 	thisModel model.LotteryResult
+}
+
+func (c houseTypeImageRepo) GetAllToEsData() (houseTypeImages []*model.HouseTypeImage, err error) {
+	err = model.DB.Model(c.thisModel).Find(&houseTypeImages).Error
+	return
 }
 
 type HouseImageGroup struct {
