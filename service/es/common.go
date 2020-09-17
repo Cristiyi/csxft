@@ -21,7 +21,7 @@ func QueryProject(start,size int, commonParams map[string]string, calParams map[
 	//搜索条件构建
 	queryService := elastic.NewBoolQuery()
 	if commonParams["name"] != "" {
-		queryService.Must(elastic.NewQueryStringQuery("*Name$:" + commonParams["name"]))
+		queryService.Must(elastic.NewQueryStringQuery("*Name$" + commonParams["name"]))
 	}
 	if commonParams["IsWillCred"] != "" {
 		queryService.Must(elastic.NewTermQuery("IsWillCred", 1))
