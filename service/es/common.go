@@ -23,9 +23,9 @@ func QueryProject(start,size int, commonParams map[string]string, calParams map[
 	if commonParams["name"] != "" {
 		//queryService.Must(elastic.NewQueryStringQuery("*Name:" + commonParams["name"]))
 		nameQueryService := elastic.NewBoolQuery()
-		nameQueryService.Should(elastic.NewQueryStringQuery("ProjectName:" + commonParams["name"]))
-		nameQueryService.Should(elastic.NewQueryStringQuery("PromotionFirstName:" + commonParams["name"]))
-		nameQueryService.Should(elastic.NewQueryStringQuery("PromotionSecondName:" + commonParams["name"]))
+		nameQueryService.Should(elastic.NewMatchQuery("ProjectName", commonParams["name"]))
+		nameQueryService.Should(elastic.NewMatchQuery("PromotionFirstName", commonParams["name"]))
+		nameQueryService.Should(elastic.NewMatchQuery("PromotionSecondName", commonParams["name"]))
 		queryService.Must(nameQueryService)
 	}
 	if commonParams["IsWillCred"] != "" {
