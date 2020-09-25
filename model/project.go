@@ -49,6 +49,7 @@ type Project struct {
 	IsNotDecoration int32
 	CheckStatus uint32
 	ViewCount uint64 `gorm:"default:0"`
+	CustomPrice string
 	AveragePrice float64 `gorm:"type:decimal(10,2);default:null"`
 	AverageAcreage float64 `gorm:"type:decimal(10,2);default:null"`
 	AverageTotalPrice float64 `gorm:"type:decimal(10,2);default:null"`
