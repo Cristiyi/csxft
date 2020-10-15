@@ -88,11 +88,33 @@ func DeleteBatchLotteryResult(c *gin.Context) {
 	}
 }
 
-//根据摇号结果
+//根据楼盘动态
 func DeleteDynamics(c *gin.Context) {
 	var service service.DeleteDynamicsService
 	if err := c.ShouldBind(&service); err == nil {
 		res := service.DeleteDynamicsService()
+		c.JSON(200, res)
+	} else {
+		c.JSON(400, ErrorResponse(err))
+	}
+}
+
+//根据摇号结果
+func DeleteSolicitResult(c *gin.Context) {
+	var service service.DeleteSolicitResultService
+	if err := c.ShouldBind(&service); err == nil {
+		res := service.DeleteSolicitResult()
+		c.JSON(200, res)
+	} else {
+		c.JSON(400, ErrorResponse(err))
+	}
+}
+
+//根据批次删除摇号结果
+func DeleteBatchSolicitResult(c *gin.Context) {
+	var service service.DeleteBatchSolicitResultService
+	if err := c.ShouldBind(&service); err == nil {
+		res := service.DeleteBatchSolicitService()
 		c.JSON(200, res)
 	} else {
 		c.JSON(400, ErrorResponse(err))

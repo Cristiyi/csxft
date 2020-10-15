@@ -16,16 +16,24 @@ func QueryProject(start,size int, commonParams map[string]string, calParams map[
 	if commonParams["sortType"] == "desc" {
 		sortType = false
 	}
-	searchService := elasticsearch.GetEsCli().Search("project")
+	searchService := elasticsearch.GetEsCli().Search("project").SearchType("dfs_query_then_fetch")
 
 	//搜索条件构建
 	queryService := elastic.NewBoolQuery()
 	if commonParams["name"] != "" {
 		//queryService.Must(elastic.NewQueryStringQuery("*Name:" + commonParams["name"]))
 		nameQueryService := elastic.NewBoolQuery()
-		nameQueryService.Should(elastic.NewMatchQuery("ProjectName", commonParams["name"]))
-		nameQueryService.Should(elastic.NewMatchQuery("PromotionFirstName", commonParams["name"]))
-		nameQueryService.Should(elastic.NewMatchQuery("PromotionSecondName", commonParams["name"]))
+		//nameQueryService.Should(elastic.NewQueryStringQuery("ProjectName:"+commonParams["name"]))
+		//nameQueryService.Should(elastic.NewQueryStringQuery("PromotionFirstName:"+commonParams["name"]))
+		//nameQueryService.Should(elastic.NewQueryStringQuery("PromotionSecondName:"+commonParams["name"]))
+		//nameQueryService.Should(elastic.NewMatchPhrasePrefixQuery("ProjectName", commonParams["name"]).MaxExpansions(50).Slop(0).Boost(1.0))
+		//nameQueryService.Should(elastic.NewMatchPhrasePrefixQuery("PromotionFirstName", commonParams["name"]).MaxExpansions(50).Slop(0).Boost(1.0))
+		//nameQueryService.Should(elastic.NewMatchPhrasePrefixQuery("PromotionSecondName", commonParams["name"]).MaxExpansions(50).Slop(0).Boost(1.0))
+
+		nameQueryService.Should(elastic.NewMatchQuery("ProjectName", commonParams["name"]).Analyzer("ik_max_word"))
+		nameQueryService.Should(elastic.NewMatchQuery("PromotionFirstName", commonParams["name"]).Analyzer("ik_max_word"))
+		nameQueryService.Should(elastic.NewMatchQuery("PromotionSecondName", commonParams["name"]).Analyzer("ik_max_word"))
+
 		queryService.Must(nameQueryService)
 	}
 	if commonParams["IsWillCred"] != "" {
@@ -112,7 +120,7 @@ func QueryProject(start,size int, commonParams map[string]string, calParams map[
 		queryService.Must(elastic.NewTermQuery("PredictCredDate", calParams["PredictCredDate"]))
 	}
 
-	searchService = searchService.Query(queryService)
+	searchService = searchService.Query(queryService).SearchType("dfs_query_then_fetch")
 
 	//分页构建
 	if start == 1 || start == 0 {

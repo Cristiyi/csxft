@@ -37,3 +37,10 @@ func DeleteBatchLotteryResult(batchId int)(){
 	query := elastic.Query(elastic.NewTermQuery("BatchId", batchId))
 	client.DeleteByQuery("lottery_result").Query(query).Do(context.Background())
 }
+
+//根据批次删除认筹结果
+func DeleteBatchSolicitResult(batchId int)(){
+	client := elasticsearch.GetEsCli()
+	query := elastic.Query(elastic.NewTermQuery("BatchId", batchId))
+	client.DeleteByQuery("solicit_result").Query(query).Do(context.Background())
+}
