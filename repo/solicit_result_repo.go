@@ -8,7 +8,6 @@ package repo
 
 import (
 	"csxft/model"
-	"csxft/util"
 )
 
 type SolicitResultRepo interface {
@@ -28,7 +27,7 @@ func (c solicitResultRepo) GetToEsData(id uint64) (solicitResult []*model.Solici
 	err = model.DB.Model(c.thisModel).Where("batch_id = ?", id).Find(&solicitResult).Error
 	for i, _ := range solicitResult {
 		solicitResult[i].IdCardBack = solicitResult[i].IdCard
-		solicitResult[i].IdCard = util.HideIdCard(solicitResult[i].IdCard)
+		//solicitResult[i].IdCard = util.HideIdCard(solicitResult[i].IdCard)
 	}
 	return
 }

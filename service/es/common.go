@@ -120,7 +120,7 @@ func QueryProject(start,size int, commonParams map[string]string, calParams map[
 		queryService.Must(elastic.NewTermQuery("PredictCredDate", calParams["PredictCredDate"]))
 	}
 
-	searchService = searchService.Query(queryService).SearchType("dfs_query_then_fetch")
+	searchService = searchService.Query(queryService)
 
 	//分页构建
 	if start == 1 || start == 0 {
