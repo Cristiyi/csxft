@@ -30,13 +30,13 @@ func QueryProject(start,size int, commonParams map[string]string, calParams map[
 		//nameQueryService.Should(elastic.NewMatchPhrasePrefixQuery("PromotionFirstName", commonParams["name"]).MaxExpansions(50).Slop(0).Boost(0.1))
 		//nameQueryService.Should(elastic.NewMatchPhrasePrefixQuery("PromotionSecondName", commonParams["name"]).MaxExpansions(50).Slop(0).Boost(0.1))
 
-		nameQueryService.Should(elastic.NewMatchPhrasePrefixQuery("ProjectName", commonParams["name"]).Boost(0.3))
-		nameQueryService.Should(elastic.NewMatchPhrasePrefixQuery("PromotionFirstName", commonParams["name"]).Boost(0.3))
-		nameQueryService.Should(elastic.NewMatchPhrasePrefixQuery("PromotionSecondName", commonParams["name"]).Boost(0.3))
+		//nameQueryService.Should(elastic.NewMatchPhrasePrefixQuery("ProjectName", commonParams["name"]).Boost(0.3))
+		//nameQueryService.Should(elastic.NewMatchPhrasePrefixQuery("PromotionFirstName", commonParams["name"]).Boost(0.3))
+		//nameQueryService.Should(elastic.NewMatchPhrasePrefixQuery("PromotionSecondName", commonParams["name"]).Boost(0.3))
 
-		//nameQueryService.Should(elastic.NewMatchQuery("ProjectName", commonParams["name"]).MinimumShouldMatch("75%"))
-		//nameQueryService.Should(elastic.NewMatchQuery("PromotionFirstName", commonParams["name"]).MinimumShouldMatch("75%"))
-		//nameQueryService.Should(elastic.NewMatchQuery("PromotionSecondName", commonParams["name"]).MinimumShouldMatch("75%"))
+		nameQueryService.Should(elastic.NewMatchQuery("ProjectName", commonParams["name"]).MinimumShouldMatch("75%"))
+		nameQueryService.Should(elastic.NewMatchQuery("PromotionFirstName", commonParams["name"]).MinimumShouldMatch("75%"))
+		nameQueryService.Should(elastic.NewMatchQuery("PromotionSecondName", commonParams["name"]).MinimumShouldMatch("75%"))
 
 		queryService.Must(nameQueryService)
 	}
