@@ -23,16 +23,20 @@ func QueryProject(start,size int, commonParams map[string]string, calParams map[
 	if commonParams["name"] != "" {
 		//queryService.Must(elastic.NewQueryStringQuery("*Name:" + commonParams["name"]))
 		nameQueryService := elastic.NewBoolQuery()
-		nameQueryService.Should(elastic.NewQueryStringQuery("ProjectName:"+commonParams["name"]))
-		nameQueryService.Should(elastic.NewQueryStringQuery("PromotionFirstName:"+commonParams["name"]))
-		nameQueryService.Should(elastic.NewQueryStringQuery("PromotionSecondName:"+commonParams["name"]))
-		//nameQueryService.Should(elastic.NewMatchPhrasePrefixQuery("ProjectName", commonParams["name"]).MaxExpansions(50).Slop(0).Boost(1.0))
-		//nameQueryService.Should(elastic.NewMatchPhrasePrefixQuery("PromotionFirstName", commonParams["name"]).MaxExpansions(50).Slop(0).Boost(1.0))
-		//nameQueryService.Should(elastic.NewMatchPhrasePrefixQuery("PromotionSecondName", commonParams["name"]).MaxExpansions(50).Slop(0).Boost(1.0))
+		//nameQueryService.Should(elastic.NewQueryStringQuery("ProjectName:"+commonParams["name"]))
+		//nameQueryService.Should(elastic.NewQueryStringQuery("PromotionFirstName:"+commonParams["name"]))
+		//nameQueryService.Should(elastic.NewQueryStringQuery("PromotionSecondName:"+commonParams["name"]))
+		//nameQueryService.Should(elastic.NewMatchPhrasePrefixQuery("ProjectName", commonParams["name"]).MaxExpansions(50).Slop(0).Boost(0.1))
+		//nameQueryService.Should(elastic.NewMatchPhrasePrefixQuery("PromotionFirstName", commonParams["name"]).MaxExpansions(50).Slop(0).Boost(0.1))
+		//nameQueryService.Should(elastic.NewMatchPhrasePrefixQuery("PromotionSecondName", commonParams["name"]).MaxExpansions(50).Slop(0).Boost(0.1))
 
-		//nameQueryService.Should(elastic.NewMatchQuery("ProjectName", commonParams["name"]).Analyzer("ik_max_word"))
-		//nameQueryService.Should(elastic.NewMatchQuery("PromotionFirstName", commonParams["name"]).Analyzer("ik_max_word"))
-		//nameQueryService.Should(elastic.NewMatchQuery("PromotionSecondName", commonParams["name"]).Analyzer("ik_max_word"))
+		//nameQueryService.Should(elastic.NewMatchPhrasePrefixQuery("ProjectName", commonParams["name"]).Boost(0))
+		//nameQueryService.Should(elastic.NewMatchPhrasePrefixQuery("PromotionFirstName", commonParams["name"]).Boost(0))
+		//nameQueryService.Should(elastic.NewMatchPhrasePrefixQuery("PromotionSecondName", commonParams["name"]).Boost(0))
+
+		nameQueryService.Should(elastic.NewMatchQuery("ProjectName", commonParams["name"]).MinimumShouldMatch("75%"))
+		nameQueryService.Should(elastic.NewMatchQuery("PromotionFirstName", commonParams["name"]).MinimumShouldMatch("75%"))
+		nameQueryService.Should(elastic.NewMatchQuery("PromotionSecondName", commonParams["name"]).MinimumShouldMatch("75%"))
 
 		queryService.Must(nameQueryService)
 	}
@@ -129,6 +133,7 @@ func QueryProject(start,size int, commonParams map[string]string, calParams map[
 		start = (start-1)*size
 	}
 	searchResult, err := searchService.
+		Sort("_score", false).
 		Sort(commonParams["sort"], sortType).
 		From(start).Size(size).
 		Pretty(true).
