@@ -539,7 +539,7 @@ func HouseTypeImageCount(commonParams map[string]string) (count int64) {
 func GetNotice(commonParams map[string]string) *elastic.SearchResult {
 	searchService := elasticsearch.GetEsCli().Search("notice")
 	queryService := elastic.NewBoolQuery()
-	queryService.Must(elastic.NewTermQuery("ProjectId", commonParams["ProjectId"]))
+	//queryService.Must(elastic.NewTermQuery("ProjectId", commonParams["ProjectId"]))
 	queryService.Must(elastic.NewTermQuery("Status", 1))
 	if commonParams["BatchId"] != "" {
 		queryService.Must(elastic.NewTermQuery("BatchId", commonParams["BatchId"]))

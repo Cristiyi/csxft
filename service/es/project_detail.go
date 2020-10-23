@@ -95,7 +95,9 @@ type DetailCheckResult struct {
 //公告服务
 type GetNoticeService struct {
 	ProjectId    string `form:"project_id" json:"project_id" binding:"required"`
+	Status int32 `form:"status" json:"status"`
 	NoticeType    string `form:"notice_type" json:"notice_type" binding:"required"`
+	BatchId int `form:"batch_id" json:"batch_id"`
 }
 
 //获取楼盘详情
@@ -442,8 +444,16 @@ func (service DetailCheckService) DetailCheck () serializer.Response {
 //公告
 func (service GetNoticeService) GetNotice () serializer.Response {
 
+	batch := GetTargetBatch(service.ProjectId, service.Status, service.BatchId)
+	if batch == nil {
+		return serializer.Response{
+			Code: 200,
+			Data: nil,
+			Msg: "暂无数据",
+		}
+	}
 	noticeParam := make(map[string]string)
-	noticeParam["ProjectId"] = service.ProjectId
+	noticeParam["BatchId"] = string(batch.ID)
 	noticeParam["NoticeType"] = service.NoticeType
 	noticeRes := GetNotice(noticeParam)
 	if noticeRes != nil {
