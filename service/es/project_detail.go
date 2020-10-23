@@ -453,7 +453,7 @@ func (service GetNoticeService) GetNotice () serializer.Response {
 		}
 	}
 	noticeParam := make(map[string]string)
-	noticeParam["BatchId"] = string(batch.ID)
+	noticeParam["BatchId"] = strconv.Itoa(int(batch.ID))
 	noticeParam["NoticeType"] = service.NoticeType
 	noticeRes := GetNotice(noticeParam)
 	if noticeRes != nil {
