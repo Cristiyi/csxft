@@ -541,9 +541,10 @@ func GetNotice(commonParams map[string]string) *elastic.SearchResult {
 	queryService := elastic.NewBoolQuery()
 	//queryService.Must(elastic.NewTermQuery("ProjectId", commonParams["ProjectId"]))
 	queryService.Must(elastic.NewTermQuery("Status", 1))
-	//if commonParams["BatchId"] != "" {
-	//	queryService.Must(elastic.NewTermQuery("BatchId", commonParams["BatchId"]))
-	//}
+	if commonParams["BatchId"] != "" {
+		fmt.Println(commonParams["BatchId"])
+		queryService.Must(elastic.NewTermQuery("BatchId", commonParams["BatchId"]))
+	}
 	if commonParams["NoticeType"] != "" {
 		queryService.Must(elastic.NewTermQuery("NoticeType", commonParams["NoticeType"]))
 	}
