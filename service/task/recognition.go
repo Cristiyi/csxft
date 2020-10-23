@@ -24,15 +24,17 @@ type NotRecognitionService struct {
 func (service *RecognitionService) GetRecognitionTask() serializer.Response {
 
 	data, err := repo.NewBatchRepo().GetRecognitionTask()
-	if err != nil && len(data) > 0 {
+	if err != nil || len(data) <= 0 {
 		return serializer.Response{
 			Code: 400,
 			Msg: "fail",
-			Error: err.Error(),
+			Error: "暂无相关数据",
 		}
 	}
 	for i, item := range data {
+		//修改db
 		model.DB.Model(&data[i]).Update(map[string]interface{}{"status": 3, "is_recognition": 1})
+		//修改es
 		batchEsParam := make(map[string]interface{})
 		batchEsParam["IsRecognition"] = 1
 		batchEsParam["Status"] = 3
@@ -59,22 +61,24 @@ func (service *RecognitionService) GetRecognitionTask() serializer.Response {
 func (service *NotRecognitionService) GetNotRecognitionTask() serializer.Response {
 
 	data, err := repo.NewBatchRepo().GetNotRecognitionTask()
-	if err != nil && len(data) > 0 {
+	if err == nil || len(data) <= 0 {
 		return serializer.Response{
 			Code: 400,
 			Msg: "fail",
-			Error: err.Error(),
+			Error: "暂无相关数据",
 		}
 	}
 	for i, item := range data {
-		//project es修改参数
+		//project 修改参数
 		projectEsParam := make(map[string]interface{})
 		projectEsParam["IsRecognition"] = 0
+		projectDbParams := make(map[string]interface{})
+		projectDbParams["IsRecognition"] = 0
 		//batch es修改参数
 		batchEsParam := make(map[string]interface{})
 		batchEsParam["Status"] = 5
 		batchEsParam["IsRecognition"] = 0
-		//数据库修改参数
+		//数据库修改参数（批次）
 		dbParams := make(map[string]interface{})
 		dbParams["status"] = 5
 		dbParams["is_recognition"] = 0
@@ -83,6 +87,7 @@ func (service *NotRecognitionService) GetNotRecognitionTask() serializer.Respons
 			dbParams["status"] = 4
 			dbParams["is_iottery"] = 1
 			projectEsParam["IsIottery"] = 1
+			projectDbParams["IsIottery"] = 1
 			batchEsParam["IsIottery"] = 1
 			batchEsParam["Status"] = 4
 		}
@@ -103,8 +108,17 @@ func (service *NotRecognitionService) GetNotRecognitionTask() serializer.Respons
 			batchEsParam["StatusName"] = "在售楼盘"
 			break
 		}
+		//修改批次db
 		model.DB.Model(&data[i]).Updates(dbParams)
 		//model.DB.Model(&data[i]).Update(map[string]interface{}{"status": 10, "is_recognition": 0})
+		//修改楼盘db
+		project := new(model.Project)
+		err := model.DB.Model(model.Project{}).Where("id = ?", item.ProjectId).First(&project).Error
+		if err != nil {
+			continue
+		}
+		model.DB.Model(&project).Updates(projectDbParams)
+		//修改es
 		es_update.Update(&batchEsParam, int(item.ID), "batch")
 		es_update.Update(&projectEsParam, int(item.ProjectId), "project")
 	}

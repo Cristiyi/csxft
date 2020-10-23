@@ -25,11 +25,11 @@ type NotLotteryService struct {
 func (service *LotteryService) GetLotteryTask() serializer.Response {
 
 	data, err := repo.NewBatchRepo().GetLotteryTask()
-	if err != nil {
+	if err != nil || len(data) <= 0 {
 		return serializer.Response{
 			Code: 400,
 			Msg: "fail",
-			Error: err.Error(),
+			Error: "暂无相关数据",
 		}
 	}
 	for i, item := range data {
@@ -42,7 +42,7 @@ func (service *LotteryService) GetLotteryTask() serializer.Response {
 			dbBatchParams["status"] = 4
 		}
 
-		//修改批次 是否为最新取证 用于多状态
+		//修改批次db 是否为正在摇号 用于多状态
 		model.DB.Model(&data[i]).Updates(dbBatchParams)
 		batchEsParam := make(map[string]interface{})
 		batchEsParam["IsIottery"] = 1
@@ -64,9 +64,10 @@ func (service *LotteryService) GetLotteryTask() serializer.Response {
 			batchEsParam["StatusName"] = "在售楼盘"
 			break
 		}
+		//修改批次es
 		es_update.Update(&batchEsParam, int(item.ID), "batch")
 
-		//修改楼盘
+		//修改楼盘db
 		project := new(model.Project)
 		err := model.DB.Model(model.Project{}).Where("id = ?", item.ProjectId).First(&project).Error
 		if err != nil {
@@ -74,6 +75,7 @@ func (service *LotteryService) GetLotteryTask() serializer.Response {
 		}
 
 		model.DB.Model(&project).Update("is_iottery", 1)
+		//修改楼盘es
 		projectEsParam := make(map[string]interface{})
 		projectEsParam["IsIottery"] = 1
 		es_update.Update(&projectEsParam, int(project.ID), "project")
@@ -87,35 +89,42 @@ func (service *LotteryService) GetLotteryTask() serializer.Response {
 }
 
 
-func (service *LotteryService) GetNotLotteryTask() serializer.Response {
+func (service *NotLotteryService) GetNotLotteryTask() serializer.Response {
 
-	data, err := repo.NewBatchRepo().GetLotteryTask()
-	if err == nil && len(data) > 0 {
-		for _, item := range data {
-			batch := new(model.Batch)
-			//修改批次 是否为最新取证 用于多状态
-			dbBatchParams := make(map[string]interface{})
-			dbBatchParams["is_iottery"] = 0
-			dbBatchParams["status"] = 5
-			model.DB.Model(&batch).Updates(dbBatchParams)
-
-			batchEsParam := make(map[string]interface{})
-			batchEsParam["IsIottery"] = 0
-			batchEsParam["Status"] = 5
-			es_update.Update(&batchEsParam, int(batch.ID), "batch")
-
-			//修改楼盘
-			project := new(model.Project)
-			err := model.DB.Model(model.Project{}).Where("id = ?", item.ProjectId).First(&project).Error
-			if err != nil {
-				continue
-			}
-			model.DB.Model(&project).Update("is_iottery", 0)
-			projectEsParam := make(map[string]interface{})
-			projectEsParam["IsIottery"] = 0
-			es_update.Update(&projectEsParam, int(project.ID), "project")
-
+	data, err := repo.NewBatchRepo().GetNotLotteryTask()
+	if err == nil || len(data) <= 0 {
+		return serializer.Response{
+			Code: 400,
+			Msg: "fail",
+			Error: "暂无相关数据",
 		}
+	}
+	for _, item := range data {
+		batch := new(model.Batch)
+		//修改批次db 是否为正在摇号 用于多状态
+		dbBatchParams := make(map[string]interface{})
+		dbBatchParams["is_iottery"] = 0
+		dbBatchParams["status"] = 5
+		model.DB.Model(&batch).Updates(dbBatchParams)
+
+		//修改批次es
+		batchEsParam := make(map[string]interface{})
+		batchEsParam["IsIottery"] = 0
+		batchEsParam["Status"] = 5
+		es_update.Update(&batchEsParam, int(batch.ID), "batch")
+
+		//修改楼盘db
+		project := new(model.Project)
+		err := model.DB.Model(model.Project{}).Where("id = ?", item.ProjectId).First(&project).Error
+		if err != nil {
+			continue
+		}
+		model.DB.Model(&project).Update("is_iottery", 0)
+		//修改楼盘es
+		projectEsParam := make(map[string]interface{})
+		projectEsParam["IsIottery"] = 0
+		es_update.Update(&projectEsParam, int(project.ID), "project")
+
 	}
 
 	return serializer.Response{

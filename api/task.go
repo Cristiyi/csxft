@@ -54,3 +54,26 @@ func NotNewRecognitionTask(c *gin.Context) {
 		c.JSON(400, ErrorResponse(err))
 	}
 }
+
+//正在摇号定时处理
+func NewLotteryTask(c *gin.Context) {
+	var service service.LotteryService
+	if err := c.ShouldBind(&service); err == nil {
+		res := service.GetLotteryTask()
+		c.JSON(200, res)
+	} else {
+		c.JSON(400, ErrorResponse(err))
+	}
+}
+
+//正在摇号到期定时处理
+func NotNewLotteryTask(c *gin.Context) {
+	var service service.NotLotteryService
+	if err := c.ShouldBind(&service); err == nil {
+		res := service.GetNotLotteryTask()
+		c.JSON(200, res)
+	} else {
+		c.JSON(400, ErrorResponse(err))
+	}
+}
+

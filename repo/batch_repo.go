@@ -97,23 +97,27 @@ func (c batchRepo) GetToEsData(id uint64) (batch *model.Batch, err error) {
 	return
 }
 
+//获取正在认筹的任务
 func (c batchRepo) GetRecognitionTask() (batches []*model.Batch, err error) {
 	err = model.DB.Model(c.thisModel).Where("TO_DAYS(solicit_begin) <= TO_DAYS(now()) and TO_DAYS(solicit_end) >= TO_DAYS(now()) and status != 3").Find(&batches).Error
 	return
 }
 
+//获取正在认筹的到期任务
 func (c batchRepo) GetNotRecognitionTask() (batches []*model.Batch, err error) {
 	err = model.DB.Model(c.thisModel).Where("TO_DAYS(solicit_end) < TO_DAYS(now()) and status = 3").Find(&batches).Error
 	return
 }
 
+//获取正在摇号的任务
 func (c batchRepo) GetLotteryTask() (batches []*model.Batch, err error) {
 	err = model.DB.Model(c.thisModel).Where("TO_DAYS(DATE_ADD(lottery_time, INTERVAL " + os.Getenv("NEW_LOTTERY_TIME_BASE") + " DAY)) >= TO_DAYS(now())").Find(&batches).Error
 	return
 }
 
+//获取正在要好的到期任务
 func (c batchRepo) GetNotLotteryTask() (batches []*model.Batch, err error) {
-	err = model.DB.Model(c.thisModel).Where("TO_DAYS(DATE_ADD(lottery_time, INTERVAL " + os.Getenv("NEW_LOTTERY_TIME_BASE") + " DAY)) <= TO_DAYS(now()) and status = 4").Find(&batches).Error
+	err = model.DB.Model(c.thisModel).Where("TO_DAYS(DATE_ADD(lottery_time, INTERVAL " + os.Getenv("NEW_LOTTERY_TIME_BASE") + " DAY)) < TO_DAYS(now()) and status = 4").Find(&batches).Error
 	return
 }
 

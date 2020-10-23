@@ -61,6 +61,8 @@ func NewRouter() *gin.Engine {
 		taskData.GET("not_new_cred_task", api.NotNewCredTask)
 		taskData.GET("recognition", api.NewRecognitionTask)
 		taskData.GET("not_recognition", api.NotNewRecognitionTask)
+		taskData.GET("new_lottery", api.NewLotteryTask)
+		taskData.GET("not_new_lottery", api.NotNewLotteryTask)
 	}
 
 	deleteData := r.Group("/api/delete")

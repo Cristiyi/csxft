@@ -26,11 +26,11 @@ type NotNewCredTaskService struct {
 func (service *NewCredTaskService) GetNewCredTask() serializer.Response {
 
 	data, err := repo.NewCredRepo().GetNewCredTask()
-	if err != nil {
+	if err != nil || len(data) <= 0 {
 		return serializer.Response{
 			Code: 400,
 			Msg: "fail",
-			Error: err.Error(),
+			Error: "暂无相关数据",
 		}
 	}
 	for _, item := range data {
@@ -47,7 +47,6 @@ func (service *NewCredTaskService) GetNewCredTask() serializer.Response {
 		dbBatchParams["is_new_cred"] = 1
 		//判断是否为今天取证 是则修改批次状态
 		if item.CredDate.Day() == util.GetToday().Day() {
-			batch.Status = 2
 			dbBatchParams["status"] = 2
 		}
 
@@ -55,7 +54,7 @@ func (service *NewCredTaskService) GetNewCredTask() serializer.Response {
 		model.DB.Model(&batch).Updates(dbBatchParams)
 		batchEsParam := make(map[string]interface{})
 		batchEsParam["IsNewCred"] = 1
-		batchEsParam["Status"] = batch.Status
+		batchEsParam["Status"] = 2
 		switch batch.Status {
 		case 1:
 			batchEsParam["StatusName"] = "即将取证"
@@ -84,7 +83,7 @@ func (service *NewCredTaskService) GetNewCredTask() serializer.Response {
 
 		model.DB.Model(&project).Update("is_new_cred", 1)
 		projectEsParam := make(map[string]interface{})
-		projectEsParam["IsWillCred"] = 1
+		projectEsParam["IsNewCred"] = 1
 		es_update.Update(&projectEsParam, int(project.ID), "project")
 
 	}
@@ -99,42 +98,48 @@ func (service *NewCredTaskService) GetNewCredTask() serializer.Response {
 func (service *NotNewCredTaskService) GetNotNewCredTask() serializer.Response {
 
 	data, err := repo.NewCredRepo().GetNotNewCredTask()
-	if err == nil && len(data) > 0 {
-		for _, item := range data {
-			batch := new(model.Batch)
-			if item.BatchId != 0 {
-				err := model.DB.Model(model.Batch{}).Where("id = ?", item.BatchId).First(&batch).Error
-				if err != nil {
-					fmt.Println(err)
-					continue
-				}
-			} else {
-				continue
-			}
-			//修改批次 是否为最新取证 用于多状态
-			dbBatchParams := make(map[string]interface{})
-			dbBatchParams["is_new_cred"] = 0
-			dbBatchParams["status"] = 5
-			model.DB.Model(&batch).Updates(dbBatchParams)
-
-			batchEsParam := make(map[string]interface{})
-			batchEsParam["IsNewCred"] = 0
-			batchEsParam["Status"] = 5
-			es_update.Update(&batchEsParam, int(batch.ID), "batch")
-
-			//修改楼盘
-			project := new(model.Project)
-			err := model.DB.Model(model.Project{}).Where("id = ?", item.ProjectId).First(&project).Error
-			if err != nil {
-				continue
-			}
-			//project.IsNewCred = 0
-			model.DB.Model(&project).Update("is_new_cred", 0)
-			projectEsParam := make(map[string]interface{})
-			projectEsParam["IsNewCred"] = 0
-			es_update.Update(&projectEsParam, int(project.ID), "project")
-
+	if err != nil || len(data) <= 0 {
+		return serializer.Response{
+			Code: 400,
+			Msg: "fail",
+			Error: "暂无相关数据",
 		}
+	}
+	for _, item := range data {
+		batch := new(model.Batch)
+		if item.BatchId != 0 {
+			err := model.DB.Model(model.Batch{}).Where("id = ?", item.BatchId).First(&batch).Error
+			if err != nil {
+				fmt.Println(err)
+				continue
+			}
+		} else {
+			continue
+		}
+		//修改批次 是否为最新取证 用于多状态
+		dbBatchParams := make(map[string]interface{})
+		dbBatchParams["is_new_cred"] = 0
+		dbBatchParams["status"] = 5
+		model.DB.Model(&batch).Updates(dbBatchParams)
+
+		batchEsParam := make(map[string]interface{})
+		batchEsParam["IsNewCred"] = 0
+		batchEsParam["Status"] = 5
+		batchEsParam["StatusName"] = "在售楼盘"
+		es_update.Update(&batchEsParam, int(batch.ID), "batch")
+
+		//修改楼盘
+		project := new(model.Project)
+		err := model.DB.Model(model.Project{}).Where("id = ?", item.ProjectId).First(&project).Error
+		if err != nil {
+			continue
+		}
+		//project.IsNewCred = 0
+		model.DB.Model(&project).Update("is_new_cred", 0)
+		projectEsParam := make(map[string]interface{})
+		projectEsParam["IsNewCred"] = 0
+		es_update.Update(&projectEsParam, int(project.ID), "project")
+
 	}
 
 	return serializer.Response{
