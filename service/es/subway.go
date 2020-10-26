@@ -83,7 +83,6 @@ func (service *SubwayProjectService) GetSubwayProject() serializer.Response {
 			Msg:  "数据有误",
 		}
 	}else {
-		fmt.Println(linePointResult)
 		pointRange := util.GetDistancePointRange(linePointResult.Latitude, linePointResult.Longitude, 1)
 		var subwayProjectList []*SubwayProject
 		esRes := GetProjectByPoint(pointRange)

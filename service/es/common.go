@@ -602,7 +602,7 @@ func GetProjectCountByPoint(pointRange util.PointRange) (count int64) {
 }
 
 
-//根据经纬度范围获取楼盘数量
+//根据经纬度范围获取楼盘
 func GetProjectByPoint(pointRange util.PointRange) *elastic.SearchResult {
 
 	searchService := elasticsearch.GetEsCli().Search("project")
