@@ -178,9 +178,12 @@ func calTimeLine(batch *model.Batch) int32 {
 
 func GetTargetBatch(projectId string, status int32, batchId int) *model.Batch {
 	var batchRes  *elastic.SearchResult
+	fmt.Println(batchId)
 	if batchId != 0 {
+		fmt.Println(1)
 		batchRes = GetBatchById(batchId)
 	} else {
+		fmt.Println(2)
 		batchRes = GetBatch(projectId, status)
 	}
 	fmt.Println(batchRes.Hits.Hits)
