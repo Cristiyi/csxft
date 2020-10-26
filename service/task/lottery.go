@@ -11,7 +11,6 @@ import (
 	"csxft/repo"
 	"csxft/serializer"
 	"csxft/service/es_update"
-	"csxft/util"
 )
 
 //正在摇号任务
@@ -37,10 +36,12 @@ func (service *LotteryService) GetLotteryTask() serializer.Response {
 		dbBatchParams := make(map[string]interface{})
 		dbBatchParams["is_iottery"] = 1
 		//判断是否为今天取证 是则修改批次状态
-		if item.LotteryTime.Day() == util.GetToday().Day() {
-			item.Status = 4
-			dbBatchParams["status"] = 4
-		}
+		//if item.LotteryTime.Day() == util.GetToday().Day() {
+		//	item.Status = 4
+		//	dbBatchParams["status"] = 4
+		//}
+		item.Status = 4
+		dbBatchParams["status"] = 4
 
 		//修改批次db 是否为正在摇号 用于多状态
 		model.DB.Model(&data[i]).Updates(dbBatchParams)
