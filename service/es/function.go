@@ -183,7 +183,7 @@ func GetTargetBatch(projectId string, status int32, batchId int) *model.Batch {
 	} else {
 		batchRes = GetBatch(projectId, status)
 	}
-	fmt.Println(batchRes)
+	fmt.Println(batchRes.Hits.Hits)
 	if batchRes != nil && len(batchRes.Hits.Hits) > 0 {
 		var batches []model.Batch
 		for _, item := range batchRes.Each(reflect.TypeOf(model.Batch{})) {
