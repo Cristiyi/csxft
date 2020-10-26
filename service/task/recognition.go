@@ -61,7 +61,7 @@ func (service *RecognitionService) GetRecognitionTask() serializer.Response {
 func (service *NotRecognitionService) GetNotRecognitionTask() serializer.Response {
 
 	data, err := repo.NewBatchRepo().GetNotRecognitionTask()
-	if err == nil || len(data) <= 0 {
+	if err != nil || len(data) <= 0 {
 		return serializer.Response{
 			Code: 400,
 			Msg: "fail",

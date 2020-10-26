@@ -92,7 +92,7 @@ func (service *LotteryService) GetLotteryTask() serializer.Response {
 func (service *NotLotteryService) GetNotLotteryTask() serializer.Response {
 
 	data, err := repo.NewBatchRepo().GetNotLotteryTask()
-	if err == nil || len(data) <= 0 {
+	if err != nil || len(data) <= 0 {
 		return serializer.Response{
 			Code: 400,
 			Msg: "fail",
