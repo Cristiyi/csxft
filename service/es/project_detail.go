@@ -102,9 +102,14 @@ type GetNoticeService struct {
 	BatchId int `form:"batch_id" json:"batch_id"`
 }
 
+type Coordinate struct {
+	Longitude float64 `json:"longitude"`
+	Latitude float64 `json:"latitude"`
+}
+
 //猜你喜欢服务
 type RecommendProjectService struct {
-	LinePoint    string `form:"line_point" json:"line_point" binding:"required"`
+	Coordinate    string `form:"coordinate" json:"coordinate" binding:"required"`
 }
 
 //获取楼盘详情
@@ -486,15 +491,15 @@ func (service GetNoticeService) GetNotice () serializer.Response {
 //猜你喜欢
 func (service *RecommendProjectService) GetRecommendProject() serializer.Response {
 
-	var linePointResult LinePoint
-	if err := json.Unmarshal([]byte(service.LinePoint), &linePointResult);err != nil{
+	var coordinate Coordinate
+	if err := json.Unmarshal([]byte(service.Coordinate), &coordinate);err != nil{
 		fmt.Println(err)
 		return serializer.Response{
 			Code: 400,
 			Msg:  "数据有误",
 		}
 	}else {
-		pointRange := util.GetDistancePointRange(linePointResult.Latitude, linePointResult.Longitude, 3)
+		pointRange := util.GetDistancePointRange(coordinate.Latitude, coordinate.Longitude, 3)
 		var list []model.Project
 		esRes := GetRecommendProject(pointRange)
 		if esRes != nil {
