@@ -257,3 +257,14 @@ func GetPredictCredDate(c *gin.Context) {
 //		c.JSON(400, ErrorResponse(err))
 //	}
 //}
+
+//猜你喜欢
+func GetRecommendProject(c *gin.Context) {
+	var service service.RecommendProjectService
+	if err := c.ShouldBind(&service); err == nil {
+		res := service.GetRecommendProject()
+		c.JSON(200, res)
+	} else {
+		c.JSON(400, ErrorResponse(err))
+	}
+}

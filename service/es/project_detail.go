@@ -10,6 +10,8 @@ import (
 	"csxft/model"
 	"csxft/repo"
 	"csxft/serializer"
+	"csxft/util"
+	"encoding/json"
 	"fmt"
 	"reflect"
 	"strconv"
@@ -98,6 +100,11 @@ type GetNoticeService struct {
 	Status int32 `form:"status" json:"status"`
 	NoticeType    string `form:"notice_type" json:"notice_type" binding:"required"`
 	BatchId int `form:"batch_id" json:"batch_id"`
+}
+
+//猜你喜欢服务
+type RecommendProjectService struct {
+	LinePoint    string `form:"line_point" json:"line_point" binding:"required"`
 }
 
 //获取楼盘详情
@@ -474,4 +481,50 @@ func (service GetNoticeService) GetNotice () serializer.Response {
 		Code: 400,
 		Msg: "暂无数据",
 	}
+}
+
+//猜你喜欢
+func (service *RecommendProjectService) GetRecommendProject() serializer.Response {
+
+	var linePointResult LinePoint
+	if err := json.Unmarshal([]byte(service.LinePoint), &linePointResult);err != nil{
+		fmt.Println(err)
+		return serializer.Response{
+			Code: 400,
+			Msg:  "数据有误",
+		}
+	}else {
+		pointRange := util.GetDistancePointRange(linePointResult.Latitude, linePointResult.Longitude, 3)
+		var list []*model.Project
+		esRes := GetRecommendProject(pointRange)
+		if esRes != nil {
+			for _, item := range esRes.Each(reflect.TypeOf(model.Project{})) {
+				if t, ok := item.(model.Project); ok {
+					temp := new(model.Project)
+					temp.ID = uint(int(t.ID))
+					if t.PromotionFirstName != "" {
+						temp.ProjectName = t.PromotionFirstName
+					} else if t.PromotionSecondName != "" {
+						temp.ProjectName = t.PromotionSecondName
+					} else {
+						temp.ProjectName = t.ProjectName
+					}
+					temp.Longitude = t.Longitude
+					temp.Latitude = t.Latitude
+					list = append(list, temp)
+				}
+			}
+			return serializer.Response{
+				Code: 200,
+				Data: list,
+				Msg:  "success",
+			}
+		}
+		return serializer.Response{
+			Code: 200,
+			Data: nil,
+			Msg:  "success",
+		}
+	}
+
 }
