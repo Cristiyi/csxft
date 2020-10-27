@@ -629,7 +629,7 @@ func GetProjectByPoint(pointRange util.PointRange) *elastic.SearchResult {
 }
 
 //猜你喜欢
-func GetRecommendProject(pointRange util.PointRange) *elastic.SearchResult {
+func GetRecommendProject(projectId string, pointRange util.PointRange) *elastic.SearchResult {
 
 	searchService := elasticsearch.GetEsCli().Search("project")
 	queryService := elastic.NewBoolQuery()
@@ -641,7 +641,10 @@ func GetRecommendProject(pointRange util.PointRange) *elastic.SearchResult {
 	latRangeQuery.Lte(pointRange.MaxLat)
 	queryService.Must(longRangeQuery, latRangeQuery)
 
+	queryService.MustNot(elastic.NewTermQuery("ProjectId", projectId))
+
 	searchService = searchService.Query(queryService)
+
 
 	searchResult, err := searchService.
 		Sort("CreatedAt", false).

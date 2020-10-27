@@ -109,6 +109,7 @@ type Coordinate struct {
 
 //猜你喜欢服务
 type RecommendProjectService struct {
+	ProjectId    string `form:"project_id" json:"project_id" binding:"required"`
 	Coordinate    string `form:"coordinate" json:"coordinate" binding:"required"`
 }
 
@@ -501,7 +502,7 @@ func (service *RecommendProjectService) GetRecommendProject() serializer.Respons
 	}else {
 		pointRange := util.GetDistancePointRange(coordinate.Latitude, coordinate.Longitude, 3)
 		var list []model.Project
-		esRes := GetRecommendProject(pointRange)
+		esRes := GetRecommendProject(service.ProjectId, pointRange)
 		if esRes != nil {
 			for _, item := range esRes.Each(reflect.TypeOf(model.Project{})) {
 				if t, ok := item.(model.Project); ok {
