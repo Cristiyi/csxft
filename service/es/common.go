@@ -602,7 +602,7 @@ func GetProjectCountByPoint(pointRange util.PointRange) (count int64) {
 }
 
 
-//猜你喜欢
+//根据坐标获取周边楼盘（地铁用）
 func GetProjectByPoint(pointRange util.PointRange) *elastic.SearchResult {
 
 	searchService := elasticsearch.GetEsCli().Search("project")
@@ -619,7 +619,6 @@ func GetProjectByPoint(pointRange util.PointRange) *elastic.SearchResult {
 
 	searchResult, err := searchService.
 		Sort("CreatedAt", false).
-		From(0).Size(3).
 		Pretty(true).
 		Do(context.Background())
 	if err != nil {
@@ -646,6 +645,7 @@ func GetRecommendProject(pointRange util.PointRange) *elastic.SearchResult {
 
 	searchResult, err := searchService.
 		Sort("CreatedAt", false).
+		From(0).Size(3).
 		Pretty(true).
 		Do(context.Background())
 	if err != nil {

@@ -495,23 +495,23 @@ func (service *RecommendProjectService) GetRecommendProject() serializer.Respons
 		}
 	}else {
 		pointRange := util.GetDistancePointRange(linePointResult.Latitude, linePointResult.Longitude, 3)
-		var list []*model.Project
+		var list []model.Project
 		esRes := GetRecommendProject(pointRange)
 		if esRes != nil {
 			for _, item := range esRes.Each(reflect.TypeOf(model.Project{})) {
 				if t, ok := item.(model.Project); ok {
-					temp := new(model.Project)
-					temp.ID = uint(int(t.ID))
-					if t.PromotionFirstName != "" {
-						temp.ProjectName = t.PromotionFirstName
-					} else if t.PromotionSecondName != "" {
-						temp.ProjectName = t.PromotionSecondName
-					} else {
-						temp.ProjectName = t.ProjectName
-					}
-					temp.Longitude = t.Longitude
-					temp.Latitude = t.Latitude
-					list = append(list, temp)
+					//temp := new(model.Project)
+					//temp.ID = uint(int(t.ID))
+					//if t.PromotionFirstName != "" {
+					//	temp.ProjectName = t.PromotionFirstName
+					//} else if t.PromotionSecondName != "" {
+					//	temp.ProjectName = t.PromotionSecondName
+					//} else {
+					//	temp.ProjectName = t.ProjectName
+					//}
+					//temp.Longitude = t.Longitude
+					//temp.Latitude = t.Latitude
+					list = append(list, t)
 				}
 			}
 			return serializer.Response{
