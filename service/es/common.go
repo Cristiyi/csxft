@@ -633,6 +633,9 @@ func GetRecommendProject(projectId string, pointRange util.PointRange) *elastic.
 
 	searchService := elasticsearch.GetEsCli().Search("project")
 	queryService := elastic.NewBoolQuery()
+
+	queryService.MustNot(elastic.NewTermQuery("ID", projectId))
+
 	longRangeQuery := elastic.NewRangeQuery("Longitude")
 	longRangeQuery.Gte(pointRange.MinLng)
 	longRangeQuery.Lte(pointRange.MaxLng)
@@ -640,9 +643,6 @@ func GetRecommendProject(projectId string, pointRange util.PointRange) *elastic.
 	latRangeQuery.Gte(pointRange.MinLat)
 	latRangeQuery.Lte(pointRange.MaxLat)
 	queryService.Must(longRangeQuery, latRangeQuery)
-
-	queryService.MustNot(elastic.NewTermQuery("ProjectId", projectId))
-
 	searchService = searchService.Query(queryService)
 
 
