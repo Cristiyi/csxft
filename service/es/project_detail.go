@@ -528,6 +528,7 @@ func (service *RecommendProjectService) GetRecommendProject() serializer.Respons
 				calParams := make(map[string]float64)
 				calParams["needed"] = 1
 				otherRes := QueryProject(0, dis, commonParam, calParams)
+				fmt.Println(otherRes.Hits.Hits)
 				if otherRes != nil {
 					for _, item := range otherRes.Each(reflect.TypeOf(model.Project{})) {
 						if t, ok := item.(model.Project); ok {
