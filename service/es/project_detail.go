@@ -520,17 +520,65 @@ func (service *RecommendProjectService) GetRecommendProject() serializer.Respons
 					list = append(list, t)
 				}
 			}
+			//当结果小于3个
+			dis := len(list) - 3
+			if dis > 0 {
+				commonParam := make(map[string]string)
+				commonParam["sort"] = "ViewCount"
+				calParams := make(map[string]float64)
+				calParams["needed"] = 1
+				otherRes := QueryProject(0, dis, commonParam, calParams)
+				if otherRes != nil {
+					for _, item := range otherRes.Each(reflect.TypeOf(model.Project{})) {
+						if t, ok := item.(model.Project); ok {
+							list = append(list, t)
+						}
+					}
+				}
+			}
+
 			return serializer.Response{
 				Code: 200,
 				Data: list,
 				Msg:  "success",
 			}
+		} else {
+			commonParam := make(map[string]string)
+			commonParam["sort"] = "ViewCount"
+			calParams := make(map[string]float64)
+			calParams["needed"] = 1
+			esRes := QueryProject(0, 3, commonParam, calParams)
+			if esRes != nil {
+				for _, item := range esRes.Each(reflect.TypeOf(model.Project{})) {
+					if t, ok := item.(model.Project); ok {
+						//temp := new(model.Project)
+						//temp.ID = uint(int(t.ID))
+						//if t.PromotionFirstName != "" {
+						//	temp.ProjectName = t.PromotionFirstName
+						//} else if t.PromotionSecondName != "" {
+						//	temp.ProjectName = t.PromotionSecondName
+						//} else {
+						//	temp.ProjectName = t.ProjectName
+						//}
+						//temp.Longitude = t.Longitude
+						//temp.Latitude = t.Latitude
+						list = append(list, t)
+					}
+				}
+				return serializer.Response{
+					Code: 200,
+					Data: list,
+					Msg:  "success",
+				}
+			}
 		}
-		return serializer.Response{
-			Code: 200,
-			Data: nil,
-			Msg:  "success",
-		}
+
+	}
+
+	return serializer.Response{
+		Code: 200,
+		Data: nil,
+		Msg:  "success",
 	}
 
 }
