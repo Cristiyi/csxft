@@ -524,7 +524,7 @@ func (service *RecommendProjectService) GetRecommendProject() serializer.Respons
 			fmt.Println(len(list))
 			dis := len(list) - 3
 			fmt.Println(dis)
-			if dis > 0 {
+			if dis < 0 {
 				commonParam := make(map[string]string)
 				commonParam["sort"] = "ViewCount"
 				calParams := make(map[string]float64)
