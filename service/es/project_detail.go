@@ -522,9 +522,9 @@ func (service *RecommendProjectService) GetRecommendProject() serializer.Respons
 			}
 			//当结果小于3个
 			fmt.Println(len(list))
-			dis := len(list) - 3
+			dis := 3 - len(list)
 			fmt.Println(dis)
-			if dis < 0 {
+			if dis > 0 {
 				commonParam := make(map[string]string)
 				commonParam["sort"] = "ViewCount"
 				calParams := make(map[string]float64)
