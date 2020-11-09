@@ -44,3 +44,10 @@ func DeleteBatchSolicitResult(batchId int)(){
 	query := elastic.Query(elastic.NewTermQuery("BatchId", batchId))
 	client.DeleteByQuery("solicit_result").Query(query).Do(context.Background())
 }
+
+//根据楼盘删除户型图结果
+func DeleteHouseTypeImage(projectId int)(){
+	client := elasticsearch.GetEsCli()
+	query := elastic.Query(elastic.NewTermQuery("ProjectId", projectId))
+	client.DeleteByQuery("house_type_image").Query(query).Do(context.Background())
+}

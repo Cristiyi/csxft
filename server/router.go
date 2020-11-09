@@ -78,6 +78,7 @@ func NewRouter() *gin.Engine {
 		deleteData.POST("delete_dynamics", api.DeleteDynamics)
 		deleteData.POST("delete_solicit_result", api.DeleteSolicitResult)
 		deleteData.POST("delete_batch_solicit_result", api.DeleteBatchSolicitResult)
+		deleteData.POST("delete_house_type_image", api.DeleteHouseTypeImage)
 	}
 
 	initAllEs := r.Group("/api/init_all")

@@ -27,6 +27,7 @@ type SearchProjectService struct {
 	IsIottery string `form:"is_iottery" json:"is_iottery"`
 	IsSell string `form:"is_sell" json:"is_sell"`
 	AreaId string `form:"area_id" json:"area_id"`
+	IsAll string `form:"is_all" json:"is_all"`
 	MaxTotalPrice float64 `form:"max_total_price" json:"max_total_price"`
 	MinTotalPrice float64 `form:"min_total_price" json:"min_total_price"`
 	MaxUnitPrice float64 `form:"max_unit_price" json:"max_unit_price"`
@@ -116,6 +117,9 @@ func (service *SearchProjectService) SearchProject() serializer.Response {
 	}
 	if service.AreaId != "" {
 		commonParam["AreaId"] = service.AreaId
+	}
+	if service.IsAll != "" {
+		commonParam["IsAll"] = service.IsAll
 	}
 
 	calParams := make(map[string]float64)

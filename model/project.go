@@ -61,6 +61,7 @@ type Project struct {
 	IsRecognition int32  `gorm:"default:0"`
 	IsIottery int32  `gorm:"default:0"`
 	IsSell int32  `gorm:"default:0"`
+	NoStatus int32
 	IsNearLineOne  int32  `gorm:"default:0"`
 	IsNearLineTwo  int32  `gorm:"default:0"`
 	IsNearLineThird int32  `gorm:"default:0"`

@@ -120,3 +120,14 @@ func DeleteBatchSolicitResult(c *gin.Context) {
 		c.JSON(400, ErrorResponse(err))
 	}
 }
+
+//根据楼盘删除户型图
+func DeleteHouseTypeImage(c *gin.Context) {
+	var service service.DeleteHouseTypeImageService
+	if err := c.ShouldBind(&service); err == nil {
+		res := service.DeleteHouseTypeImageService()
+		c.JSON(200, res)
+	} else {
+		c.JSON(400, ErrorResponse(err))
+	}
+}
