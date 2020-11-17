@@ -65,6 +65,17 @@ func InitAllLotteryResult(c *gin.Context) {
 		c.JSON(400, ErrorResponse(err))
 	}
 }
+//初始化所有认筹结果数据
+func InitAllSolicitResult(c *gin.Context) {
+	var service service.InitSolicitResultAllService
+	if err := c.ShouldBind(&service); err == nil {
+		res := service.InitLotteryAll()
+		c.JSON(200, res)
+	} else {
+		c.JSON(400, ErrorResponse(err))
+	}
+}
+
 
 //初始化所有公告数据
 func InitAllNoticeResult(c *gin.Context) {

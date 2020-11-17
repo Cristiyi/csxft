@@ -36,6 +36,10 @@ type InitDynamicAllService struct {
 type InitLotteryResultAllService struct {
 }
 
+//初始化认筹结果相关所有信息
+type InitSolicitResultAllService struct {
+}
+
 //初始化公告相关所有信息
 type InitNoticeAllService struct {
 }
@@ -179,6 +183,22 @@ func (service *InitNoticeAllService) InitNoticeAll() serializer.Response {
 		Msg: "success",
 	}
 
+}
+
+//初始化认筹结果
+func (service *InitSolicitResultAllService) InitSolicitResultAll() serializer.Response {
+	solicitResult, err := repo.NewSolicitResultRepo().GetToEsDataAll()
+	if err == nil {
+		for _, item := range solicitResult {
+			strategy := NewCreateContext(7)
+			strategy.Create(uint64(item.BatchId))
+		}
+	}
+
+	return serializer.Response{
+		Code: 200,
+		Msg: "success",
+	}
 }
 
 // 初始化所有公告到es
