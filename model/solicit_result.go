@@ -15,7 +15,10 @@ type SolicitResult struct {
 	SolicitNo string
 	Username string
 	IdCard string
-	Title string
+	//Title string
 	//身份证备份
 	IdCardBack string  `gorm:"-"`
+	Type int32
+	ContentType int32
+	Url string
 }

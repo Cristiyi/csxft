@@ -308,7 +308,6 @@ func (service AllBuildNoService) GetAllBuildNo() serializer.Response {
 			Msg: "暂无数据1",
 		}
 	}
-	fmt.Println(batch.ID)
 	if batch.Creds != nil && len(batch.Creds) > 0 {
 		for _, item := range batch.Creds {
 			result = append(result, item.BuildingNo)
@@ -521,16 +520,13 @@ func (service *RecommendProjectService) GetRecommendProject() serializer.Respons
 				}
 			}
 			//当结果小于3个
-			fmt.Println(len(list))
 			dis := 3 - len(list)
-			fmt.Println(dis)
 			if dis > 0 {
 				commonParam := make(map[string]string)
 				commonParam["sort"] = "ViewCount"
 				calParams := make(map[string]float64)
 				calParams["needed"] = 1
 				otherRes := QueryProject(0, dis, commonParam, calParams)
-				fmt.Println(otherRes.Hits.Hits)
 				if otherRes != nil {
 					for _, item := range otherRes.Each(reflect.TypeOf(model.Project{})) {
 						if t, ok := item.(model.Project); ok {

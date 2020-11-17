@@ -13,7 +13,7 @@ import (
 	"strconv"
 )
 
-//搜索摇号结果服务
+//搜索认筹结果服务
 type SolicitResultService struct {
 	ProjectId    string `form:"project_id" json:"project_id" binding:"required"`
 	SortType    string `form:"sort_type" json:"sort_type"`
@@ -23,6 +23,7 @@ type SolicitResultService struct {
 	Search    string `form:"search" json:"search"`
 	Status int32 `form:"status" json:"status"`
 	BatchId int `form:"batch_id" json:"batch_id"`
+	Type int `form:"type" json:"type"`
 }
 
 
@@ -46,6 +47,10 @@ func (service *SolicitResultService) GetSolicitResult() serializer.Response {
 	if service.Search != "" {
 		commonParam["Search"] = service.Search
 	}
+	if service.Type != 0 {
+		commonParam["Type"] = strconv.Itoa(service.Type)
+	}
+
 
 	var size int = 0
 	if service.Size != 0 {

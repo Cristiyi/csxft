@@ -174,7 +174,6 @@ func QueryProjectCount(commonParams map[string]string) (count int64) {
 	if commonParams["areaId"] != "" {
 		areaId, err := strconv.Atoi(commonParams["areaId"])
 		fmt.Println(err)
-		fmt.Println(areaId)
 		searchService = searchService.Query(elastic.NewTermQuery("AreaId", areaId))
 	}
 	count, err := searchService.Do(context.Background())
@@ -182,7 +181,6 @@ func QueryProjectCount(commonParams map[string]string) (count int64) {
 		fmt.Println(err)
 		count = 0
 	}
-	fmt.Println(count)
 	return
 }
 
@@ -195,7 +193,6 @@ func QueryProjectAreaCount(areaId uint) (count int64) {
 		fmt.Println(err)
 		count = 0
 	}
-	fmt.Println(count)
 	return
 }
 
@@ -404,6 +401,9 @@ func QueryLotteryResult(start,size int, commonParams map[string]string) *elastic
 	queryService.Must(elastic.NewTermQuery("ProjectId",commonParams["ProjectId"]))
 	if commonParams["BatchId"] != "" {
 		queryService.Must(elastic.NewTermQuery("BatchId", commonParams["BatchId"]))
+	}
+	if commonParams["Type"] != "" {
+		queryService.Must(elastic.NewTermQuery("Type", commonParams["Type"]))
 	}
 	if commonParams["Search"] != "" {
 		searchQuery := elastic.NewBoolQuery()
