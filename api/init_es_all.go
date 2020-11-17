@@ -69,7 +69,7 @@ func InitAllLotteryResult(c *gin.Context) {
 func InitAllSolicitResult(c *gin.Context) {
 	var service service.InitSolicitResultAllService
 	if err := c.ShouldBind(&service); err == nil {
-		res := service.InitLotteryAll()
+		res := service.InitSolicitResultAll()
 		c.JSON(200, res)
 	} else {
 		c.JSON(400, ErrorResponse(err))

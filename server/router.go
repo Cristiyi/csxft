@@ -90,6 +90,7 @@ func NewRouter() *gin.Engine {
 		initAllEs.GET("lottery_result", api.InitAllLotteryResult)
 		initAllEs.GET("notice", api.InitAllNoticeResult)
 		initAllEs.GET("house_type_image", api.InitAllHouseTypeImageResult)
+		initAllEs.GET("solicit_result", api.InitAllHouseTypeImageResult)
 	}
 
 	return r
