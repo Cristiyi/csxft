@@ -268,3 +268,25 @@ func GetRecommendProject(c *gin.Context) {
 		c.JSON(400, ErrorResponse(err))
 	}
 }
+
+//楼盘所有批次
+func GetProjectBatch(c *gin.Context) {
+	var service service.ProjectBatchService
+	if err := c.ShouldBind(&service); err == nil {
+		res := service.GetProjectBatch()
+		c.JSON(200, res)
+	} else {
+		c.JSON(400, ErrorResponse(err))
+	}
+}
+
+//获取楼盘下所有的的一房一价
+func GetProjectHouse(c *gin.Context) {
+	var service service.ProjectHouseService
+	if err := c.ShouldBind(&service); err == nil {
+		res := service.GetProjectHouse()
+		c.JSON(200, res)
+	} else {
+		c.JSON(400, ErrorResponse(err))
+	}
+}

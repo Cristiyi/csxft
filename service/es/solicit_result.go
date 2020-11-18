@@ -74,7 +74,8 @@ func (service *SolicitResultService) GetSolicitResult() serializer.Response {
 		}
 	} else {
 		return serializer.Response{
-			Code: 400,
+			Code: 200,
+			Data: nil,
 			Msg:  "暂无数据",
 		}
 	}

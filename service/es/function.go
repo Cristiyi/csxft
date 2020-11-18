@@ -175,6 +175,7 @@ func calTimeLine(batch *model.Batch) int32 {
 	return 0
 }
 
+//获取目标批次--单个
 func GetTargetBatch(projectId string, status int32, batchId int) *model.Batch {
 	var batchRes  *elastic.SearchResult
 	if batchId != 0 {
@@ -190,6 +191,26 @@ func GetTargetBatch(projectId string, status int32, batchId int) *model.Batch {
 			}
 		}
 		return &batches[0]
+	}
+	return nil
+}
+
+//获取目标批次--所有
+func GetTargetBatchAll(projectId string, batchId int) []model.Batch {
+	var batchRes  *elastic.SearchResult
+	if batchId != 0 {
+		batchRes = GetBatchById(batchId)
+	} else {
+		batchRes = GetBatch(projectId, 0)
+	}
+	if batchRes != nil && len(batchRes.Hits.Hits) > 0 {
+		var batches []model.Batch
+		for _, item := range batchRes.Each(reflect.TypeOf(model.Batch{})) {
+			if t, ok := item.(model.Batch); ok {
+				batches = append(batches, t)
+			}
+		}
+		return batches
 	}
 	return nil
 }

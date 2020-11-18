@@ -54,6 +54,8 @@ func NewRouter() *gin.Engine {
 		esData.POST("get_subway_house", api.GetSubwayProject)
 		esData.GET("get_predict_cred_date", api.GetPredictCredDate)
 		esData.GET("get_recommend_project", api.GetRecommendProject)
+		esData.GET("get_project_batch", api.GetProjectBatch)
+		esData.GET("get_project_house", api.GetProjectHouse)
 	}
 
 	taskData := r.Group("/api/task")

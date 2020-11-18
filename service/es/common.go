@@ -40,6 +40,15 @@ func QueryProject(start,size int, commonParams map[string]string, calParams map[
 
 		queryService.Must(nameQueryService)
 	}
+
+	//全部楼盘筛选
+	if commonParams["IsAll"] != "" {
+		isAllService := elastic.NewBoolQuery()
+		isAllService.Should(elastic.NewTermQuery("IsAll", 1))
+		isAllService.Should(elastic.NewTermQuery("IsAll", 4))
+		queryService.Must(isAllService)
+	}
+
 	if commonParams["IsWillCred"] != "" {
 		queryService.Must(elastic.NewTermQuery("IsWillCred", 1))
 	}
