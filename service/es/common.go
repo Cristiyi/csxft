@@ -190,6 +190,7 @@ func QueryProjectCount(commonParams map[string]string) (count int64) {
 		isAllService := elastic.NewBoolQuery()
 		isAllService.Should(elastic.NewTermQuery("NoStatus", 1))
 		isAllService.Should(elastic.NewTermQuery("NoStatus", 4))
+		isAllService.Should(elastic.NewTermQuery("NoStatus", 10))
 		searchService.Query(isAllService)
 		break
 	}
