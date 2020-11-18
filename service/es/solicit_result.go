@@ -24,6 +24,7 @@ type SolicitResultService struct {
 	Status int32 `form:"status" json:"status"`
 	BatchId int `form:"batch_id" json:"batch_id"`
 	Type int `form:"type" json:"type"`
+	ContentType int `form:"ContentType" json:"ContentType"`
 }
 
 
@@ -49,6 +50,9 @@ func (service *SolicitResultService) GetSolicitResult() serializer.Response {
 	}
 	if service.Type != 0 {
 		commonParam["Type"] = strconv.Itoa(service.Type)
+	}
+	if service.ContentType != 0 {
+		commonParam["ContentType"] = strconv.Itoa(service.ContentType)
 	}
 
 
