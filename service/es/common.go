@@ -46,6 +46,7 @@ func QueryProject(start,size int, commonParams map[string]string, calParams map[
 		isAllService := elastic.NewBoolQuery()
 		isAllService.Should(elastic.NewTermQuery("NoStatus", 1))
 		isAllService.Should(elastic.NewTermQuery("NoStatus", 4))
+		isAllService.Should(elastic.NewTermQuery("NoStatus", 10))
 		queryService.Must(isAllService)
 	}
 
