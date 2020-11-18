@@ -452,6 +452,9 @@ func QuerySolicitResult(start,size int, commonParams map[string]string) *elastic
 	if commonParams["BatchId"] != "" {
 		queryService.Must(elastic.NewTermQuery("BatchId", commonParams["BatchId"]))
 	}
+	if commonParams["Type"] != "" {
+		queryService.Must(elastic.NewTermQuery("Type", commonParams["Type"]))
+	}
 	if commonParams["Search"] != "" {
 		searchQuery := elastic.NewBoolQuery()
 		searchQuery.Should(elastic.NewTermQuery("IdCardBack",commonParams["Search"]), elastic.NewTermQuery("SolicitNo",commonParams["Search"]))
