@@ -34,9 +34,9 @@ func (service *ProjectBatchService) GetProjectBatch() serializer.Response {
 
 	res := GetBatch(service.ProjectId,0)
 	if res != nil && len(res.Hits.Hits)>0 {
-		var result []model.LotteryResult
+		var result []model.Batch
 		for _, item := range res.Each(reflect.TypeOf(model.Batch{})) {
-			if t, ok := item.(model.LotteryResult); ok {
+			if t, ok := item.(model.Batch); ok {
 				result = append(result, t)
 			}
 		}
@@ -48,6 +48,7 @@ func (service *ProjectBatchService) GetProjectBatch() serializer.Response {
 	} else {
 		return serializer.Response{
 			Code: 200,
+			Data: nil,
 			Msg: "暂无数据",
 		}
 	}
