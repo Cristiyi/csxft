@@ -150,10 +150,10 @@ func QueryProject(start,size int, commonParams map[string]string, calParams map[
 	//	From(start).Size(size).
 	//	Pretty(true).
 	//	Do(context.Background())
-	searchService.Sort("_score", false).Sort(commonParams["sort"], sortType)
 	if commonParams["IsAll"] != "" {
 		searchService.Sort("NoStatus", true)
 	}
+	searchService.Sort("_score", false).Sort(commonParams["sort"], sortType)
 	searchResult, err := searchService.
 		From(start).Size(size).
 		Pretty(true).
