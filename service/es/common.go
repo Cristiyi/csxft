@@ -141,12 +141,21 @@ func QueryProject(start,size int, commonParams map[string]string, calParams map[
 	} else {
 		start = (start-1)*size
 	}
+	//if commonParams["IsAll"] != "" {
+	//	searchService.Sort("NoStatus", false)
+	//}
+	//searchResult, err := searchService.
+	//	Sort("_score", false).
+	//	Sort(commonParams["sort"], sortType).
+	//	From(start).Size(size).
+	//	Pretty(true).
+	//	Do(context.Background())
+
+	searchService.Sort("_score", false).Sort(commonParams["sort"], sortType)
 	if commonParams["IsAll"] != "" {
 		searchService.Sort("NoStatus", false)
 	}
 	searchResult, err := searchService.
-		Sort("_score", false).
-		Sort(commonParams["sort"], sortType).
 		From(start).Size(size).
 		Pretty(true).
 		Do(context.Background())
