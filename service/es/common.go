@@ -44,8 +44,8 @@ func QueryProject(start,size int, commonParams map[string]string, calParams map[
 	//全部楼盘筛选
 	if commonParams["IsAll"] != "" {
 		isAllService := elastic.NewBoolQuery()
-		isAllService.Should(elastic.NewTermQuery("IsAll", 1))
-		isAllService.Should(elastic.NewTermQuery("IsAll", 4))
+		isAllService.Should(elastic.NewTermQuery("NoStatus", 1))
+		isAllService.Should(elastic.NewTermQuery("NoStatus", 4))
 		queryService.Must(isAllService)
 	}
 
@@ -179,8 +179,8 @@ func QueryProjectCount(commonParams map[string]string) (count int64) {
 	default:
 		searchService = searchService.Query(elastic.NewTermQuery("IsSell", 1))
 		isAllService := elastic.NewBoolQuery()
-		isAllService.Should(elastic.NewTermQuery("IsAll", 1))
-		isAllService.Should(elastic.NewTermQuery("IsAll", 4))
+		isAllService.Should(elastic.NewTermQuery("NoStatus", 1))
+		isAllService.Should(elastic.NewTermQuery("NoStatus", 4))
 		searchService.Query(isAllService)
 		break
 	}
