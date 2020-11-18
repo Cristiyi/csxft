@@ -129,6 +129,15 @@ func (service *ProjectDetailService) ProjectDetail() serializer.Response {
 	data["follow"] = 0
 	data["follow_count"] = 0
 	data["target_batch_id"] = service.BatchId
+	data["hasHouse"] = true
+
+	var houseService ProjectHouseService
+	houseService.ProjectId = service.ProjectId
+	house := houseService.GetProjectHouse()
+	if house.Data == nil {
+		data["hasHouse"] = false
+	}
+
 	if service.UserId != 0 {
 		projectId, _ := strconv.Atoi(service.ProjectId)
 		follow, err := repo.NewFollowRepo().Get(service.UserId, uint64(projectId))
