@@ -177,7 +177,11 @@ func QueryProjectCount(commonParams map[string]string) (count int64) {
 		searchService = searchService.Query(elastic.NewTermQuery("IsSell", 1))
 		break
 	default:
-		searchService = searchService.Query(elastic.NewTermQuery("IsSell", 1))
+		//searchService = searchService.Query(elastic.NewTermQuery("IsSell", 1))
+		isAllService := elastic.NewBoolQuery()
+		isAllService.Should(elastic.NewTermQuery("IsAll", 1))
+		isAllService.Should(elastic.NewTermQuery("IsAll", 4))
+		searchService.Query(isAllService)
 		break
 	}
 	if commonParams["areaId"] != "" {

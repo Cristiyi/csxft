@@ -32,6 +32,8 @@ func (service *IndexService) Index() serializer.Response {
 	data["newIotteryCount"] = QueryProjectCount(countParam)
 	countParam["type"] = "5"
 	data["newSellCount"] = QueryProjectCount(countParam)
+	countParam["type"] = "10"
+	data["allProjectCount"] = QueryProjectCount(countParam)
 
 	willCredListParam := make(map[string]string)
 	willCredListParam["sortType"] = "desc"
