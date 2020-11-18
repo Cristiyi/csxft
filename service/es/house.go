@@ -17,7 +17,7 @@ type ProjectBatchService struct {
 	ProjectId    string `form:"project_id" json:"project_id" binding:"required"`
 }
 
-//获取楼盘所有批次服务
+//获取楼盘所有一房一价
 type ProjectHouseService struct {
 	ProjectId    string `form:"project_id" json:"project_id" binding:"required"`
 	BatchId      int `form:"batch_id" json:"batch_id"`

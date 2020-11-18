@@ -42,6 +42,8 @@ type SubwayProject struct {
 	ProjectName string
 	Longitude float64
 	Latitude float64
+	CustomPrice string
+	AveragePrice float64
 }
 
 
@@ -100,6 +102,8 @@ func (service *SubwayProjectService) GetSubwayProject() serializer.Response {
 					}
 					subwayProject.Longitude = t.Longitude
 					subwayProject.Latitude = t.Latitude
+					subwayProject.CustomPrice = t.CustomPrice
+					subwayProject.AveragePrice = t.AverageAcreage
 					subwayProjectList = append(subwayProjectList, subwayProject)
 				}
 			}
