@@ -32,7 +32,7 @@ type ProjectHouseService struct {
 //获取楼盘所有批次
 func (service *ProjectBatchService) GetProjectBatch() serializer.Response {
 
-	res := GetBatch(service.ProjectId,0)
+	res := GetBatchAll(service.ProjectId,0)
 	if res != nil && len(res.Hits.Hits)>0 {
 		var result []model.Batch
 		for _, item := range res.Each(reflect.TypeOf(model.Batch{})) {

@@ -150,10 +150,10 @@ func QueryProject(start,size int, commonParams map[string]string, calParams map[
 	//	From(start).Size(size).
 	//	Pretty(true).
 	//	Do(context.Background())
+	searchService.Sort("_score", false).Sort(commonParams["sort"], sortType)
 	if commonParams["IsAll"] != "" {
 		searchService.Sort("NoStatus", true)
 	}
-	searchService.Sort("_score", false).Sort(commonParams["sort"], sortType)
 	searchResult, err := searchService.
 		From(start).Size(size).
 		Pretty(true).
@@ -602,6 +602,27 @@ func GetBatch(projectId string, status int32) *elastic.SearchResult {
 	searchResult, err := searchService.
 		Sort("BatchNo", false).
 		From(0).Size(1).
+		Pretty(true).
+		Do(context.Background())
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	return searchResult
+}
+
+//获取批次
+func GetBatchAll(projectId string, status int32) *elastic.SearchResult {
+	searchService := elasticsearch.GetEsCli().Search("batch")
+	queryService := elastic.NewBoolQuery()
+	queryService.Must(elastic.NewTermQuery("ProjectId", projectId))
+	if status != 0 {
+		queryService.Must(elastic.NewTermQuery("Status", status))
+	}
+	searchService = searchService.Query(queryService)
+	searchResult, err := searchService.
+		Sort("BatchNo", false).
+		From(0).Size(100).
 		Pretty(true).
 		Do(context.Background())
 	if err != nil {
