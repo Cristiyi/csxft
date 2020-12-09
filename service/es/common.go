@@ -292,7 +292,8 @@ func GetCredHouse (start,size int, commonParams map[string]string, credIds []int
 		for _, item := range credIds {
 			credQueryService.Should(elastic.NewTermQuery("CredId", item))
 		}
-		queryService.Must(elastic.NewQueryStringQuery("BuildNo.keyword:"+commonParams["BuildNo"]), credQueryService)
+		queryService.Must(elastic.NewMatchQuery("BuildNo", commonParams["BuildNo"]), credQueryService)
+		//queryService.Must(elastic.NewQueryStringQuery("BuildNo.keyword:"+commonParams["BuildNo"]), credQueryService)
 	} else {
 		for _, item := range credIds {
 			queryService.Should(elastic.NewTermQuery("CredId", item))
