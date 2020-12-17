@@ -180,11 +180,10 @@ func (service GenHouseImageService) GenHouseImage() serializer.Response {
 						tempData.data = houseNoGroup
 					}
 				}
-				fmt.Println(tempData)
-				fmt.Println(*tempData)
 				data = append(data, *tempData)
 			}
 		}
+		fmt.Println(data)
 		return serializer.Response{
 			Code: 200,
 			Data: data,
