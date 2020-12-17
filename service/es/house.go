@@ -10,7 +10,6 @@ import (
 	"csxft/model"
 	"csxft/repo"
 	"csxft/serializer"
-	"fmt"
 	"reflect"
 	"strconv"
 	"csxft/util"
@@ -43,21 +42,21 @@ type ProjectHouseService struct {
 }
 
 //一房一价图所用数据
-type oneHouse struct {
+type OneHouse struct {
 	lou string
 	price string
 	price1 string
 	price2 string
 }
 
-type detail struct {
+type Detail struct {
 	title string
-	data []oneHouse
+	data []OneHouse
 }
 
-type result struct {
+type GenResult struct {
 	title string
-	data []detail
+	data []Detail
 }
 
 //获取楼盘所有批次
@@ -156,7 +155,7 @@ func (service *ProjectHouseService) GetProjectHouse() serializer.Response {
 //生成一房一价图
 func (service GenHouseImageService) GenHouseImage() serializer.Response {
 
-	var data []result
+	var data []GenResult
 
 	batch := GetTargetBatch(service.ProjectId, service.Status, service.BatchId)
 	if batch == nil {
@@ -171,7 +170,7 @@ func (service GenHouseImageService) GenHouseImage() serializer.Response {
 		for _, item := range batch.Creds {
 			cred, err := repo.NewCredRepo().GetToEsData(uint64(item.ID))
 			if err == nil {
-				var tempData = new(result)
+				var tempData = new(GenResult)
 				tempData.title = cred.BuildingNo
 				house, err := repo.NewHouseRepo().GetOneCredHouseData(uint64(item.ID))
 				if err == nil {
@@ -183,7 +182,6 @@ func (service GenHouseImageService) GenHouseImage() serializer.Response {
 				data = append(data, *tempData)
 			}
 		}
-		fmt.Println(data)
 		return serializer.Response{
 			Code: 200,
 			Data: data,
@@ -198,9 +196,9 @@ func (service GenHouseImageService) GenHouseImage() serializer.Response {
 }
 
 //获取独立房号 拼装数据
-func BuildHouseNo(house []model.House) []detail{
+func BuildHouseNo(house []model.House) []Detail{
 
-	var result []detail
+	var result []Detail
 	for _, item := range house {
 		//判断户室号长度
 		if len(item.HouseNo) <= 4 {
@@ -212,9 +210,9 @@ func BuildHouseNo(house []model.House) []detail{
 			}
 			resultKey := IsContain(result, number)
 			if resultKey == -1 {
-				var detail = new(detail)
+				var detail = new(Detail)
 				detail.title = number
-				var tempHouse = new(oneHouse)
+				var tempHouse = new(OneHouse)
 				tempHouse.lou = strconv.Itoa(item.FloorNo)
 				if item.HouseAcreage != 0 {
 					tempHouse.price = util.Float2String(item.HouseAcreage, 64)
@@ -234,7 +232,7 @@ func BuildHouseNo(house []model.House) []detail{
 				detail.data = append(detail.data, *tempHouse)
 				result = append(result, *detail)
 			} else {
-				var tempHouse = new(oneHouse)
+				var tempHouse = new(OneHouse)
 				tempHouse.lou = strconv.Itoa(item.FloorNo)
 				if item.HouseAcreage != 0 {
 					tempHouse.price = util.Float2String(item.HouseAcreage, 64)
@@ -260,7 +258,7 @@ func BuildHouseNo(house []model.House) []detail{
 }
 
 //判断数组是否存在某值
-func IsContain(items []detail, item string) int {
+func IsContain(items []Detail, item string) int {
 	for i, eachItem := range items {
 		if eachItem.title == item {
 			return i
