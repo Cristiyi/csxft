@@ -10,6 +10,7 @@ import (
 	"csxft/model"
 	"csxft/repo"
 	"csxft/serializer"
+	"fmt"
 	"reflect"
 	"strconv"
 	"csxft/util"
@@ -172,6 +173,7 @@ func (service GenHouseImageService) GenHouseImage() serializer.Response {
 			if err == nil {
 				var tempData = new(result)
 				tempData.title = cred.BuildingNo
+				fmt.Println(tempData.title)
 				house, err := repo.NewHouseRepo().GetOneCredHouseData(uint64(item.ID))
 				if err == nil {
 					houseNoGroup := BuildHouseNo(house)
