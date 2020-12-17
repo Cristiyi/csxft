@@ -2,6 +2,7 @@ package api
 
 import (
 	service "csxft/service/es"
+	"fmt"
 	"github.com/gin-gonic/gin"
 )
 
@@ -296,6 +297,7 @@ func GenHouseImage(c *gin.Context) {
 	var service service.GenHouseImageService
 	if err := c.ShouldBind(&service); err == nil {
 		res := service.GenHouseImage()
+		fmt.Println(res)
 		c.JSON(200, res)
 	} else {
 		c.JSON(400, ErrorResponse(err))
