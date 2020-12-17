@@ -208,6 +208,9 @@ func BuildHouseNo(house []model.House) []Detail{
 			} else {
 				number = item.HouseNo[1:]
 			}
+			if number[0] == '0' {
+				number = number[1:]
+			}
 			resultKey := IsContain(result, number)
 			if resultKey == -1 {
 				var detail = new(Detail)
