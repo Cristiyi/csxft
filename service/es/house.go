@@ -213,9 +213,10 @@ func BuildHouseNo(house []model.House) []Detail{
 				var detail = new(Detail)
 				detail.Title = number
 				var tempHouse = new(OneHouse)
-				tempHouse.Lou = strconv.Itoa(item.FloorNo)
+				tempHouse.Lou = strconv.Itoa(item.FloorNo) + "层"
 				if item.HouseAcreage != 0 {
 					tempHouse.Price = util.Float2String(item.HouseAcreage, 64)
+					tempHouse.Price = tempHouse.Price + "m"
 				}
 				if item.UnitPrice != 0 {
 					tempHouse.Price1 = util.Float2String(item.UnitPrice, 64)
@@ -229,9 +230,10 @@ func BuildHouseNo(house []model.House) []Detail{
 				result = append(result, *detail)
 			} else {
 				var tempHouse = new(OneHouse)
-				tempHouse.Lou = strconv.Itoa(item.FloorNo)
+				tempHouse.Lou = strconv.Itoa(item.FloorNo) + "层"
 				if item.HouseAcreage != 0 {
 					tempHouse.Price = util.Float2String(item.HouseAcreage, 64)
+					tempHouse.Price = tempHouse.Price + "m"
 				}
 				if item.UnitPrice != 0 {
 					tempHouse.Price1 = util.Float2String(item.UnitPrice, 64)

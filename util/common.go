@@ -95,7 +95,7 @@ func InConvertTime(inter interface{}) time.Time {
 
 //float转string
 func Float2String(des float64, byte int) string {
-	return strconv.FormatFloat(des, 'e', -1, byte)
+	return strconv.FormatFloat(des, 'E', -1, byte)
 }
 
 //string转float64
