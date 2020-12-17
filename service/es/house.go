@@ -43,20 +43,20 @@ type ProjectHouseService struct {
 
 //一房一价图所用数据
 type OneHouse struct {
-	lou string
-	price string
-	price1 string
-	price2 string
+	Lou string `json:"lou"`
+	Price string `json:"price"`
+	Price1 string `json:"price1"`
+	Price2 string `json:"price2"`
 }
 
 type Detail struct {
-	title string
-	data []OneHouse
+	Title string `json:"title"`
+	Data []OneHouse `json:"data"`
 }
 
 type GenResult struct {
-	title string
-	data []Detail
+	Title string `json:"title"`
+	Data []Detail `json:"data"`
 }
 
 //获取楼盘所有批次
@@ -171,12 +171,12 @@ func (service GenHouseImageService) GenHouseImage() serializer.Response {
 			cred, err := repo.NewCredRepo().GetToEsData(uint64(item.ID))
 			if err == nil {
 				var tempData = new(GenResult)
-				tempData.title = cred.BuildingNo
+				tempData.Title = cred.BuildingNo
 				house, err := repo.NewHouseRepo().GetOneCredHouseData(uint64(item.ID))
 				if err == nil {
 					houseNoGroup := BuildHouseNo(house)
 					if houseNoGroup != nil {
-						tempData.data = houseNoGroup
+						tempData.Data = houseNoGroup
 					}
 				}
 				data = append(data, *tempData)
@@ -211,45 +211,37 @@ func BuildHouseNo(house []model.House) []Detail{
 			resultKey := IsContain(result, number)
 			if resultKey == -1 {
 				var detail = new(Detail)
-				detail.title = number
+				detail.Title = number
 				var tempHouse = new(OneHouse)
-				tempHouse.lou = strconv.Itoa(item.FloorNo)
+				tempHouse.Lou = strconv.Itoa(item.FloorNo)
 				if item.HouseAcreage != 0 {
-					tempHouse.price = util.Float2String(item.HouseAcreage, 64)
-				}
-				if item.HouseAcreage != 0 {
-					tempHouse.price = util.Float2String(item.HouseAcreage, 64)
-					tempHouse.price = tempHouse.price + "m"
+					tempHouse.Price = util.Float2String(item.HouseAcreage, 64)
 				}
 				if item.UnitPrice != 0 {
-					tempHouse.price1 = util.Float2String(item.UnitPrice, 64)
-					tempHouse.price1 = tempHouse.price1 + "元/m"
+					tempHouse.Price1 = util.Float2String(item.UnitPrice, 64)
+					tempHouse.Price1 = tempHouse.Price1 + "元/m"
 				}
 				if item.TotalPrice != 0 {
-					tempHouse.price2 = util.Float2String(item.TotalPrice, 64)
-					tempHouse.price2 = tempHouse.price1 + "万"
+					tempHouse.Price2 = util.Float2String(item.TotalPrice, 64)
+					tempHouse.Price2 = tempHouse.Price1 + "万"
 				}
-				detail.data = append(detail.data, *tempHouse)
+				detail.Data = append(detail.Data, *tempHouse)
 				result = append(result, *detail)
 			} else {
 				var tempHouse = new(OneHouse)
-				tempHouse.lou = strconv.Itoa(item.FloorNo)
+				tempHouse.Lou = strconv.Itoa(item.FloorNo)
 				if item.HouseAcreage != 0 {
-					tempHouse.price = util.Float2String(item.HouseAcreage, 64)
-				}
-				if item.HouseAcreage != 0 {
-					tempHouse.price = util.Float2String(item.HouseAcreage, 64)
-					tempHouse.price = tempHouse.price + "m"
+					tempHouse.Price = util.Float2String(item.HouseAcreage, 64)
 				}
 				if item.UnitPrice != 0 {
-					tempHouse.price1 = util.Float2String(item.UnitPrice, 64)
-					tempHouse.price1 = tempHouse.price1 + "元/m"
+					tempHouse.Price1 = util.Float2String(item.UnitPrice, 64)
+					tempHouse.Price1 = tempHouse.Price1 + "元/m"
 				}
 				if item.TotalPrice != 0 {
-					tempHouse.price2 = util.Float2String(item.TotalPrice, 64)
-					tempHouse.price2 = tempHouse.price1 + "万"
+					tempHouse.Price2 = util.Float2String(item.TotalPrice, 64)
+					tempHouse.Price2 = tempHouse.Price1 + "万"
 				}
-				result[resultKey].data = append(result[resultKey].data, *tempHouse)
+				result[resultKey].Data = append(result[resultKey].Data, *tempHouse)
 			}
 		}
 	}
@@ -260,7 +252,7 @@ func BuildHouseNo(house []model.House) []Detail{
 //判断数组是否存在某值
 func IsContain(items []Detail, item string) int {
 	for i, eachItem := range items {
-		if eachItem.title == item {
+		if eachItem.Title == item {
 			return i
 		}
 	}
