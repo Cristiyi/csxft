@@ -13,6 +13,8 @@ import (
 type HouseRepo interface {
 	//获取插入到es的数据
 	GetToEsData(id uint64) (houses []model.House, err error)
+	//获取单条预售证下的一房一价
+	GetOneCredHouseData(id uint64) (houses []model.House, err error)
 }
 
 func NewHouseRepo() HouseRepo {
@@ -40,5 +42,12 @@ func (c houseRepo) GetToEsData(id uint64) (houses []model.House, err error) {
 		}
 		houses[i].BuildNo = cred.BuildingNo
 	}
+	return
+}
+
+
+//获取单条预售证下的一房一价
+func (c houseRepo) GetOneCredHouseData(id uint64) (houses []model.House, err error) {
+	err = model.DB.Model(c.thisModel).Where("cred_id = ?", id).Find(&houses).Error
 	return
 }

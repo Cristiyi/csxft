@@ -11,21 +11,23 @@ require (
 	github.com/gin-gonic/gin v1.4.0
 	github.com/go-redis/redis v6.15.3+incompatible
 	github.com/go-siris/siris v7.4.0+incompatible // indirect
+	github.com/jehiah/go-strftime v0.0.0-20171201141054-1d33003b3869 // indirect
 	github.com/jinzhu/gorm v1.9.10
 	github.com/joho/godotenv v1.3.0
-	github.com/json-iterator/go v1.1.10
+	github.com/json-iterator/go v1.1.10 // indirect
 	github.com/labstack/echo v3.3.10+incompatible // indirect
 	github.com/labstack/gommon v0.3.0 // indirect
 	github.com/lestrrat-go/file-rotatelogs v2.3.0+incompatible
-	github.com/lestrrat-go/strftime v1.0.3 // indirectrealize start --run --nc
+	github.com/lestrrat-go/strftime v1.0.3 // indirect; indirectrealize start --run --nc
 	github.com/olivere/elastic/v7 v7.0.17
 	github.com/oxequa/interact v0.0.0-20171114182912-f8fb5795b5d7 // indirect
 	github.com/oxequa/realize v2.0.2+incompatible // indirect
 	github.com/rifflock/lfshook v0.0.0-20180920164130-b9218ef580f5
 	github.com/satori/go.uuid v1.2.0 // indirect
 	github.com/sirupsen/logrus v1.6.0
-	github.com/swaggo/gin-swagger v1.2.0
+	github.com/swaggo/gin-swagger v1.2.0 // indirect
 	github.com/swaggo/swag v1.6.7
+	github.com/tebeka/strftime v0.1.5 // indirect
 	github.com/valyala/fasttemplate v1.2.0 // indirect
 	go.mongodb.org/mongo-driver v1.3.4
 	golang.org/x/crypto v0.0.0-20190701094942-4def268fd1a4

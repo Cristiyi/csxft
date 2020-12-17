@@ -290,3 +290,16 @@ func GetProjectHouse(c *gin.Context) {
 		c.JSON(400, ErrorResponse(err))
 	}
 }
+
+//生成一房一价图
+func GenHouseImage(c *gin.Context) {
+	var service service.GenHouseImageService
+	if err := c.ShouldBind(&service); err == nil {
+		res := service.GenHouseImage()
+		c.JSON(200, res)
+	} else {
+		c.JSON(400, ErrorResponse(err))
+	}
+}
+
+
