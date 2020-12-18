@@ -131,3 +131,14 @@ func DeleteHouseTypeImage(c *gin.Context) {
 		c.JSON(400, ErrorResponse(err))
 	}
 }
+
+//根据一房一价图
+func DeleteHouseImage(c *gin.Context) {
+	var service service.DeleteHouseImageService
+	if err := c.ShouldBind(&service); err == nil {
+		res := service.DeleteService()
+		c.JSON(200, res)
+	} else {
+		c.JSON(400, ErrorResponse(err))
+	}
+}
