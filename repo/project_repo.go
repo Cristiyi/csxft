@@ -18,6 +18,7 @@ type ProjectRepo interface {
 	GetPredictCredDate() (group []*model.PredictCredDate)
 	//获取所有插入到es的数据
 	GetAllToEsData() (projects []*model.Project, err error)
+	GetOne(id uint64) (project *model.Project, err error)
 }
 
 func NewProjectRepo() ProjectRepo {
@@ -34,7 +35,8 @@ func (p projectRepo) GetAllToEsData() (projects []*model.Project, err error) {
 		Preload("LiveImages", "type = 3").
 		Preload("CircumImages", "type = 4").
 		Preload("AerialImages", "type = 5").
-		Preload("HouseTypeImages", "type = 6").
+		//Preload("HouseTypeImages", "type = 6").
+		Preload("AerialMainImages", "type = 6").
 		Where("no_status = ?", 1).Find(&projects).Error
 	if err == nil {
 		for i, item := range projects {
@@ -57,7 +59,8 @@ func (p projectRepo) GetToEsData(id uint64) (project *model.Project, err error) 
 				   Preload("LiveImages", "type = 3").
 				   Preload("CircumImages", "type = 4").
 				   Preload("AerialImages", "type = 5").
-				   Preload("HouseTypeImages", "type = 6").
+				   //Preload("HouseTypeImages", "type = 6").
+				   Preload("AerialMainImages", "type = 6").
 				   Where("id = ?", id).First(&project).Error
 	if err == nil {
 		area := new(model.Area)
@@ -68,6 +71,13 @@ func (p projectRepo) GetToEsData(id uint64) (project *model.Project, err error) 
 		model.DB.Model(model.Comment{}).Where("build_id = ? and pid = ? and status = ?", project.ID, 0, 1).Count(&count)
 		project.CommentCount = count
 	}
+	return
+}
+
+//获取单楼盘记录
+func (p projectRepo) GetOne(id uint64) (project *model.Project, err error) {
+	project = new(model.Project)
+	err = model.DB.Where("id = ?", id).First(&project).Error
 	return
 }
 

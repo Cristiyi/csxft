@@ -59,6 +59,11 @@ type GenResult struct {
 	Data []Detail `json:"data"`
 }
 
+type ImageResult struct {
+	ProjectName string `json:"project_name"`
+	List []GenResult `json:"list"`
+}
+
 //获取楼盘所有批次
 func (service *ProjectBatchService) GetProjectBatch() serializer.Response {
 
@@ -155,7 +160,8 @@ func (service *ProjectHouseService) GetProjectHouse() serializer.Response {
 //生成一房一价图
 func (service GenHouseImageService) GenHouseImage() serializer.Response {
 
-	var data []GenResult
+	var result = new(ImageResult)
+	var list []GenResult
 
 	batch := GetTargetBatch(service.ProjectId, service.Status, service.BatchId)
 	if batch == nil {
@@ -167,6 +173,9 @@ func (service GenHouseImageService) GenHouseImage() serializer.Response {
 	}
 
 	if batch.Creds != nil && len(batch.Creds) > 0 {
+		projectId, _ := strconv.Atoi(service.ProjectId)
+		project, _ := repo.NewProjectRepo().GetOne(uint64(projectId))
+		result.ProjectName = project.ProjectName
 		for _, item := range batch.Creds {
 			cred, err := repo.NewCredRepo().GetToEsData(uint64(item.ID))
 			if err == nil {
@@ -179,12 +188,13 @@ func (service GenHouseImageService) GenHouseImage() serializer.Response {
 						tempData.Data = houseNoGroup
 					}
 				}
-				data = append(data, *tempData)
+				list = append(list, *tempData)
 			}
+			result.List = list
 		}
 		return serializer.Response{
 			Code: 200,
-			Data: data,
+			Data: result,
 			Msg: "success",
 		}
 	}
@@ -219,11 +229,11 @@ func BuildHouseNo(house []model.House) []Detail{
 				tempHouse.Lou = strconv.Itoa(item.FloorNo) + "层"
 				if item.HouseAcreage != 0 {
 					tempHouse.Price = util.Float2String(item.HouseAcreage, 64)
-					tempHouse.Price = tempHouse.Price + "m"
+					tempHouse.Price = tempHouse.Price + "m²"
 				}
 				if item.UnitPrice != 0 {
 					tempHouse.Price1 = util.Float2String(item.UnitPrice, 64)
-					tempHouse.Price1 = tempHouse.Price1 + "元/m"
+					tempHouse.Price1 = tempHouse.Price1 + "元/m²"
 				}
 				if item.TotalPrice != 0 {
 					tempHouse.Price2 = util.Float2String(item.TotalPrice, 64)
