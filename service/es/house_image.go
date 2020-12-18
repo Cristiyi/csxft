@@ -9,6 +9,7 @@ package es
 import (
 	"csxft/model"
 	"csxft/serializer"
+	"fmt"
 	"reflect"
 	"strconv"
 )
@@ -25,6 +26,7 @@ func (service GetHouseImageService) GetHouseImage() serializer.Response {
 
 	batch := GetTargetBatch(service.ProjectId, service.Status, service.BatchId)
 	if batch == nil {
+		fmt.Println(1)
 		return serializer.Response{
 			Code: 200,
 			Data: nil,
@@ -33,14 +35,16 @@ func (service GetHouseImageService) GetHouseImage() serializer.Response {
 	}
 	commonParam := make(map[string]string)
 	commonParam["BatchId"] = strconv.Itoa(int(batch.ID))
-	noticeRes := GetHouseImage(commonParam)
-	if noticeRes != nil {
+	fmt.Println(commonParam["BatchId"])
+	res := GetHouseImage(commonParam)
+	if res != nil {
 		var result []model.HouseImage
-		for _, item := range noticeRes.Each(reflect.TypeOf(model.HouseImage{})) {
+		for _, item := range res.Each(reflect.TypeOf(model.HouseImage{})) {
 			if t, ok := item.(model.HouseImage); ok {
 				result = append(result, t)
 			}
 		}
+		fmt.Println(result)
 		return serializer.Response{
 			Code: 200,
 			Data: result,
