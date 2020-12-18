@@ -781,7 +781,6 @@ func GetHouseImage(commonParams map[string]string) *elastic.SearchResult {
 		Pretty(true).
 		Do(context.Background())
 	if err != nil {
-		fmt.Println(err)
 		return nil
 	}
 	return searchResult

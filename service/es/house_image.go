@@ -20,7 +20,7 @@ type GetHouseImageService struct {
 	BatchId int `form:"batch_id" json:"batch_id"`
 }
 
-//获取最近开盘的一房一价
+//获取最近开盘的一房一价图
 func (service GetHouseImageService) GetHouseImage() serializer.Response {
 
 	batch := GetTargetBatch(service.ProjectId, service.Status, service.BatchId)
@@ -43,7 +43,7 @@ func (service GetHouseImageService) GetHouseImage() serializer.Response {
 		}
 		return serializer.Response{
 			Code: 200,
-			Data: result[0],
+			Data: result,
 			Msg: "success",
 		}
 	}
