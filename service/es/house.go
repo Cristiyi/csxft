@@ -254,7 +254,7 @@ func BuildHouseNo(house []model.House) []Detail{
 				}
 				if item.TotalPrice != 0 {
 					tempHouse.Price2 = util.Float2String(item.TotalPrice, 64)
-					tempHouse.Price2 = tempHouse.Price1 + "万"
+					tempHouse.Price2 = tempHouse.Price2 + "万"
 				}
 				result[resultKey].Data = append(result[resultKey].Data, *tempHouse)
 			}
