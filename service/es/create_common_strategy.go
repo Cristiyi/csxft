@@ -302,6 +302,38 @@ func (c houseTypeImageHandler) Create(id uint64) (code int, msg string) {
 
 }
 
+//一房一价图handler
+type houseImageHandler struct {
+
+}
+
+//一房一价图
+func newHouseImageHandler() houseImageHandler {
+	instance := new(houseImageHandler)
+	return *instance
+}
+
+func (c houseImageHandler) Create(id uint64) (code int, msg string) {
+
+	houseImage, err := repo.NewHouseImageRepo().GetToEsData(id)
+	if err != nil {
+		code = 400
+		msg = "未找到数据"
+	} else {
+		code = 200
+		msg = "success"
+	}
+
+	_, err = elasticsearch.GetEsCli().Index().Index("house_image").Id(strconv.Itoa(int(id))).BodyJson(houseImage).Do(context.Background())
+	if err != nil {
+		code = 400
+		msg = "存储失败"
+	}
+
+	return
+
+}
+
 //公告handler
 type noticeHandler struct {
 
@@ -399,6 +431,8 @@ func NewCreateContext(insertType uint32) CreateContext {
 		c.Strategy = newNoticeHandler()  //公告
 	case 11:
 		c.Strategy = newBatchHandler()  //批次
+	case 12:
+		c.Strategy = newHouseImageHandler()  //一房一价图
 	default:
 		c.Strategy = newBaseHandler()
 	}
