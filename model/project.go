@@ -84,6 +84,8 @@ type Project struct {
 	HouseTypeImages []Image `gorm:"ForeignKey:ProjectId"`
 	//航拍图封面
 	AerialMainImages []Image `gorm:"ForeignKey:ProjectId"`
+	//航拍图
+	AerialUploadImages []Image `gorm:"ForeignKey:ProjectId"`
 	//评论数量 仅用于查询后的展示
 	CommentCount int  `gorm:"-"`
 	//地区名称 仅用于查询后的展示

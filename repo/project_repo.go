@@ -37,6 +37,7 @@ func (p projectRepo) GetAllToEsData() (projects []*model.Project, err error) {
 		Preload("AerialImages", "type = 5").
 		//Preload("HouseTypeImages", "type = 6").
 		Preload("AerialMainImages", "type = 6").
+		Preload("AerialUploadImages", "type = 7").
 		Where("no_status = ?", 1).Find(&projects).Error
 	if err == nil {
 		for i, item := range projects {
@@ -61,6 +62,7 @@ func (p projectRepo) GetToEsData(id uint64) (project *model.Project, err error) 
 				   Preload("AerialImages", "type = 5").
 				   //Preload("HouseTypeImages", "type = 6").
 				   Preload("AerialMainImages", "type = 6").
+		           Preload("AerialUploadImages", "type = 7").
 				   Where("id = ?", id).First(&project).Error
 	if err == nil {
 		area := new(model.Area)
