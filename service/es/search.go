@@ -43,6 +43,7 @@ type SearchProjectService struct {
 	IsNearLineFifth  int `form:"is_near_line_fifth" json:"is_near_line_fifth"`
 	IsNearLineSixth  int `form:"is_near_line_sixth" json:"is_near_line_sixth"`
 	PredictCredDate int64 `form:"predict_cred_date" json:"predict_cred_date"`
+	HasAerialUpload string `form:"has_aerial_upload" json:"has_aerial_upload"`
 }
 
 //获取楼盘服务
@@ -120,6 +121,9 @@ func (service *SearchProjectService) SearchProject() serializer.Response {
 	}
 	if service.IsAll != "" {
 		commonParam["IsAll"] = service.IsAll
+	}
+	if service.HasAerialUpload != "" {
+		commonParam["HasAerialUpload"] = service.HasAerialUpload
 	}
 
 	calParams := make(map[string]float64)

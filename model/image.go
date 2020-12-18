@@ -13,4 +13,5 @@ type Image struct {
 	ProjectId uint
 	Type uint32
 	ImageUrl string
+	ImageUrlText string
 }

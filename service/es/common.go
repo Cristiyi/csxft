@@ -75,6 +75,10 @@ func QueryProject(start,size int, commonParams map[string]string, calParams map[
 			queryService.Must(areaQueryService)
 		}
 	}
+	if commonParams["HasAerialUpload"] != "" {
+		HasAerialUploadService := elastic.NewBoolQuery()
+		HasAerialUploadService.MustNot(elastic.NewExistsQuery("AerialMainImages"))
+	}
 
 	if calParams["MaxAcreage"] != 0 {
 		maxAcreageRangeQuery := elastic.NewRangeQuery("AverageAcreage")
