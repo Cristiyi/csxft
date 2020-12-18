@@ -6,7 +6,10 @@
 
 package repo
 
-import "csxft/model"
+import (
+	"csxft/model"
+	"fmt"
+)
 
 type HouseImageRepo interface {
 	//获取插入到es的数据
@@ -24,6 +27,7 @@ type houseImageRepo struct {
 func (c houseImageRepo) GetToEsData(id uint64) (houseImage *model.HouseImage, err error) {
 	houseImage = new(model.HouseImage)
 	err = model.DB.Model(c.thisModel).Where("id = ?", id).First(&houseImage).Error
+	fmt.Println(err)
 	return
 }
 
