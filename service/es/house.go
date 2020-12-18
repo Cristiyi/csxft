@@ -236,8 +236,9 @@ func BuildHouseNo(house []model.House) []Detail{
 					tempHouse.Price1 = tempHouse.Price1 + "元/m²"
 				}
 				if item.TotalPrice != 0 {
-					tempHouse.Price2 = util.Float2String(item.TotalPrice, 64)
-					tempHouse.Price2 = tempHouse.Price1 + "万"
+					tempTotalPrice := item.TotalPrice/1000
+					tempHouse.Price2 = util.Float2String(tempTotalPrice, 64)
+					tempHouse.Price2 = tempHouse.Price2 + "万"
 				}
 				detail.Data = append(detail.Data, *tempHouse)
 				result = append(result, *detail)
@@ -253,7 +254,8 @@ func BuildHouseNo(house []model.House) []Detail{
 					tempHouse.Price1 = tempHouse.Price1 + "元/m"
 				}
 				if item.TotalPrice != 0 {
-					tempHouse.Price2 = util.Float2String(item.TotalPrice, 64)
+					tempTotalPrice := item.TotalPrice/1000
+					tempHouse.Price2 = util.Float2String(tempTotalPrice, 64)
 					tempHouse.Price2 = tempHouse.Price2 + "万"
 				}
 				result[resultKey].Data = append(result[resultKey].Data, *tempHouse)
