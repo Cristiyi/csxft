@@ -77,7 +77,7 @@ func QueryProject(start,size int, commonParams map[string]string, calParams map[
 	}
 	if commonParams["HasAerialUpload"] != "" {
 		HasAerialUploadService := elastic.NewBoolQuery()
-		HasAerialUploadService.MustNot(elastic.NewExistsQuery("AerialMainImages"))
+		HasAerialUploadService.Must(elastic.NewExistsQuery("AerialMainImages"))
 		queryService.Must(HasAerialUploadService)
 	}
 
