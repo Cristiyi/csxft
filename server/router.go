@@ -57,6 +57,7 @@ func NewRouter() *gin.Engine {
 		esData.GET("get_project_batch", api.GetProjectBatch)
 		esData.GET("get_project_house", api.GetProjectHouse)
 		esData.GET("gen_house_image", api.GenHouseImage)
+		esData.GET("get_house_image", api.GetHouseImage)
 	}
 
 	taskData := r.Group("/api/task")

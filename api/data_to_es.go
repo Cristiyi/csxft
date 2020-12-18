@@ -302,4 +302,15 @@ func GenHouseImage(c *gin.Context) {
 	}
 }
 
+//获取一房一价图
+func GetHouseImage(c *gin.Context) {
+	var service service.GetHouseImageService
+	if err := c.ShouldBind(&service); err == nil {
+		res := service.GetHouseImage()
+		c.JSON(200, res)
+	} else {
+		c.JSON(400, ErrorResponse(err))
+	}
+}
+
 

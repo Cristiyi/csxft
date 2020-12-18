@@ -766,3 +766,23 @@ func GetBatchById(batchId int) *elastic.SearchResult {
 	}
 	return searchResult
 }
+
+//获取一房一价图
+func GetHouseImage(commonParams map[string]string) *elastic.SearchResult {
+	searchService := elasticsearch.GetEsCli().Search("house_image")
+	queryService := elastic.NewBoolQuery()
+	//queryService.Must(elastic.NewTermQuery("ProjectId", commonParams["ProjectId"]))
+	queryService.Must(elastic.NewTermQuery("Status", 1))
+	queryService.Must(elastic.NewTermQuery("BatchId", commonParams["BatchId"]))
+	searchService = searchService.Query(queryService)
+	searchResult, err := searchService.
+		Sort("UpdatedAt", true).
+		From(0).Size(1).
+		Pretty(true).
+		Do(context.Background())
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	return searchResult
+}
