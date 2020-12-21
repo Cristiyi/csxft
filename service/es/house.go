@@ -26,6 +26,7 @@ type GenHouseImageService struct {
 	ProjectId    string `form:"project_id" json:"project_id" binding:"required"`
 	Status int32 `form:"status" json:"status"`
 	BatchId int `form:"batch_id" json:"batch_id"`
+	CredId int  `form:"cred_id" json:"cred_id"`
 }
 
 
@@ -173,11 +174,23 @@ func (service GenHouseImageService) GenHouseImage() serializer.Response {
 		}
 	}
 
+	hasCredId := false
+	if service.CredId != 0 {
+		hasCredId = true
+	}
+
 	if batch.Creds != nil && len(batch.Creds) > 0 {
 		projectId, _ := strconv.Atoi(service.ProjectId)
 		project, _ := repo.NewProjectRepo().GetOne(uint64(projectId))
-		result.ProjectName = project.ProjectName
+		if project.PromotionFirstName != "" {
+			result.ProjectName = project.PromotionFirstName
+		} else {
+			result.ProjectName = project.ProjectName
+		}
 		for _, item := range batch.Creds {
+			if hasCredId && item.ID != uint(service.CredId) {
+				continue
+			}
 			cred, err := repo.NewCredRepo().GetToEsData(uint64(item.ID))
 			if err == nil {
 				var tempData = new(GenResult)
@@ -249,11 +262,11 @@ func BuildHouseNo(house []model.House) []Detail{
 				tempHouse.Lou = strconv.Itoa(item.FloorNo) + "层"
 				if item.HouseAcreage != 0 {
 					tempHouse.Price = util.Float2String(item.HouseAcreage, 64)
-					tempHouse.Price = tempHouse.Price + "m"
+					tempHouse.Price = tempHouse.Price + "m²"
 				}
 				if item.UnitPrice != 0 {
 					tempHouse.Price1 = util.Float2String(item.UnitPrice, 64)
-					tempHouse.Price1 = tempHouse.Price1 + "元/m"
+					tempHouse.Price1 = tempHouse.Price1 + "元/m²"
 				}
 				if item.TotalPrice != 0 {
 					tempTotalPrice := item.TotalPrice/10000

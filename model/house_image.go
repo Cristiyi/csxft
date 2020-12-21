@@ -13,4 +13,5 @@ type HouseImage struct {
 	ProjectId uint `gorm:"not null;index:idx_project_id"`
 	BatchId uint
 	Images string
+	Name string
 }
