@@ -776,7 +776,7 @@ func GetHouseImage(commonParams map[string]string) *elastic.SearchResult {
 	searchService = searchService.Query(queryService)
 	searchResult, err := searchService.
 		Sort("UpdatedAt", true).
-		From(0).Size(1).
+		From(0).Size(20).
 		Pretty(true).
 		Do(context.Background())
 	if err != nil {

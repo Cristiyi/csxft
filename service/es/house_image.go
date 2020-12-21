@@ -44,7 +44,6 @@ func (service GetHouseImageService) GetHouseImage() serializer.Response {
 				result = append(result, t)
 			}
 		}
-		fmt.Println(result)
 		return serializer.Response{
 			Code: 200,
 			Data: result,
