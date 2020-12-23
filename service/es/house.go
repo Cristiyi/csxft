@@ -249,8 +249,8 @@ func BuildHouseNo(house []model.House) []Detail{
 					tempHouse.Price1 = util.Float2String(item.UnitPrice, 64)
 					tempHouse.Price1 = tempHouse.Price1 + "元/m²"
 				}
-				if item.TotalPrice != 0 {
-					tempTotalPrice := item.TotalPrice/10000
+				if item.HouseAcreage != 0 && item.UnitPrice != 0 {
+					tempTotalPrice := item.HouseAcreage * item.UnitPrice / 10000
 					tempTotalPrice, _ = strconv.ParseFloat(fmt.Sprintf("%.2f", tempTotalPrice), 64)
 					tempHouse.Price2 = util.Float2String(tempTotalPrice, 64)
 					tempHouse.Price2 = tempHouse.Price2 + "万"
@@ -268,8 +268,8 @@ func BuildHouseNo(house []model.House) []Detail{
 					tempHouse.Price1 = util.Float2String(item.UnitPrice, 64)
 					tempHouse.Price1 = tempHouse.Price1 + "元/m²"
 				}
-				if item.TotalPrice != 0 {
-					tempTotalPrice := item.TotalPrice/10000
+				if item.HouseAcreage != 0 && item.UnitPrice != 0 {
+					tempTotalPrice := item.HouseAcreage * item.UnitPrice / 10000
 					tempTotalPrice, _ = strconv.ParseFloat(fmt.Sprintf("%.2f", tempTotalPrice), 64)
 					tempHouse.Price2 = util.Float2String(tempTotalPrice, 64)
 					tempHouse.Price2 = tempHouse.Price2 + "万"
