@@ -40,6 +40,12 @@ type SearchBatchProjectService struct {
 	IsNotDecoration int `form:"is_not_decoration" json:"is_not_decoration"`
 	PredictCredDate int64 `form:"predict_cred_date" json:"predict_cred_date"`
 	HasAerialUpload string `form:"has_aerial_upload" json:"has_aerial_upload"`
+	IsNearLineOne  int `form:"is_near_line_one" json:"is_near_line_one"`
+	IsNearLineTwo  int `form:"is_near_line_two" json:"is_near_line_two"`
+	IsNearLineThird int `form:"is_near_line_third" json:"is_near_line_third"`
+	IsNearLineFouth  int `form:"is_near_line_fouth" json:"is_near_line_fouth"`
+	IsNearLineFifth  int `form:"is_near_line_fifth" json:"is_near_line_fifth"`
+	IsNearLineSixth  int `form:"is_near_line_sixth" json:"is_near_line_sixth"`
 }
 
 //根据批次搜索楼盘
@@ -78,6 +84,10 @@ func (service *SearchBatchProjectService) SearchBatchProjectService() serializer
 		commonParam["Renovation"] = service.Renovation
 	}
 
+	if service.HasAerialUpload != "" {
+		commonParam["HasAerialUpload"] = service.HasAerialUpload
+	}
+
 	calParams := make(map[string]float64)
 	if service.MaxAcreage != 0 {
 		calParams["MaxAcreage"] = service.MaxAcreage
@@ -100,6 +110,24 @@ func (service *SearchBatchProjectService) SearchBatchProjectService() serializer
 
 	if service.PredictCredDate != 0 {
 		calParams["PredictCredDate"] = float64(service.PredictCredDate)
+	}
+	if service.IsNearLineOne != 0 {
+		calParams["IsNearLineOne"] = float64(service.IsNearLineOne)
+	}
+	if service.IsNearLineTwo != 0 {
+		calParams["IsNearLineTwo"] = float64(service.IsNearLineTwo)
+	}
+	if service.IsNearLineThird != 0 {
+		calParams["IsNearLineThird"] = float64(service.IsNearLineThird)
+	}
+	if service.IsNearLineFouth != 0 {
+		calParams["IsNearLineFouth"] = float64(service.IsNearLineFouth)
+	}
+	if service.IsNearLineFifth != 0 {
+		calParams["IsNearLineFifth"] = float64(service.IsNearLineFifth)
+	}
+	if service.IsNearLineSixth != 0 {
+		calParams["IsNearLineSixth"] = float64(service.IsNearLineSixth)
 	}
 	calParams["needed"] = 1
 

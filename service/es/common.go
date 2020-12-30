@@ -874,6 +874,26 @@ func QueryBatchProject(start,size int, commonParams map[string]string, calParams
 		queryService.Must(elastic.NewTermQuery("PredictCredDate", calParams["PredictCredDate"]))
 	}
 
+	if calParams["IsNearLineOne"] != 0 {
+		queryService.Must(elastic.NewTermQuery("Project.IsNearLineOne", 1))
+	}
+	if calParams["IsNearLineTwo"] != 0 {
+		queryService.Must(elastic.NewTermQuery("Project.IsNearLineTwo", 1))
+	}
+	if calParams["IsNearLineThird"] != 0 {
+		queryService.Must(elastic.NewTermQuery("Project.IsNearLineThird", 1))
+	}
+	if calParams["IsNearLineFouth"] != 0 {
+		queryService.Must(elastic.NewTermQuery("Project.IsNearLineFouth", 1))
+	}
+	if calParams["IsNearLineFifth"] != 0 {
+		queryService.Must(elastic.NewTermQuery("Project.IsNearLineFifth", 1))
+	}
+	if calParams["IsNearLineSixth"] != 0 {
+		queryService.Must(elastic.NewTermQuery("Project.IsNearLineSixth", 1))
+	}
+
+
 	searchService = searchService.Query(queryService)
 
 	//分页构建
