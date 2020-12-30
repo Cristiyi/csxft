@@ -27,6 +27,17 @@ func SearchProject(c *gin.Context) {
 	}
 }
 
+//根据批次搜索楼盘
+func SearchBatchProject(c *gin.Context) {
+	var service service.SearchBatchProjectService
+	if err := c.ShouldBind(&service); err == nil {
+		res := service.SearchBatchProjectService()
+		c.JSON(200, res)
+	} else {
+		c.JSON(400, ErrorResponse(err))
+	}
+}
+
 //首页数据
 func Index(c *gin.Context) {
 	var service service.IndexService

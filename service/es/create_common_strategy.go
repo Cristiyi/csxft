@@ -160,7 +160,6 @@ func (c dynamicHandler) Create(id uint64) (code int, msg string) {
 
 	dynamicObj, err := repo.NewDynamicRepo().GetToEsData(id)
 	if err != nil {
-		fmt.Println(err)
 		code = 400
 		msg = "未找到数据"
 	} else {
@@ -400,6 +399,38 @@ func (c batchHandler) Create(id uint64) (code int, msg string) {
 
 }
 
+//批次-楼盘handler
+type batchProjectHandler struct {
+
+}
+
+func newBatchProjectHandler() batchProjectHandler {
+	instance := new(batchProjectHandler)
+	return *instance
+}
+
+func (c batchProjectHandler) Create(id uint64) (code int, msg string) {
+
+	batchObj, err := repo.NewBatchRepo().GetMutToEsData(id)
+	if err != nil {
+		code = 400
+		msg = "未找到数据"
+	} else {
+		code = 200
+		msg = "success"
+	}
+
+	_, err = elasticsearch.GetEsCli().Index().Index("batch_project").Id(strconv.Itoa(int(id))).BodyJson(batchObj).Do(context.Background())
+	if err != nil {
+		fmt.Println(err)
+		code = 400
+		msg = "存储失败"
+	}
+
+	return
+
+}
+
 
 type CreateContext struct {
 	Strategy createHandler
@@ -433,6 +464,8 @@ func NewCreateContext(insertType uint32) CreateContext {
 		c.Strategy = newBatchHandler()  //批次
 	case 12:
 		c.Strategy = newHouseImageHandler()  //一房一价图
+	case 13:
+		c.Strategy = newBatchProjectHandler()  //批次和楼盘 用于楼盘筛选
 	default:
 		c.Strategy = newBaseHandler()
 	}

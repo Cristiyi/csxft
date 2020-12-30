@@ -50,7 +50,11 @@ type Batch struct {
 	IsRecognition int32  `gorm:"default:0"`
 	IsIottery int32  `gorm:"default:0"`
 	IsSell int32  `gorm:"default:0"`
+	MinTotalPrice float64 `gorm:"type:decimal(10,2);default:null"`
+	MaxTotalPrice float64 `gorm:"type:decimal(10,2);default:null"`
+	SaleStatus int32 `gorm:"default:1"`
 	//状态名称（仅用于展示）
 	StatusName string  `gorm:"-"`
 	Creds []Cred `gorm:"ForeignKey:BatchID;"`
+	Project Project `gorm:"ForeignKey:ProjectId;"`
 }

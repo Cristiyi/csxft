@@ -22,6 +22,7 @@ type DeleteBatchService struct {
 func (service *DeleteBatchService) DeleteBatch() serializer.Response {
 
 	DeleteDoc(service.BatchId, "batch")
+	DeleteDoc(service.BatchId, "batch_project")
 	project := new(model.Project)
 	err := model.DB.Model(project).Where("id = ?", service.ProjectId).First(&project).Error
 	var col string

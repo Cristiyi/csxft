@@ -48,6 +48,15 @@ type InitNoticeAllService struct {
 type InitHouseTypeImageAllService struct {
 }
 
+//初始化批次-楼盘所有信息
+type InitBatchProjectService struct {
+}
+
+//初始化批次-楼盘所有信息
+type InitBatchProjectByProjectService struct {
+	ProjectId    uint64 `form:"project_id" json:"project_id" binding:"required"`
+}
+
 // 初始化
 func (service *CreateService) CommonCreate() serializer.Response {
 
@@ -219,4 +228,39 @@ func (service *InitHouseTypeImageAllService) InitHouseTypeImageAll() serializer.
 
 }
 
+// 初始化所有批次到es
+func (service *InitBatchProjectService) InitBatchProject() serializer.Response {
+
+	batches, err := repo.NewBatchRepo().GetMutAllToEsData()
+	if err == nil {
+		for _, item := range batches {
+			strategy := NewCreateContext(13)
+			strategy.Create(uint64(item.ID))
+		}
+	}
+
+	return serializer.Response{
+		Code: 200,
+		Msg: "success",
+	}
+
+}
+
+// 初始化所有公告到es
+func (service *InitBatchProjectByProjectService) InitBatchProjectByProject() serializer.Response {
+
+	batches, err := repo.NewBatchRepo().GetByProjectId(service.ProjectId)
+	if err == nil {
+		for _, item := range batches {
+			strategy := NewCreateContext(13)
+			strategy.Create(uint64(item.ID))
+		}
+	}
+
+	return serializer.Response{
+		Code: 200,
+		Msg: "success",
+	}
+
+}
 

@@ -1,0 +1,145 @@
+/**
+ * @Description:
+ * @File: batch_project
+ * @Date: 2020/12/28 0028 16:13
+ */
+
+package es
+
+import (
+	"csxft/model"
+	"csxft/serializer"
+	"reflect"
+)
+
+//根据批次搜索楼盘服务
+type SearchBatchProjectService struct {
+	SortType    string `form:"sort_type" json:"sort_type"`
+	Sort    string `form:"sort" json:"sort"`
+	//Status    string `form:"status" json:"status"`
+	SaleStatus    string `form:"sale_status" json:"sale_status"`
+	Name    string `form:"name" json:"name"`
+	Start int `form:"start" json:"start"`
+	Size int `form:"size" json:"size"`
+	IsWillCred string `form:"is_will_cred" json:"is_will_cred"`
+	IsNewCred string `form:"is_new_cred" json:"is_new_cred"`
+	IsRecognition string `form:"is_recognition" json:"is_recognition"`
+	IsIottery string `form:"is_iottery" json:"is_iottery"`
+	IsSell string `form:"is_sell" json:"is_sell"`
+	AreaId string `form:"area_id" json:"area_id"`
+	Renovation string `form:"renovation" json:"renovation"`
+	MaxTotalPrice float64 `form:"max_total_price" json:"max_total_price"`
+	MinTotalPrice float64 `form:"min_total_price" json:"min_total_price"`
+	//TotalPrice float64 `form:"total_price" json:"total_price"`
+	MaxPrice float64 `form:"max_price" json:"max_price"`
+	MinPrice float64 `form:"min_price" json:"min_price"`
+	//Price float64 `form:"price" json:"price"`
+	MaxAcreage float64 `form:"max_acreage" json:"max_acreage"`
+	MinAcreage float64 `form:"min_acreage" json:"min_acreage"`
+	IsDecoration int `form:"renovation" json:"renovation"`
+	IsNotDecoration int `form:"is_not_decoration" json:"is_not_decoration"`
+	PredictCredDate int64 `form:"predict_cred_date" json:"predict_cred_date"`
+	HasAerialUpload string `form:"has_aerial_upload" json:"has_aerial_upload"`
+}
+
+//根据批次搜索楼盘
+func (service *SearchBatchProjectService) SearchBatchProjectService() serializer.Response {
+
+	commonParam := make(map[string]string)
+	if service.Sort != "" {
+		commonParam["sort"] = service.Sort
+	} else {
+		commonParam["sort"] = "Project.ViewCount"
+	}
+	if service.SortType != "" {
+		commonParam["sortType"] = service.SortType
+	} else {
+		commonParam["sortType"] = "desc"
+	}
+	if service.Name != "" {
+		commonParam["name"] = service.Name
+	}
+	if service.IsWillCred != "" {
+		commonParam["IsWillCred"] = service.IsWillCred
+	}
+	if service.IsNewCred != "" {
+		commonParam["IsNewCred"] = service.IsNewCred
+	}
+	if service.IsRecognition != "" {
+		commonParam["IsRecognition"] = service.IsRecognition
+	}
+	if service.IsIottery != "" {
+		commonParam["IsIottery"] = service.IsIottery
+	}
+	if service.AreaId != "" {
+		commonParam["AreaId"] = service.AreaId
+	}
+	if service.Renovation != "" {
+		commonParam["Renovation"] = service.Renovation
+	}
+
+	calParams := make(map[string]float64)
+	if service.MaxAcreage != 0 {
+		calParams["MaxAcreage"] = service.MaxAcreage
+	}
+	if service.MinAcreage != 0 {
+		calParams["MinAcreage"] = service.MinAcreage
+	}
+	if service.MaxTotalPrice != 0 {
+		calParams["MaxTotalPrice"] = service.MaxTotalPrice
+	}
+	if service.MinTotalPrice != 0 {
+		calParams["MinTotalPrice"] = service.MinTotalPrice
+	}
+	if service.MaxPrice != 0 {
+		calParams["MaxPrice"] = service.MaxPrice
+	}
+	if service.MinPrice != 0 {
+		calParams["MinPrice"] = service.MinPrice
+	}
+
+	if service.PredictCredDate != 0 {
+		calParams["PredictCredDate"] = float64(service.PredictCredDate)
+	}
+	calParams["needed"] = 1
+
+	var size int = 0
+	if service.Size != 0 {
+		size = service.Size
+	}  else {
+		size = 200
+	}
+	res := QueryBatchProject(service.Start, size, commonParam, calParams)
+	if res != nil {
+		var result []model.Project
+		for _, item := range res.Each(reflect.TypeOf(model.Batch{})) {
+			if t, ok := item.(model.Batch); ok {
+				if IsContainProject(result, t.Project.ID) == -1 && t.Project.ID != 0 {
+					result = append(result, t.Project)
+				}
+			}
+		}
+		return serializer.Response{
+			Code: 200,
+			Data: result,
+			Msg: "success",
+		}
+	} else {
+		return serializer.Response{
+			Code: 400,
+			Msg: "暂无数据",
+		}
+	}
+
+}
+
+//判断数组是否存在某值
+func IsContainProject(items []model.Project, id uint) int {
+	for i, eachItem := range items {
+		if eachItem.ID == id {
+			return i
+		}
+	}
+	return -1
+}
+

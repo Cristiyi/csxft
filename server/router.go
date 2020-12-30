@@ -31,6 +31,7 @@ func NewRouter() *gin.Engine {
 	{
 		esData.POST("create", api.DataToEs)
 		esData.GET("search_project", api.SearchProject)
+		esData.GET("search_batch_project", api.SearchBatchProject)
 		esData.GET("index", api.Index)
 		esData.GET("get_project", api.GetProject)
 		esData.GET("get_project_cred", api.GetProjectCred)
@@ -96,6 +97,8 @@ func NewRouter() *gin.Engine {
 		initAllEs.GET("notice", api.InitAllNoticeResult)
 		initAllEs.GET("house_type_image", api.InitAllHouseTypeImageResult)
 		initAllEs.GET("solicit_result", api.InitAllSolicitResult)
+		initAllEs.GET("batch_project", api.InitBatchProject)
+		initAllEs.GET("batch_project_one", api.InitBatchProjectByProject)
 	}
 
 	return r

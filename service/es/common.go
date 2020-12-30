@@ -107,9 +107,9 @@ func QueryProject(start,size int, commonParams map[string]string, calParams map[
 		queryService.Must(maxUnitPriceRangeQuery)
 	}
 	if calParams["MinUnitPrice"] != 0 {
-		maxUnitPriceRangeQuery := elastic.NewRangeQuery("AveragePrice")
-		maxUnitPriceRangeQuery.Lte(calParams["MaxUnitPrice"])
-		queryService.Must(maxUnitPriceRangeQuery)
+		minUnitPriceRangeQuery := elastic.NewRangeQuery("AveragePrice")
+		minUnitPriceRangeQuery.Lte(calParams["MaxUnitPrice"])
+		queryService.Must(minUnitPriceRangeQuery)
 	}
 	if calParams["IsDecoration"] != 0 {
 		queryService.Must(elastic.NewTermQuery("IsDecoration", 1))
@@ -279,7 +279,7 @@ func GetProjectCred (start,size int, commonParams map[string]string) *elastic.Se
 	return searchResult
 }
 
-//根据开盘信息获取楼盘信息
+//根据开盘信息获取一房一价
 func GetCredHouse (start,size int, commonParams map[string]string, credIds []int) *elastic.SearchResult {
 
 	var sortType bool
@@ -780,6 +780,119 @@ func GetHouseImage(commonParams map[string]string) *elastic.SearchResult {
 		Pretty(true).
 		Do(context.Background())
 	if err != nil {
+		return nil
+	}
+	return searchResult
+}
+
+//根据批次信息搜索楼盘
+func QueryBatchProject(start,size int, commonParams map[string]string, calParams map[string]float64) *elastic.SearchResult {
+	sortType := true
+	if commonParams["sortType"] == "desc" {
+		sortType = false
+	}
+	searchService := elasticsearch.GetEsCli().Search("batch_project").SearchType("dfs_query_then_fetch")
+
+	//搜索条件构建
+	queryService := elastic.NewBoolQuery()
+	queryService.Must(elastic.NewTermQuery("SaleStatus", 1))
+	if commonParams["name"] != "" {
+		nameQueryService := elastic.NewBoolQuery()
+		nameQueryService.Should(elastic.NewQueryStringQuery("Project.ProjectName:"+commonParams["name"]))
+		nameQueryService.Should(elastic.NewQueryStringQuery("Project.PromotionFirstName:"+commonParams["name"]))
+		nameQueryService.Should(elastic.NewQueryStringQuery("Project.PromotionSecondName:"+commonParams["name"]))
+		queryService.Must(nameQueryService)
+	}
+
+	if commonParams["IsWillCred"] != "" {
+		queryService.Must(elastic.NewTermQuery("Project.IsWillCred", 1))
+	}
+	if commonParams["IsNewCred"] != "" {
+		queryService.Must(elastic.NewTermQuery("Project.IsNewCred", 1))
+	}
+	if commonParams["IsRecognition"] != "" {
+		queryService.Must(elastic.NewTermQuery("Project.IsRecognition", 1))
+	}
+	if commonParams["IsIottery"] != "" {
+		queryService.Must(elastic.NewTermQuery("Project.IsIottery", 1))
+	}
+	if commonParams["IsSell"] != "" {
+		queryService.Must(elastic.NewTermQuery("Project.IsSell", 1))
+	}
+	if commonParams["AreaId"] != "" {
+		areaArr := strings.Split(commonParams["AreaId"], ",")
+		if len(areaArr) > 0 {
+			areaQueryService := elastic.NewBoolQuery()
+			for _, item := range areaArr {
+				areaQueryService.Should(elastic.NewTermQuery("Project.AreaId", item))
+			}
+			queryService.Must(areaQueryService)
+		}
+	}
+	if commonParams["Renovation"] != "" {
+		queryService.Must(elastic.NewTermQuery("Renovation", commonParams["Renovation"]))
+	}
+
+	if commonParams["HasAerialUpload"] != "" {
+		HasAerialUploadService := elastic.NewBoolQuery()
+		HasAerialUploadService.Must(elastic.NewExistsQuery("Project.AerialMainImages"))
+		queryService.Must(HasAerialUploadService)
+	}
+
+	if calParams["MaxAcreage"] != 0 {
+		maxAcreageRangeQuery := elastic.NewRangeQuery("AverageAcreage")
+		maxAcreageRangeQuery.Lte(calParams["MaxAcreage"])
+		queryService.Must(maxAcreageRangeQuery)
+	}
+	if calParams["MinAcreage"] != 0 {
+		minAcreageRangeQuery := elastic.NewRangeQuery("AverageAcreage")
+		minAcreageRangeQuery.Gte(calParams["MinAcreage"])
+		queryService.Must(minAcreageRangeQuery)
+	}
+	if calParams["MaxTotalPrice"] != 0 {
+		maxTotalPriceRangeQuery := elastic.NewRangeQuery("MaxTotalPrice")
+		maxTotalPriceRangeQuery.Lte(calParams["MaxTotalPrice"])
+		queryService.Must(maxTotalPriceRangeQuery)
+	}
+	if calParams["MinTotalPrice"] != 0 {
+		minTotalPriceRangeQuery := elastic.NewRangeQuery("MinTotalPrice")
+		minTotalPriceRangeQuery.Gte(calParams["MinTotalPrice"])
+		queryService.Must(minTotalPriceRangeQuery)
+	}
+	if calParams["MaxPrice"] != 0 {
+		fmt.Println(calParams["MaxPrice"])
+		maxUnitPriceRangeQuery := elastic.NewRangeQuery("MaxPrice")
+		maxUnitPriceRangeQuery.Lte(calParams["MaxPrice"])
+		queryService.Must(maxUnitPriceRangeQuery)
+	}
+	if calParams["MinPrice"] != 0 {
+		minUnitPriceRangeQuery := elastic.NewRangeQuery("MinPrice")
+		minUnitPriceRangeQuery.Gte(calParams["MinPrice"])
+		queryService.Must(minUnitPriceRangeQuery)
+	}
+	if calParams["PredictCredDate"] != 0 {
+		queryService.Must(elastic.NewTermQuery("PredictCredDate", calParams["PredictCredDate"]))
+	}
+
+	searchService = searchService.Query(queryService)
+
+	//分页构建
+	if start == 1 || start == 0 {
+		start = 0
+	} else {
+		start = (start-1)*size
+	}
+	if commonParams["IsAll"] != "" {
+		searchService.Sort("NoStatus", true)
+	}
+	searchService.Sort("BatchNo", false)
+	searchService.Sort("_score", false).Sort(commonParams["sort"], sortType)
+	searchResult, err := searchService.
+		From(start).Size(size).
+		Pretty(true).
+		Do(context.Background())
+	if err != nil {
+		fmt.Println(err)
 		return nil
 	}
 	return searchResult

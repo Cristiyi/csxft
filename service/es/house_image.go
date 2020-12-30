@@ -35,7 +35,6 @@ func (service GetHouseImageService) GetHouseImage() serializer.Response {
 	}
 	commonParam := make(map[string]string)
 	commonParam["BatchId"] = strconv.Itoa(int(batch.ID))
-	fmt.Println(commonParam["BatchId"])
 	res := GetHouseImage(commonParam)
 	if res != nil {
 		var result []model.HouseImage

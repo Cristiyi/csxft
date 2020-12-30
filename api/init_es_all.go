@@ -98,3 +98,25 @@ func InitAllHouseTypeImageResult(c *gin.Context) {
 		c.JSON(400, ErrorResponse(err))
 	}
 }
+
+//初始化所有批次-楼盘数据
+func InitBatchProject(c *gin.Context) {
+	var service service.InitBatchProjectService
+	if err := c.ShouldBind(&service); err == nil {
+		res := service.InitBatchProject()
+		c.JSON(200, res)
+	} else {
+		c.JSON(400, ErrorResponse(err))
+	}
+}
+
+//初始化所有批次-楼盘数据
+func InitBatchProjectByProject(c *gin.Context) {
+	var service service.InitBatchProjectByProjectService
+	if err := c.ShouldBind(&service); err == nil {
+		res := service.InitBatchProjectByProject()
+		c.JSON(200, res)
+	} else {
+		c.JSON(400, ErrorResponse(err))
+	}
+}
