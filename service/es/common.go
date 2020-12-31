@@ -840,12 +840,12 @@ func QueryBatchProject(start,size int, commonParams map[string]string, calParams
 	}
 
 	if calParams["MaxAcreage"] != 0 {
-		maxAcreageRangeQuery := elastic.NewRangeQuery("AverageAcreage")
+		maxAcreageRangeQuery := elastic.NewRangeQuery("MaxAcreage")
 		maxAcreageRangeQuery.Lte(calParams["MaxArea"])
 		queryService.Must(maxAcreageRangeQuery)
 	}
 	if calParams["MinAcreage"] != 0 {
-		minAcreageRangeQuery := elastic.NewRangeQuery("AverageAcreage")
+		minAcreageRangeQuery := elastic.NewRangeQuery("MinArea")
 		minAcreageRangeQuery.Gte(calParams["MinArea"])
 		queryService.Must(minAcreageRangeQuery)
 	}
