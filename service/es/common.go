@@ -969,8 +969,8 @@ func QueryBatchProject(start,size int, commonParams map[string]string, calParams
 		maxAcreageQuery.Should(maxAcreageQueryOne)
 		maxAcreageQuery.Should(maxAcreageQueryTwo)
 
-		queryService.MustNot(elastic.NewTermQuery("MinPrice", 0))
-		queryService.MustNot(elastic.NewTermQuery("MaxPrice", 0))
+		queryService.MustNot(elastic.NewTermQuery("MinArea", 0))
+		queryService.MustNot(elastic.NewTermQuery("MaxArea", 0))
 
 		queryService.Must(maxAcreageQuery)
 	}
