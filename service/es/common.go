@@ -871,6 +871,10 @@ func QueryBatchProject(start,size int, commonParams map[string]string, calParams
 	//}
 	//总价筛选
 	if calParams["MaxTotalPrice"] != 0 {
+
+		queryService.MustNot(elastic.NewTermQuery("MinTotalPrice", 0))
+		queryService.MustNot(elastic.NewTermQuery("MaxTotalPrice", 0))
+
 		//筛选区间： A(最小总价) B(最大总价)
 		//楼盘实际价格（为丙）：甲（最小总价） 乙（最大总价）
 		//条件： A<=甲&&B>=甲 || A>甲&&A<=乙
@@ -897,9 +901,6 @@ func QueryBatchProject(start,size int, commonParams map[string]string, calParams
 
 		maxTotalPriceQuery.Should(maxTotalPriceQueryOne)
 		maxTotalPriceQuery.Should(maxTotalPriceQueryTwo)
-
-		queryService.MustNot(elastic.NewTermQuery("MinTotalPrice", 0))
-		queryService.MustNot(elastic.NewTermQuery("MaxTotalPrice", 0))
 
 		queryService.Must(maxTotalPriceQuery)
 	}
