@@ -952,17 +952,17 @@ func QueryBatchProject(start,size int, commonParams map[string]string, calParams
 
 		//A<=甲&&B>=甲
 		maxAcreageRangeOne := elastic.NewRangeQuery("MinArea")
-		maxAcreageRangeOne.Gte(calParams["MinPrice"])
+		maxAcreageRangeOne.Gte(calParams["MinAcreage"])
 		maxAcreageRangeTwo := elastic.NewRangeQuery("MinArea")
-		maxAcreageRangeTwo.Lte(calParams["MaxPrice"])
+		maxAcreageRangeTwo.Lte(calParams["MaxAcreage"])
 		maxAcreageQueryOne.Must(maxAcreageRangeOne)
 		maxAcreageQueryOne.Must(maxAcreageRangeTwo)
 
 		//A>甲&&A<=乙
 		maxAcreageRangeThree := elastic.NewRangeQuery("MinArea")
-		maxAcreageRangeThree.Lt(calParams["MinPrice"])
+		maxAcreageRangeThree.Lt(calParams["MinAcreage"])
 		maxAcreageRangeFour := elastic.NewRangeQuery("MaxArea")
-		maxAcreageRangeFour.Gte(calParams["MinPrice"])
+		maxAcreageRangeFour.Gte(calParams["MinAcreage"])
 		maxAcreageQueryTwo.Must(maxAcreageRangeThree)
 		maxAcreageQueryTwo.Must(maxAcreageRangeFour)
 
