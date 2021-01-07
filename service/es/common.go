@@ -883,8 +883,8 @@ func QueryBatchProject(start,size int, commonParams map[string]string, calParams
 		//A<=甲&&B>=甲
 		maxTotalPriceRangeOne := elastic.NewRangeQuery("MinTotalPrice")
 		maxTotalPriceRangeOne.Gte(calParams["MinTotalPrice"])
-		maxTotalPriceRangeTwo := elastic.NewRangeQuery("MaxTotalPrice")
-		maxTotalPriceRangeTwo.Lte(calParams["MinTotalPrice"])
+		maxTotalPriceRangeTwo := elastic.NewRangeQuery("MinTotalPrice")
+		maxTotalPriceRangeTwo.Lte(calParams["MaxTotalPrice"])
 		maxTotalPriceQueryOne.Must(maxTotalPriceRangeOne)
 		maxTotalPriceQueryOne.Must(maxTotalPriceRangeTwo)
 
@@ -892,7 +892,7 @@ func QueryBatchProject(start,size int, commonParams map[string]string, calParams
 		maxTotalPriceRangeThree := elastic.NewRangeQuery("MinTotalPrice")
 		maxTotalPriceRangeThree.Lt(calParams["MinTotalPrice"])
 		maxTotalPriceRangeFour := elastic.NewRangeQuery("MaxTotalPrice")
-		maxTotalPriceRangeFour.Lte(calParams["MinTotalPrice"])
+		maxTotalPriceRangeFour.Gte(calParams["MinTotalPrice"])
 		maxTotalPriceQueryTwo.Must(maxTotalPriceRangeThree)
 		maxTotalPriceQueryTwo.Must(maxTotalPriceRangeFour)
 
