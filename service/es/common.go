@@ -869,9 +869,8 @@ func QueryBatchProject(start,size int, commonParams map[string]string, calParams
 	//	minUnitPriceRangeQuery.Gte(calParams["MinPrice"])
 	//	queryService.Must(minUnitPriceRangeQuery)
 	//}
+	//总价筛选
 	if calParams["MaxTotalPrice"] != 0 {
-		fmt.Println(calParams["MaxTotalPrice"])
-		fmt.Println(calParams["MinTotalPrice"])
 		//筛选区间： A(最小总价) B(最大总价)
 		//楼盘实际价格（为丙）：甲（最小总价） 乙（最大总价）
 		//条件： A<=甲&&B>=甲 || A>甲&&A<=乙
@@ -903,6 +902,76 @@ func QueryBatchProject(start,size int, commonParams map[string]string, calParams
 		queryService.MustNot(elastic.NewTermQuery("MaxTotalPrice", 0))
 
 		queryService.Must(maxTotalPriceQuery)
+	}
+
+	//单价筛选
+	if calParams["MaxPrice"] != 0 {
+		//筛选区间： A(最小单价) B(最大单价)
+		//楼盘实际价格（为丙）：甲（最小单价） 乙（最大单价）
+		//条件： A<=甲&&B>=甲 || A>甲&&A<=乙
+
+		maxPriceQuery := elastic.NewBoolQuery()
+		maxPriceQueryOne := elastic.NewBoolQuery()
+		maxPriceQueryTwo := elastic.NewBoolQuery()
+
+		//A<=甲&&B>=甲
+		maxPriceRangeOne := elastic.NewRangeQuery("MinPrice")
+		maxPriceRangeOne.Gte(calParams["MinPrice"])
+		maxPriceRangeTwo := elastic.NewRangeQuery("MinPrice")
+		maxPriceRangeTwo.Lte(calParams["MaxPrice"])
+		maxPriceQueryOne.Must(maxPriceRangeOne)
+		maxPriceQueryOne.Must(maxPriceRangeTwo)
+
+		//A>甲&&A<=乙
+		maxPriceRangeThree := elastic.NewRangeQuery("MinPrice")
+		maxPriceRangeThree.Lt(calParams["MinPrice"])
+		maxPriceRangeFour := elastic.NewRangeQuery("MaxPrice")
+		maxPriceRangeFour.Gte(calParams["MinPrice"])
+		maxPriceQueryTwo.Must(maxPriceRangeThree)
+		maxPriceQueryTwo.Must(maxPriceRangeFour)
+
+		maxPriceQuery.Should(maxPriceQueryOne)
+		maxPriceQuery.Should(maxPriceQueryTwo)
+
+		queryService.MustNot(elastic.NewTermQuery("MinPrice", 0))
+		queryService.MustNot(elastic.NewTermQuery("MaxPrice", 0))
+
+		queryService.Must(maxPriceQuery)
+	}
+
+	//面积筛选
+	if calParams["MinAcreage"] != 0 {
+		//筛选区间： A(最小面积) B(最大面积)
+		//楼盘实际面积（为丙）：甲（最小面积） 乙（最大面积）
+		//条件： A<=甲&&B>=甲 || A>甲&&A<=乙
+
+		maxAcreageQuery := elastic.NewBoolQuery()
+		maxAcreageQueryOne := elastic.NewBoolQuery()
+		maxAcreageQueryTwo := elastic.NewBoolQuery()
+
+		//A<=甲&&B>=甲
+		maxAcreageRangeOne := elastic.NewRangeQuery("MinArea")
+		maxAcreageRangeOne.Gte(calParams["MinPrice"])
+		maxAcreageRangeTwo := elastic.NewRangeQuery("MinArea")
+		maxAcreageRangeTwo.Lte(calParams["MaxPrice"])
+		maxAcreageQueryOne.Must(maxAcreageRangeOne)
+		maxAcreageQueryOne.Must(maxAcreageRangeTwo)
+
+		//A>甲&&A<=乙
+		maxAcreageRangeThree := elastic.NewRangeQuery("MinArea")
+		maxAcreageRangeThree.Lt(calParams["MinPrice"])
+		maxAcreageRangeFour := elastic.NewRangeQuery("MaxArea")
+		maxAcreageRangeFour.Gte(calParams["MinPrice"])
+		maxAcreageQueryTwo.Must(maxAcreageRangeThree)
+		maxAcreageQueryTwo.Must(maxAcreageRangeFour)
+
+		maxAcreageQuery.Should(maxAcreageQueryOne)
+		maxAcreageQuery.Should(maxAcreageQueryTwo)
+
+		queryService.MustNot(elastic.NewTermQuery("MinPrice", 0))
+		queryService.MustNot(elastic.NewTermQuery("MaxPrice", 0))
+
+		queryService.Must(maxAcreageQuery)
 	}
 
 	if calParams["PredictCredDate"] != 0 {
