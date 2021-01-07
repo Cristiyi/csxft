@@ -884,8 +884,8 @@ func QueryBatchProject(start,size int, commonParams map[string]string, calParams
 		maxTotalPriceRangeOne.Gte(calParams["MinTotalPrice"])
 		maxTotalPriceRangeTwo := elastic.NewRangeQuery("MaxTotalPrice")
 		maxTotalPriceRangeTwo.Lte(calParams["MinTotalPrice"])
-		maxTotalPriceQueryOne.Must(maxTotalPriceQueryOne)
-		maxTotalPriceQueryOne.Must(maxTotalPriceQueryTwo)
+		maxTotalPriceQueryOne.Must(maxTotalPriceRangeOne)
+		maxTotalPriceQueryOne.Must(maxTotalPriceRangeTwo)
 
 		//A>甲&&A<=乙
 		maxTotalPriceRangeThree := elastic.NewRangeQuery("MinTotalPrice")
