@@ -839,37 +839,68 @@ func QueryBatchProject(start,size int, commonParams map[string]string, calParams
 		queryService.Must(HasAerialUploadService)
 	}
 
-	if calParams["MaxAcreage"] != 0 {
-		maxAcreageRangeQuery := elastic.NewRangeQuery("MaxAcreage")
-		maxAcreageRangeQuery.Lte(calParams["MaxArea"])
-		queryService.Must(maxAcreageRangeQuery)
-	}
-	if calParams["MinAcreage"] != 0 {
-		minAcreageRangeQuery := elastic.NewRangeQuery("MinArea")
-		minAcreageRangeQuery.Gte(calParams["MinArea"])
-		queryService.Must(minAcreageRangeQuery)
-	}
+	//if calParams["MaxAcreage"] != 0 {
+	//	maxAcreageRangeQuery := elastic.NewRangeQuery("MaxAcreage")
+	//	maxAcreageRangeQuery.Lte(calParams["MaxArea"])
+	//	queryService.Must(maxAcreageRangeQuery)
+	//}
+	//if calParams["MinAcreage"] != 0 {
+	//	minAcreageRangeQuery := elastic.NewRangeQuery("MinArea")
+	//	minAcreageRangeQuery.Gte(calParams["MinArea"])
+	//	queryService.Must(minAcreageRangeQuery)
+	//}
+	//if calParams["MaxTotalPrice"] != 0 {
+	//	maxTotalPriceRangeQuery := elastic.NewRangeQuery("MaxTotalPrice")
+	//	maxTotalPriceRangeQuery.Lte(calParams["MaxTotalPrice"])
+	//	queryService.Must(maxTotalPriceRangeQuery)
+	//}
+	//if calParams["MinTotalPrice"] != 0 {
+	//	minTotalPriceRangeQuery := elastic.NewRangeQuery("MinTotalPrice")
+	//	minTotalPriceRangeQuery.Gte(calParams["MinTotalPrice"])
+	//	queryService.Must(minTotalPriceRangeQuery)
+	//}
+	//if calParams["MaxPrice"] != 0 {
+	//	maxUnitPriceRangeQuery := elastic.NewRangeQuery("MaxPrice")
+	//	maxUnitPriceRangeQuery.Lte(calParams["MaxPrice"])
+	//	queryService.Must(maxUnitPriceRangeQuery)
+	//}
+	//if calParams["MinPrice"] != 0 {
+	//	minUnitPriceRangeQuery := elastic.NewRangeQuery("MinPrice")
+	//	minUnitPriceRangeQuery.Gte(calParams["MinPrice"])
+	//	queryService.Must(minUnitPriceRangeQuery)
+	//}
 	if calParams["MaxTotalPrice"] != 0 {
-		maxTotalPriceRangeQuery := elastic.NewRangeQuery("MaxTotalPrice")
-		maxTotalPriceRangeQuery.Lte(calParams["MaxTotalPrice"])
-		queryService.Must(maxTotalPriceRangeQuery)
+
+		//筛选区间： A(最小总价) B(最大总价)
+		//楼盘实际价格（为丙）：甲（最小总价） 乙（最大总价）
+		//条件： A<=甲&&B>=甲 || A>甲&&A<=乙
+
+		maxTotalPriceQuery := elastic.NewBoolQuery()
+		maxTotalPriceQueryOne := elastic.NewBoolQuery()
+		maxTotalPriceQueryTwo := elastic.NewBoolQuery()
+
+		//A<=甲&&B>=甲
+		maxTotalPriceRangeOne := elastic.NewRangeQuery("MinTotalPrice")
+		maxTotalPriceRangeOne.Gte(calParams["MinTotalPrice"])
+		maxTotalPriceRangeTwo := elastic.NewRangeQuery("MaxTotalPrice")
+		maxTotalPriceRangeTwo.Lte(calParams["MinTotalPrice"])
+		maxTotalPriceQueryOne.Must(maxTotalPriceQueryOne)
+		maxTotalPriceQueryOne.Must(maxTotalPriceQueryTwo)
+
+		//A>甲&&A<=乙
+		maxTotalPriceRangeThree := elastic.NewRangeQuery("MinTotalPrice")
+		maxTotalPriceRangeThree.Lt(calParams["MinTotalPrice"])
+		maxTotalPriceRangeFour := elastic.NewRangeQuery("MaxTotalPrice")
+		maxTotalPriceRangeFour.Lte(calParams["MinTotalPrice"])
+		maxTotalPriceQueryTwo.Must(maxTotalPriceRangeThree)
+		maxTotalPriceQueryTwo.Must(maxTotalPriceRangeFour)
+
+		maxTotalPriceQuery.Should(maxTotalPriceQueryOne)
+		maxTotalPriceQuery.Should(maxTotalPriceQueryTwo)
+
+		queryService.Must(maxTotalPriceQuery)
 	}
-	if calParams["MinTotalPrice"] != 0 {
-		minTotalPriceRangeQuery := elastic.NewRangeQuery("MinTotalPrice")
-		minTotalPriceRangeQuery.Gte(calParams["MinTotalPrice"])
-		queryService.Must(minTotalPriceRangeQuery)
-	}
-	if calParams["MaxPrice"] != 0 {
-		fmt.Println(calParams["MaxPrice"])
-		maxUnitPriceRangeQuery := elastic.NewRangeQuery("MaxPrice")
-		maxUnitPriceRangeQuery.Lte(calParams["MaxPrice"])
-		queryService.Must(maxUnitPriceRangeQuery)
-	}
-	if calParams["MinPrice"] != 0 {
-		minUnitPriceRangeQuery := elastic.NewRangeQuery("MinPrice")
-		minUnitPriceRangeQuery.Gte(calParams["MinPrice"])
-		queryService.Must(minUnitPriceRangeQuery)
-	}
+
 	if calParams["PredictCredDate"] != 0 {
 		queryService.Must(elastic.NewTermQuery("PredictCredDate", calParams["PredictCredDate"]))
 	}

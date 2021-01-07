@@ -89,24 +89,30 @@ func (service *SearchBatchProjectService) SearchBatchProjectService() serializer
 	}
 
 	calParams := make(map[string]float64)
-	if service.MaxAcreage != 0 {
-		calParams["MaxAcreage"] = service.MaxAcreage
-	}
-	if service.MinAcreage != 0 {
-		calParams["MinAcreage"] = service.MinAcreage
-	}
-	if service.MaxTotalPrice != 0 {
-		calParams["MaxTotalPrice"] = service.MaxTotalPrice
-	}
-	if service.MinTotalPrice != 0 {
-		calParams["MinTotalPrice"] = service.MinTotalPrice
-	}
-	if service.MaxPrice != 0 {
-		calParams["MaxPrice"] = service.MaxPrice
-	}
-	if service.MinPrice != 0 {
-		calParams["MinPrice"] = service.MinPrice
-	}
+	//if service.MaxAcreage != 0 {
+	//	calParams["MaxAcreage"] = service.MaxAcreage
+	//}
+	calParams["MaxAcreage"] = service.MaxAcreage
+	//if service.MinAcreage != 0 {
+	//	calParams["MinAcreage"] = service.MinAcreage
+	//}
+	calParams["MinAcreage"] = service.MinAcreage
+	//if service.MaxTotalPrice != 0 {
+	//	calParams["MaxTotalPrice"] = service.MaxTotalPrice
+	//}
+	calParams["MaxTotalPrice"] = service.MaxTotalPrice
+	//if service.MinTotalPrice != 0 {
+	//	calParams["MinTotalPrice"] = service.MinTotalPrice
+	//}
+	calParams["MinTotalPrice"] = service.MinTotalPrice
+	//if service.MaxPrice != 0 {
+	//	calParams["MaxPrice"] = service.MaxPrice
+	//}
+	calParams["MaxPrice"] = service.MaxPrice
+	//if service.MinPrice != 0 {
+	//	calParams["MinPrice"] = service.MinPrice
+	//}
+	calParams["MinPrice"] = service.MinPrice
 
 	if service.PredictCredDate != 0 {
 		calParams["PredictCredDate"] = float64(service.PredictCredDate)
