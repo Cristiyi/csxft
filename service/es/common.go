@@ -941,7 +941,7 @@ func QueryBatchProject(start,size int, commonParams map[string]string, calParams
 	}
 
 	//面积筛选
-	if calParams["MinAcreage"] != 0 {
+	if calParams["MaxAcreage"] != 0 {
 		//筛选区间： A(最小面积) B(最大面积)
 		//楼盘实际面积（为丙）：甲（最小面积） 乙（最大面积）
 		//条件： A<=甲&&B>=甲 || A>甲&&A<=乙
