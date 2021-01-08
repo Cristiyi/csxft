@@ -68,6 +68,7 @@ type Project struct {
 	IsNearLineFouth  int32  `gorm:"default:0"`
 	IsNearLineFifth  int32  `gorm:"default:0"`
 	IsNearLineSixth  int32  `gorm:"default:0"`
+	IsNearLineSixthTwo  int32  `gorm:"default:0"`
 	PredictCredDate time.Time
 	Tag string
 	//效果图

@@ -37,7 +37,7 @@ type SearchBatchProjectService struct {
 	MaxAcreage float64 `form:"max_acreage" json:"max_acreage"`
 	MinAcreage float64 `form:"min_acreage" json:"min_acreage"`
 	IsDecoration int `form:"renovation" json:"renovation"`
-	IsNotDecoration int `form:"is_not_decoration" json:"is_not_decoration"`
+	IsNotDecoration int `form:"is_not_decora tion" json:"is_not_decoration"`
 	PredictCredDate int64 `form:"predict_cred_date" json:"predict_cred_date"`
 	HasAerialUpload string `form:"has_aerial_upload" json:"has_aerial_upload"`
 	IsNearLineOne  int `form:"is_near_line_one" json:"is_near_line_one"`
@@ -46,6 +46,7 @@ type SearchBatchProjectService struct {
 	IsNearLineFouth  int `form:"is_near_line_fouth" json:"is_near_line_fouth"`
 	IsNearLineFifth  int `form:"is_near_line_fifth" json:"is_near_line_fifth"`
 	IsNearLineSixth  int `form:"is_near_line_sixth" json:"is_near_line_sixth"`
+	IsNearLineSixthTwo  int `form:"is_near_line_sixth_two" json:"is_near_line_sixth_two"`
 }
 
 //根据批次搜索楼盘
@@ -134,6 +135,9 @@ func (service *SearchBatchProjectService) SearchBatchProjectService() serializer
 	}
 	if service.IsNearLineSixth != 0 {
 		calParams["IsNearLineSixth"] = float64(service.IsNearLineSixth)
+	}
+	if service.IsNearLineSixthTwo != 0 {
+		calParams["IsNearLineSixthTwo"] = float64(service.IsNearLineSixthTwo)
 	}
 	calParams["needed"] = 1
 

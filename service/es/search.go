@@ -42,6 +42,7 @@ type SearchProjectService struct {
 	IsNearLineFouth  int `form:"is_near_line_fouth" json:"is_near_line_fouth"`
 	IsNearLineFifth  int `form:"is_near_line_fifth" json:"is_near_line_fifth"`
 	IsNearLineSixth  int `form:"is_near_line_sixth" json:"is_near_line_sixth"`
+	IsNearLineSixthTwo  int `form:"is_near_line_sixth_two" json:"is_near_line_sixth_two"`
 	PredictCredDate int64 `form:"predict_cred_date" json:"predict_cred_date"`
 	HasAerialUpload string `form:"has_aerial_upload" json:"has_aerial_upload"`
 }
@@ -171,6 +172,9 @@ func (service *SearchProjectService) SearchProject() serializer.Response {
 	}
 	if service.IsNearLineSixth != 0 {
 		calParams["IsNearLineSixth"] = float64(service.IsNearLineSixth)
+	}
+	if service.IsNearLineSixthTwo != 0 {
+		calParams["IsNearLineSixthTwo"] = float64(service.IsNearLineSixthTwo)
 	}
 	if service.PredictCredDate != 0 {
 		calParams["PredictCredDate"] = float64(service.PredictCredDate)

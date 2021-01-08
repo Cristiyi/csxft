@@ -135,6 +135,9 @@ func QueryProject(start,size int, commonParams map[string]string, calParams map[
 	if calParams["IsNearLineSixth"] != 0 {
 		queryService.Must(elastic.NewTermQuery("IsNearLineSixth", 1))
 	}
+	if calParams["IsNearLineSixthTwo"] != 0 {
+		queryService.Must(elastic.NewTermQuery("Project.IsNearLineSixthTwo", 1))
+	}
 	if calParams["PredictCredDate"] != 0 {
 		queryService.Must(elastic.NewTermQuery("PredictCredDate", calParams["PredictCredDate"]))
 	}
@@ -996,6 +999,9 @@ func QueryBatchProject(start,size int, commonParams map[string]string, calParams
 	}
 	if calParams["IsNearLineSixth"] != 0 {
 		queryService.Must(elastic.NewTermQuery("Project.IsNearLineSixth", 1))
+	}
+	if calParams["IsNearLineSixthTwo"] != 0 {
+		queryService.Must(elastic.NewTermQuery("Project.IsNearLineSixthTwo", 1))
 	}
 
 
