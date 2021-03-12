@@ -20,6 +20,7 @@ func QueryProject(start,size int, commonParams map[string]string, calParams map[
 
 	//搜索条件构建
 	queryService := elastic.NewBoolQuery()
+	queryService.MustNot(elastic.NewTermQuery("NoStatus", 4))
 	if commonParams["name"] != "" {
 		//queryService.Must(elastic.NewQueryStringQuery("*Name:" + commonParams["name"]))
 		nameQueryService := elastic.NewBoolQuery()
@@ -798,6 +799,7 @@ func QueryBatchProject(start,size int, commonParams map[string]string, calParams
 
 	//搜索条件构建
 	queryService := elastic.NewBoolQuery()
+	queryService.MustNot(elastic.NewTermQuery("Project.NoStatus", 4))
 	queryService.Must(elastic.NewTermQuery("SaleStatus", 1))
 	if commonParams["name"] != "" {
 		nameQueryService := elastic.NewBoolQuery()
