@@ -33,6 +33,17 @@ func DeleteBatch(c *gin.Context) {
 	}
 }
 
+//删除批次
+func DeleteBatchByProject(c *gin.Context) {
+	var service service.DeleteBatchProjectService
+	if err := c.ShouldBind(&service); err == nil {
+		res := service.DeleteBatch()
+		c.JSON(200, res)
+	} else {
+		c.JSON(400, ErrorResponse(err))
+	}
+}
+
 //删除公告
 func DeleteNotice(c *gin.Context) {
 	var service service.DeleteNoticeService

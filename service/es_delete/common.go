@@ -51,3 +51,17 @@ func DeleteHouseTypeImage(projectId int)(){
 	query := elastic.Query(elastic.NewTermQuery("ProjectId", projectId))
 	client.DeleteByQuery("house_type_image").Query(query).Do(context.Background())
 }
+
+//根据楼盘删除批次——楼盘
+func DeleteBatchProjectByProject(projectId int)(){
+	client := elasticsearch.GetEsCli()
+	query := elastic.Query(elastic.NewTermQuery("ProjectId", projectId))
+	client.DeleteByQuery("batch_project").Query(query).Do(context.Background())
+}
+
+//根据楼盘删除批次
+func DeleteBatchByProject(projectId int)(){
+	client := elasticsearch.GetEsCli()
+	query := elastic.Query(elastic.NewTermQuery("ProjectId", projectId))
+	client.DeleteByQuery("batch").Query(query).Do(context.Background())
+}
