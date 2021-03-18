@@ -80,6 +80,12 @@ func QueryProject(start,size int, commonParams map[string]string, calParams map[
 		HasAerialUploadService := elastic.NewBoolQuery()
 		HasAerialUploadService.Must(elastic.NewExistsQuery("AerialMainImages"))
 		queryService.Must(HasAerialUploadService)
+
+		AerialStatus := elastic.NewBoolQuery()
+		AerialStatus.Should(elastic.NewTermQuery("NoStatus", 1))
+		AerialStatus.Should(elastic.NewTermQuery("NoStatus", 4))
+		queryService.Must(AerialStatus)
+
 	}
 
 	if calParams["MaxAcreage"] != 0 {
@@ -842,6 +848,10 @@ func QueryBatchProject(start,size int, commonParams map[string]string, calParams
 		HasAerialUploadService := elastic.NewBoolQuery()
 		HasAerialUploadService.Must(elastic.NewExistsQuery("Project.AerialMainImages"))
 		queryService.Must(HasAerialUploadService)
+		AerialStatus := elastic.NewBoolQuery()
+		AerialStatus.Should(elastic.NewTermQuery("NoStatus", 1))
+		AerialStatus.Should(elastic.NewTermQuery("NoStatus", 4))
+		queryService.Must(AerialStatus)
 	}
 
 	//if calParams["MaxAcreage"] != 0 {
